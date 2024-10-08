@@ -65,7 +65,7 @@ function AddToQueue() {
           {queue
             ?.filter((r) => r.id !== currentSong?.id)
             .map((song, i) => (
-              <div key={i} className=" flex gap-2 items-center justify-around">
+              <div key={i} className=" flex gap-2 items-center justify-between">
                 <div>
                   <div className="size-12 ">
                     <Image
@@ -144,7 +144,6 @@ function AddToQueue() {
             {user &&
               listener?.roomUsers
                 ?.filter((r) => r.userId._id !== user._id)
-                ?.slice(0, 4)
                 ?.map((roomUser, i) => (
                   <TooltipProvider key={roomUser._id}>
                     <Tooltip>
@@ -165,6 +164,15 @@ function AddToQueue() {
                     </Tooltip>
                   </TooltipProvider>
                 ))}
+            {listener && listener?.totalUsers > 4 && (
+              <div
+                className={` -ml-2.5 px-2 py-1 text-xs bg-zinc-200 rounded-full`}
+              >
+                <div className=" rounded-full text-black">
+                  {listener?.totalUsers - 4}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <Button
