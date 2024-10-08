@@ -59,7 +59,7 @@ export default function useSocket() {
       }) => {
         toast.dismiss("joining");
         if (user) {
-          setUser((prev) => ({ ...prev, ...user.userId, role: user?.role }));
+          setUser((prev) => ({ ...prev, ...user?.userId, role: user?.role }));
         }
         if (listeners) {
           setListener(listeners);
@@ -86,7 +86,7 @@ export default function useSocket() {
           setQueue(data.queue);
         }
         if (data?.votes) {
-          setUpVotes(data.votes);
+          setUpVotes(data?.votes);
         }
       }
     );
@@ -99,10 +99,10 @@ export default function useSocket() {
       "votes",
       async (data?: { votes: upvVotes[]; queue: searchResults[] }) => {
         if (data?.votes) {
-          setUpVotes(data.votes);
+          setUpVotes(data?.votes);
         }
         if (data?.queue) {
-          setQueue(data.queue);
+          setQueue(data?.queue);
         }
       }
     );
