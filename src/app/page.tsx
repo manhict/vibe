@@ -1,5 +1,7 @@
 function Page() {
-  <div></div>;
+  <div>
+    <header className=" w-full"></header>
+  </div>;
 }
 
 export default Page;

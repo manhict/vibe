@@ -166,12 +166,12 @@ function AddToQueue() {
                           </Tooltip>
                         </TooltipProvider>
                       ))}
-                      {listener && listener?.totalUsers > 4 && (
+                      {song.voteCount && song.voteCount > 4 && (
                         <div
-                          className={` -ml-2.5 px-2 py-1 text-xs bg-zinc-200 rounded-full`}
+                          className={` -ml-2.5 px-1.5 py-0.5 text-xs bg-zinc-200 rounded-full`}
                         >
                           <div className=" rounded-full text-black">
-                            {listener?.totalUsers - 4}
+                            {song?.voteCount - 4}
                           </div>
                         </div>
                       )}
