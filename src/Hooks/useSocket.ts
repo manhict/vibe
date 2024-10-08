@@ -50,7 +50,7 @@ export default function useSocket() {
       "joinedRoom",
       ({ user, listeners }: { user: TUser; listeners: listener }) => {
         toast.dismiss("joining");
-
+        toast.message(`Joined successfully`);
         if (user) {
           setUser((prev) => ({ ...prev, ...user }));
         }

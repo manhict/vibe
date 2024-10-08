@@ -29,7 +29,12 @@ function AddToQueue() {
     try {
       navigator
         .share({
-          url: window.location.origin + "/v/?room=" + roomId,
+          url:
+            window.location.origin +
+            "/v/?room=" +
+            roomId +
+            "&ref=" +
+            user.username,
         })
         .then(() => {
           toast.success("Shared the link successfully!");

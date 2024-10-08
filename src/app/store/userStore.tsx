@@ -1,7 +1,7 @@
 "use client";
 import { listener, searchResults, TUser, upvVotes } from "@/lib/types";
 import { generateRoomId, setCookie } from "@/utils/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, {
   createContext,
   ReactNode,
@@ -32,6 +32,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const search = useSearchParams();
+  const path = usePathname();
   const router = useRouter();
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
   const [queue, setQueue] = React.useState<searchResults[]>([]);
@@ -43,6 +44,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 
   useEffect(() => {
+    if (!path.startsWith("/v")) return;
     router.push(`/v?room=${roomId}`);
     setCookie("room", roomId);
 
@@ -55,11 +57,12 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       // socket.emit("joinRoom");
       socket.emit("addToQueue");
       socket.emit("upVote");
-      toast.message(`Joining room ${roomId}`, {
+      toast.loading(`Joining room ${roomId}`, {
         id: "joining",
+        duration: Infinity,
       });
     }
-  }, [roomId, router, user]);
+  }, [roomId, router, user, path]);
 
   return (
     <UserContext.Provider
