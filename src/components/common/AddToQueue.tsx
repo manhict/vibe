@@ -46,8 +46,8 @@ function AddToQueue() {
   const upVote = useCallback((song: searchResults) => {
     socket.emit("upVote", song);
   }, []);
-  const handleDelete = useCallback(() => {
-    socket.emit("deleteSong");
+  const handleDelete = useCallback((song: searchResults) => {
+    socket.emit("deleteSong", song);
   }, []);
   const handleUpVote = useDebounce(upVote, 400);
   return (
@@ -87,7 +87,7 @@ function AddToQueue() {
                     />
 
                     <Trash
-                      onClick={handleDelete}
+                      onClick={() => handleDelete(song)}
                       className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     />
                   </div>

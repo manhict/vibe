@@ -16,12 +16,14 @@ export async function generateMetadata({
   if (username) {
     user = await User.findOne({ username });
   } else {
-    const roomId = await Room.findOne({ roomId: room });
-    user = (
-      await RoomUser.findOne({ roomId: roomId?._id, role: "admin" }).populate(
-        "userId"
-      )
-    ).userId;
+    if (room) {
+      const roomId = await Room.findOne({ roomId: room });
+      user = (
+        await RoomUser.findOne({ roomId: roomId?._id, role: "admin" }).populate(
+          "userId"
+        )
+      ).userId;
+    }
   }
 
   return {
