@@ -11,11 +11,17 @@ import { TUser } from "@/lib/types";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
+import Login from "./Login";
 function Profile({ user }: { user: TUser }) {
   const { setUser } = useUserContext();
+
   useEffect(() => {
     setUser(user);
   }, [user, setUser]);
+
+  if (!user) {
+    return <Login />;
+  }
   return (
     <Dialog key={"user profile"}>
       <DialogTrigger>

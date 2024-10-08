@@ -45,6 +45,7 @@ export interface TUser {
   imageUrl: string;
   role?: "admin" | "listener";
   token?: string;
+  roomId?: string;
 }
 
 export interface listener {

@@ -7,9 +7,7 @@ import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { TUser } from "@/lib/types";
-import { useRouter } from "next/navigation";
 function Login() {
-  const router = useRouter();
   const { setUser } = useUserContext();
   const handleLogin = () => {
     signInWithPopup(auth, provider).then(async (result) => {
@@ -18,7 +16,7 @@ function Login() {
         const res = await api.post("/api/login", user);
         if (res.success) {
           setUser((res.data as any).data as TUser);
-          router.refresh();
+          window.location.reload();
         }
       }
     });

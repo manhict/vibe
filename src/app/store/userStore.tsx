@@ -46,6 +46,10 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     setCookie("room", roomId);
 
     if (roomId && socket.disconnected && user) {
+      socket.io.opts.extraHeaders = {
+        Authorization: `${user.token}`,
+        Room: `${user.roomId}`,
+      };
       socket.connect();
       socket.emit("addToQueue");
       socket.emit("upVote");

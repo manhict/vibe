@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 export async function getLoggedInUser() {
   try {
     const session = cookies().get("vibeId");
+    const roomId = cookies().get("room");
     if (!session || !session.value) {
       throw new Error("No session found");
     }
@@ -24,7 +25,7 @@ export async function getLoggedInUser() {
 
     const user = await User.findById(decoded.userId);
     return JSON.parse(
-      JSON.stringify({ ...user.toObject(), token: session.value })
+      JSON.stringify({ ...user.toObject(), token: session.value, roomId })
     );
   } catch (error: any) {
     console.error("Error in getLoggedInUser:", error.message);
