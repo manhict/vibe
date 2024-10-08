@@ -43,7 +43,7 @@ export interface TUser {
   name: string;
   username: string;
   imageUrl: string;
-  role?: "admin" | "listener";
+  role?: "admin" | "listener" | string;
   token?: string;
   roomId?: string;
 }

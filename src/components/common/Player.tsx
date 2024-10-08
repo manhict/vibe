@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, formatElapsedTime } from "@/utils/utils";
 import {
@@ -16,6 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import VolumeControl from "./VolumeControl";
 import { useUserContext } from "@/app/store/userStore";
+import Image from "next/image";
 function Player() {
   const { user } = useUserContext();
   const {
@@ -46,29 +46,30 @@ function Player() {
   };
 
   return (
-    <div className=" select-none h-full border border-[#49454F] flex-grow rounded-xl p-7 flex flex-col items-center justify-center gap-[2.5dvh]">
-      <div className=" size-56 overflow-hidden rounded-xl">
-        <Avatar className="rounded-none object-cover h-full w-full">
-          <AvatarImage
-            src={
-              currentSong?.image[currentSong.image.length - 1].url ||
-              "/cache.jpg"
-            }
-          />
-        </Avatar>
+    <div className=" select-none backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+      <div className=" h-auto  overflow-hidden rounded-xl">
+        <Image
+          alt={currentSong?.name || ""}
+          height={300}
+          width={300}
+          className=" h-full object-cover  w-full"
+          src={
+            currentSong?.image[currentSong.image.length - 1].url || "/cache.jpg"
+          }
+        />
       </div>
-      <div className=" text-center w-full items-center justify-center flex flex-col text-sm ">
-        <p className=" text-xl font-medium w-60 truncate">
+      <div className=" text-center w-full items-center justify-center flex flex-col text-sm">
+        <p className=" text-xl font-medium w-10/12 truncate">
           {currentSong?.name || "Not Playing"}
         </p>
-        <p className=" w-56 text-zinc-200 truncate">
+        <p className=" w-10/12 text-zinc-200 truncate">
           {(currentSong && formatArtistName(currentSong?.artists.primary)) ||
             "Unknown"}
         </p>
       </div>
 
-      <div className="flex items-center w-full  justify-end gap-5 ">
-        <div className=" flex items-center w-fit gap-4">
+      <div className="flex items-center w-full  justify-center gap-2.5">
+        <div className=" flex items-center w-fit gap-2.5">
           <SkipBack
             onClick={playPrev}
             aria-label="play prev"
@@ -94,7 +95,7 @@ function Player() {
             } cursor-pointer size-5`}
           />
         </div>
-        <div className="text-sm gap-2 w-[30%] items-center flex">
+        <div className="text-sm gap-1.5 w-[30%] items-center flex">
           {volume == 0 ? (
             <VolumeX onClick={() => setVolume(0.5)} className=" size-6" />
           ) : volume < 0.5 ? (
@@ -106,7 +107,7 @@ function Player() {
           <VolumeControl />
         </div>
       </div>
-      <div className=" flex items-center gap-4 w-full text-xs">
+      <div className=" flex items-center gap-4 px-4 w-full text-xs">
         <p>{formattedProgress}</p>
         <input
           type="range"

@@ -7,7 +7,7 @@ import Background from "../Background";
 
 export default function Home() {
   return (
-    <>
+    <div className=" w-full">
       <Background />
       <Blur />
       <div className=" absolute w-full top-0 flex flex-col items-center justify-center h-full py-2.5">
@@ -18,6 +18,6 @@ export default function Home() {
         </div>
         <Footer />
       </div>
-    </>
+    </div>
   );
 }

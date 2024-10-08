@@ -50,10 +50,16 @@ export default function useSocket() {
 
     currentSocket.on(
       "joinedRoom",
-      ({ user, listeners }: { user: TUser; listeners: listener }) => {
+      ({
+        user,
+        listeners,
+      }: {
+        user: { role: string; userId: TUser };
+        listeners: listener;
+      }) => {
         toast.dismiss("joining");
         if (user) {
-          setUser(user);
+          setUser((prev) => ({ ...prev, ...user.userId, role: user?.role }));
         }
         if (listeners) {
           setListener(listeners);

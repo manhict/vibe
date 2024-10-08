@@ -42,7 +42,7 @@ function AddToQueue() {
   }, []);
   const handleUpVote = useDebounce(upVote, 400);
   return (
-    <div className=" select-none max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
+    <div className=" select-none backdrop-blur-lg  max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
         <p className=" text-lg font-semibold">In Queue</p>
         <div className=" flex items-center gap-1.5">
@@ -77,12 +77,15 @@ function AddToQueue() {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col text-sm w-8/12">
+                <div className="flex z-10 flex-col text-sm w-8/12">
                   <p
                     onClick={() => {
-                      socket.emit("nextSong", { song });
+                      socket.emit("nextSong", {
+                        nextSong: song,
+                        callback: true,
+                      });
                     }}
-                    className=" font-semibold truncate"
+                    className=" cursor-pointer font-semibold truncate"
                   >
                     {song.name}
                   </p>
@@ -138,7 +141,7 @@ function AddToQueue() {
           <div className=" flex items-center">
             {user &&
               listener?.roomUsers
-                ?.filter((r) => r._id !== user._id)
+                ?.filter((r) => r.userId._id !== user._id)
                 ?.slice(0, 3)
                 ?.map((roomUser, i) => (
                   <TooltipProvider key={roomUser._id}>
