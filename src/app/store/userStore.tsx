@@ -11,6 +11,7 @@ import React, {
   useState,
 } from "react";
 import { socket } from "../socket";
+import { toast } from "sonner";
 
 interface UserContextType {
   queue: searchResults[];
@@ -53,6 +54,9 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       socket.connect();
       socket.emit("addToQueue");
       socket.emit("upVote");
+      toast.message(`Joining room ${roomId}`, {
+        id: "joining",
+      });
     }
   }, [roomId, router, user]);
 

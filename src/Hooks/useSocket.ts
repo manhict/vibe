@@ -48,9 +48,18 @@ export default function useSocket() {
     currentSocket.on("nextSong", handleNextSong);
     currentSocket.on("prevSong", handlePrevSong);
 
-    currentSocket.on("joinedRoom", ({ user }: { user: TUser }) => {
-      setUser(user);
-    });
+    currentSocket.on(
+      "joinedRoom",
+      ({ user, listeners }: { user: TUser; listeners: listener }) => {
+        toast.dismiss("joining");
+        if (user) {
+          setUser(user);
+        }
+        if (listeners) {
+          setListener(listeners);
+        }
+      }
+    );
 
     currentSocket.on("songQueue", (data: searchResults[]) => {
       if (data) {
@@ -76,12 +85,6 @@ export default function useSocket() {
       }
     );
 
-    currentSocket.on("roomList", async (data?: listener) => {
-      if (data) {
-        setListener(data);
-      }
-    });
-
     currentSocket.on("getVotes", () => {
       socket.emit("upVote");
     });
@@ -98,9 +101,17 @@ export default function useSocket() {
       }
     );
 
-    currentSocket.on("userJoinedRoom", async ({ user }: { user: TUser }) => {
-      toast(`${user.username} has joined`);
-    });
+    currentSocket.on(
+      "userJoinedRoom",
+      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
+        if (user) {
+          toast(`${user.username} has joined`);
+        }
+        if (listeners) {
+          setListener(listeners);
+        }
+      }
+    );
 
     currentSocket.on("userLeftRoom", async (user: TUser) => {
       toast(`${user.username} left `, {

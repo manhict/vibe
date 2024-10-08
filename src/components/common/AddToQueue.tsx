@@ -3,7 +3,7 @@ import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
 import { Button } from "@/components/ui/button";
 import { formatArtistName } from "@/utils/utils";
-import { Heart, Share2 } from "lucide-react";
+import { Heart, Search, Share2 } from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import {
@@ -66,12 +66,12 @@ function AddToQueue() {
       <div className=" flex items-center justify-between">
         <p className=" text-lg font-semibold">In Queue</p>
         <div className=" flex items-center gap-1.5">
-          {/* <Button
+          <Button
             variant={"secondary"}
             className=" bg-[#8D50F9] p-2.5 trx rounded-md"
           >
             <Search className=" size-4" />
-          </Button> */}
+          </Button>
           {/* <Button
             variant={"secondary"}
             className=" bg-[#8D50F9] p-2.5 rounded-md"
@@ -138,26 +138,29 @@ function AddToQueue() {
           <p>Listening</p>
 
           <div className=" flex items-center">
-            {listener?.roomUsers.slice(0, 3).map((roomUser, i) => (
-              <TooltipProvider key={roomUser._id}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
-                      <Image
-                        alt={roomUser.userId.name}
-                        height={200}
-                        width={200}
-                        className=" rounded-full"
-                        src={roomUser.userId.imageUrl}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                    <p>{roomUser.userId.username}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
+            {listener?.roomUsers
+              .filter((r) => r._id !== user?._id)
+              .slice(0, 3)
+              .map((roomUser, i) => (
+                <TooltipProvider key={roomUser._id}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
+                        <Image
+                          alt={roomUser.userId.name}
+                          height={200}
+                          width={200}
+                          className=" rounded-full"
+                          src={roomUser.userId.imageUrl}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                      <p>{roomUser.userId.username}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
           </div>
         </div>
         <Button
