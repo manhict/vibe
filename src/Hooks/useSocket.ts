@@ -109,9 +109,15 @@ export default function useSocket() {
 
     currentSocket.on(
       "userJoinedRoom",
-      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
+      async ({
+        user,
+        listeners,
+      }: {
+        user: { userId: TUser };
+        listeners: listener;
+      }) => {
         if (user) {
-          toast(`${user.username} has joined`);
+          toast(`${user?.userId?.username} has joined`);
         }
         if (listeners) {
           setListener(listeners);
