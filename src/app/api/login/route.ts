@@ -50,7 +50,7 @@ const proceed = (saved: any) => {
 
   cookies().set("vibeId", accessToken, {
     path: "/",
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "none",
     secure: true,
     // domain: "https://vibe-backend-p1jh.onrender.com",
