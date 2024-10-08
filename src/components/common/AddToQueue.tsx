@@ -113,7 +113,7 @@ function AddToQueue() {
                           }
 
                           // Return previous state if the song is already voted or queueId is invalid
-                          return prev;
+                          return prev.filter((r) => r.queueId !== song.queueId);
                         });
                       }
                     }}
