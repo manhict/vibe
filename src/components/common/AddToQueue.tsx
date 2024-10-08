@@ -98,7 +98,14 @@ function AddToQueue() {
                   </div>
                 </div>
                 <div className="flex flex-col text-sm w-8/12">
-                  <p className=" font-semibold truncate">{song.name}</p>
+                  <p
+                    onClick={() => {
+                      socket.emit("nextSong", { song });
+                    }}
+                    className=" font-semibold truncate"
+                  >
+                    {song.name}
+                  </p>
                   <span className=" text-[#8D50F9] truncate text-[12px]">
                     {formatArtistName(song.artists.primary)}
                   </span>
