@@ -51,18 +51,10 @@ export default function useSocket() {
 
     currentSocket.on(
       "joinedRoom",
-      ({
-        user,
-        listeners,
-      }: {
-        user: { role: string; userId: TUser };
-        listeners: listener;
-      }) => {
+      ({ user, listeners }: { user: TUser; listeners: listener }) => {
         toast.dismiss("joining");
         if (user) {
-          console.log(user);
-
-          setUser((prev) => ({ ...prev, ...user?.userId, role: user?.role }));
+          setUser((prev) => ({ ...prev, ...user }));
         }
         if (listeners) {
           setListener(listeners);
@@ -112,15 +104,9 @@ export default function useSocket() {
 
     currentSocket.on(
       "userJoinedRoom",
-      async ({
-        user,
-        listeners,
-      }: {
-        user: { userId: TUser };
-        listeners: listener;
-      }) => {
+      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
         if (user) {
-          toast(`${user?.userId?.username} has joined`);
+          toast(`${user?.username} has joined`);
         }
         if (listeners) {
           setListener(listeners);
