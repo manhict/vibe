@@ -52,6 +52,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         Room: `${roomId}`,
       };
       socket.connect();
+      socket.emit("joinRoom");
       socket.emit("addToQueue");
       socket.emit("upVote");
       toast.message(`Joining room ${roomId}`, {
