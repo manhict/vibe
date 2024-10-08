@@ -96,7 +96,7 @@ function Player() {
         </div>
         <div className="text-sm gap-2 w-[30%] items-center flex">
           {volume == 0 ? (
-            <VolumeX onChange={() => setVolume(0.5)} className=" size-6" />
+            <VolumeX onClick={() => setVolume(0.5)} className=" size-6" />
           ) : volume < 0.5 ? (
             <Volume1 className="size-6" />
           ) : (
