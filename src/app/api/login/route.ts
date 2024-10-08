@@ -53,6 +53,6 @@ const proceed = (saved: any) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
-    domain: "https://vibe-backend-p1jh.onrender.com",
+    // domain: "https://vibe-backend-p1jh.onrender.com",
   });
 };
