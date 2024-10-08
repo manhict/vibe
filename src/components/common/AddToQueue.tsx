@@ -17,6 +17,7 @@ import Image from "next/image";
 import useSocket from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
+import useDebounce from "@/Hooks/useDebounce";
 function AddToQueue() {
   const { queue, roomId, listener, user, upVotes } = useUserContext();
   const { currentSong } = useAudio();
@@ -35,10 +36,10 @@ function AddToQueue() {
       toast.error(error.message);
     }
   }, [roomId, user]);
-  const handleUpVote = useCallback((song: searchResults) => {
+  const upVote = useCallback((song: searchResults) => {
     socket.emit("upVote", song);
   }, []);
-
+  const handleUpVote = useDebounce(upVote, 400);
   return (
     <div className=" select-none max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
