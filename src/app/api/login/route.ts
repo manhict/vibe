@@ -48,10 +48,9 @@ const proceed = (saved: any) => {
 
   response.cookies.set("vibeId", accessToken, {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "strict",
     secure: true,
     path: "/",
-    maxAge: 7 * 24 * 60 * 60,
   });
 
   return response;
