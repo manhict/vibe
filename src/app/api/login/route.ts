@@ -51,7 +51,7 @@ const proceed = (saved: any) => {
   cookies().set("vibeId", accessToken, {
     path: "/",
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     secure: true,
   });
 };
