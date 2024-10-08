@@ -56,7 +56,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentProgress, setProgress] = useState<number>(0);
   const [currentDuration, setDuration] = useState<number>(0);
   const [currentVolume, setVolume] = useState<number>(1);
-  const { queue, isConnected, user, listener } = useUserContext();
+  const { queue, isConnected, user } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
@@ -151,7 +151,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
-    if (user?.role !== "admin" && listener && listener?.totalUsers > 1) return;
+    if (user?.role !== "admin") return;
     if (queue && queue.length > 0) {
       const currentIndex = queue.findIndex(
         (song) => song.id === currentSong?.id
@@ -165,11 +165,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         socket.emit("nextSong", { nextSong });
       }
     }
-  }, [currentSong?.id, play, queue, isConnected, user, listener]);
+  }, [currentSong?.id, play, queue, isConnected, user]);
 
   // Play the previous song in the queue
   const playPrev = useCallback(() => {
-    if (user?.role !== "admin" && listener && listener?.totalUsers > 1) return;
+    if (user?.role !== "admin") return;
     if (queue && queue.length > 0) {
       const currentIndex = queue.findIndex(
         (song) => song.id === currentSong?.id
@@ -183,7 +183,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         socket.emit("prevSong", { prevSong });
       }
     }
-  }, [currentSong?.id, play, queue, isConnected, user, listener]);
+  }, [currentSong?.id, play, queue, isConnected, user]);
 
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {

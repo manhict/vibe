@@ -19,7 +19,8 @@ import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 function AddToQueue() {
-  const { queue, roomId, listener, user, upVotes } = useUserContext();
+  const { queue, roomId, listener, user, upVotes, setUpVotes } =
+    useUserContext();
   const { currentSong } = useAudio();
   useSocket();
   const handleShare = useCallback(() => {
@@ -36,9 +37,29 @@ function AddToQueue() {
       toast.error(error.message);
     }
   }, [roomId, user]);
-  const upVote = useCallback((song: searchResults) => {
-    socket.emit("upVote", song);
-  }, []);
+  const upVote = useCallback(
+    (song: searchResults) => {
+      socket.emit("upVote", song);
+
+      if (song.queueId) {
+        setUpVotes((prev) => {
+          // Check if the song is already in the upVotes array to avoid duplicates
+          const isAlreadyVoted = prev.some(
+            (upVote) => upVote.queueId === song.queueId
+          );
+
+          // If not already voted, add it to the state
+          if (!isAlreadyVoted && song.queueId) {
+            return [...prev, { queueId: song.queueId }];
+          }
+
+          // Return previous state if the song is already voted or queueId is invalid
+          return prev;
+        });
+      }
+    },
+    [setUpVotes]
+  );
   const handleUpVote = useDebounce(upVote, 400);
   return (
     <div className=" select-none max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
