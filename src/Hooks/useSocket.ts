@@ -20,7 +20,6 @@ export default function useSocket() {
     try {
       setIsConnected(true);
       setTransport(socketRef.current.io.engine.transport.name);
-      toast.message(`Joined room`);
     } catch (error) {
       toast.error("Failed to connect");
     }
@@ -37,9 +36,7 @@ export default function useSocket() {
 
   useEffect(() => {
     const currentSocket = socketRef.current;
-    if (currentSocket.connected) {
-      onConnect();
-    }
+
     const handleNextSong = (nextSong: searchResults) => play(nextSong);
     const handlePrevSong = (prevSong: searchResults) => play(prevSong);
 
