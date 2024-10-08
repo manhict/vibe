@@ -60,6 +60,8 @@ export default function useSocket() {
       }) => {
         toast.dismiss("joining");
         if (user) {
+          console.log(user);
+
           setUser((prev) => ({ ...prev, ...user?.userId, role: user?.role }));
         }
         if (listeners) {
