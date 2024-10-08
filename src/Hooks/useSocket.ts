@@ -20,6 +20,7 @@ export default function useSocket() {
     try {
       setIsConnected(true);
       setTransport(socketRef.current.io.engine.transport.name);
+      toast.message(`Joined room`);
     } catch (error) {
       toast.error("Failed to connect");
     }

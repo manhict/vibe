@@ -59,10 +59,10 @@ function Player() {
         />
       </div>
       <div className=" text-center w-full items-center justify-center flex flex-col text-sm">
-        <p className=" text-xl font-medium w-10/12 truncate">
+        <p className=" text-xl font-medium w-60 truncate">
           {currentSong?.name || "Not Playing"}
         </p>
-        <p className=" w-10/12 text-zinc-200 truncate">
+        <p className=" w-56 text-zinc-200 truncate">
           {(currentSong && formatArtistName(currentSong?.artists.primary)) ||
             "Unknown"}
         </p>
