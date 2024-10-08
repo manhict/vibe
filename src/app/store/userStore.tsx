@@ -45,12 +45,12 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     router.push(`/v?room=${roomId}`);
     setCookie("room", roomId);
 
-    if (roomId && socket.disconnected) {
+    if (roomId && socket.disconnected && user) {
       socket.connect();
       socket.emit("addToQueue");
       socket.emit("upVote");
     }
-  }, [roomId, router]);
+  }, [roomId, router, user]);
 
   return (
     <UserContext.Provider

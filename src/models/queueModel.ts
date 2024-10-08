@@ -7,7 +7,6 @@ const queueSchema = new mongoose.Schema(
       ref: "Room",
       required: true,
     },
-
     songData: {
       type: mongoose.Schema.Types.Mixed,
       required: true,

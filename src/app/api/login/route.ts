@@ -49,10 +49,9 @@ const proceed = (saved: any) => {
   });
 
   cookies().set("vibeId", accessToken, {
-    path: "/",
-    httpOnly: false,
+    // path: "/",
+    httpOnly: true,
     sameSite: "none",
     secure: true,
-    // domain: "https://vibe-backend-p1jh.onrender.com",
   });
 };

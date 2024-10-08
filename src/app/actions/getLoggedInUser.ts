@@ -26,7 +26,8 @@ export async function getLoggedInUser() {
     return JSON.parse(
       JSON.stringify({ ...user.toObject(), token: session.value })
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error in getLoggedInUser:", error.message);
     return null;
   }
 }
