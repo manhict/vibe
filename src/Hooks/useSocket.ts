@@ -69,7 +69,7 @@ export default function useSocket() {
     );
 
     currentSocket.on("songQueue", (data: searchResults[]) => {
-      if (data) {
+      if (data && data.length > 0) {
         setQueue(data);
       }
     });
