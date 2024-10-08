@@ -3,7 +3,7 @@ import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
 import { Button } from "@/components/ui/button";
 import { formatArtistName } from "@/utils/utils";
-import { Heart, Search, Share2 } from "lucide-react";
+import { Heart, Search, Share2, Trash } from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import {
@@ -45,10 +45,11 @@ function AddToQueue() {
     <div className=" select-none backdrop-blur-lg  max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
         <p className=" text-lg font-semibold">In Queue</p>
-        <div className=" flex items-center gap-1.5">
+        <div className=" flex items-center">
+          {/* <Input className=" bg-[#8D50F9] rounded-md rounded-r-none" /> */}
           <Button
             variant={"secondary"}
-            className=" bg-[#8D50F9] p-2.5 trx rounded-md"
+            className=" bg-[#8D50F9] p-2.5 rounded-md"
           >
             <Search className=" size-4" />
           </Button>
@@ -66,18 +67,20 @@ function AddToQueue() {
             ?.filter((r) => r.id !== currentSong?.id)
             .map((song, i) => (
               <div key={i} className=" flex gap-2 items-center justify-between">
-                <div>
-                  <div className="size-12 ">
+                <div className="relative">
+                  <div className="size-12 relative group">
                     <Image
                       alt={song.name}
                       height={500}
                       width={500}
-                      className=" rounded-md"
+                      className="rounded-md group-hover:opacity-40 transition-all duration-500"
                       src={song.image[song.image.length - 1].url}
                     />
+
+                    <Trash className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
-                <div className="flex z-10 flex-col text-sm w-8/12">
+                <div className="flex z-10 flex-col flex-grow text-sm w-8/12">
                   <p
                     onClick={() => {
                       socket.emit("nextSong", {
@@ -123,7 +126,7 @@ function AddToQueue() {
                       }
                     }}
                   />
-                  <div className="flex text-xs items-center">
+                  <div className="flex -mt-1 text-xs items-center">
                     {/* <Avatar className="size-6 rounded-full">
                       <AvatarImage
                         src={song.image[song.image.length - 1].url}

@@ -16,7 +16,7 @@ function Footer() {
         <p>
           Developed by{" "}
           <a
-            href=""
+            href="https://tanmayo7.vercel.app/"
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
@@ -26,7 +26,7 @@ function Footer() {
         <p>
           Designed by{" "}
           <a
-            href=""
+            href="https://www.instagram.com/justcrazzyxd/"
             target="_blank"
             className="underline-offset-2 hover:underline"
           >

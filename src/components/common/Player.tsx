@@ -46,7 +46,8 @@ function Player() {
   };
 
   return (
-    <div className=" select-none w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+    <div className=" relative select-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+      {/* <div className=" h-full w-full absolute backdrop-blur-sm"></div> */}
       <div className=" h-auto  overflow-hidden rounded-xl">
         <Image
           alt={currentSong?.name || ""}
@@ -68,7 +69,7 @@ function Player() {
         </p>
       </div>
 
-      <div className="flex items-center w-full  justify-center gap-2.5">
+      <div className="flex items-center w-full justify-center gap-2.5">
         <div className=" flex items-center w-fit gap-2.5">
           <SkipBack
             onClick={playPrev}

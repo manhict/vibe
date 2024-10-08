@@ -50,6 +50,7 @@ export default function useSocket() {
       "joinedRoom",
       ({ user, listeners }: { user: TUser; listeners: listener }) => {
         toast.dismiss("joining");
+
         if (user) {
           setUser((prev) => ({ ...prev, ...user }));
         }
@@ -91,8 +92,6 @@ export default function useSocket() {
       "votes",
       async (data?: { votes: upvVotes[]; queue: searchResults[] }) => {
         if (data?.votes) {
-          console.log(data);
-
           setUpVotes(data?.votes);
         }
         if (data?.queue) {
