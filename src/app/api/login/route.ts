@@ -52,6 +52,6 @@ const proceed = (saved: any) => {
     path: "/",
     httpOnly: true,
     sameSite: "none",
-    secure: true,
+    // secure: true,
   });
 };
