@@ -113,11 +113,19 @@ export default function useSocket() {
       }
     );
 
-    currentSocket.on("userLeftRoom", async (user: TUser) => {
-      toast(`${user.username} left `, {
-        style: { backgroundColor: "#e94225" },
-      });
-    });
+    currentSocket.on(
+      "userLeftRoom",
+      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
+        if (user) {
+          toast(`${user.username} left `, {
+            style: { backgroundColor: "#e94225" },
+          });
+        }
+        if (listeners) {
+          setListener(listeners);
+        }
+      }
+    );
 
     currentSocket.on(
       "seek",
