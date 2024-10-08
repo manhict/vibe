@@ -158,6 +158,8 @@ export default function useSocket() {
       currentSocket.off("userLeftRoom");
       currentSocket.off("update");
       currentSocket.off("seek");
+      currentSocket.off("getVotes");
+      currentSocket.off("votes");
     };
   }, [
     onConnect,
