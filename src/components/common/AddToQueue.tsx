@@ -18,6 +18,7 @@ import useSocket from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
+
 function AddToQueue() {
   const { queue, roomId, listener, user, upVotes, setUpVotes } =
     useUserContext();
@@ -40,6 +41,9 @@ function AddToQueue() {
   const upVote = useCallback((song: searchResults) => {
     socket.emit("upVote", song);
   }, []);
+  const handleDelete = useCallback(() => {
+    socket.emit("deleteSong");
+  }, []);
   const handleUpVote = useDebounce(upVote, 400);
   return (
     <div className=" select-none backdrop-blur-lg  max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
@@ -61,8 +65,8 @@ function AddToQueue() {
           </Button> */}
         </div>
       </div>
-      <div className="h-full overflow-y-scroll">
-        <div className="  py-2 flex flex-col overflow-hidden overflow-y-scroll gap-4">
+      <div className="h-full z-50 overflow-y-scroll">
+        <div className=" py-2 flex flex-col overflow-y-scroll gap-4">
           {queue
             ?.filter((r) => r.id !== currentSong?.id)
             .map((song, i) => (
@@ -77,16 +81,20 @@ function AddToQueue() {
                       src={song.image[song.image.length - 1].url}
                     />
 
-                    <Trash className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Trash
+                      onClick={handleDelete}
+                      className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    />
                   </div>
                 </div>
-                <div className="flex z-10 flex-col flex-grow text-sm w-8/12">
+                <div className="flex  flex-col flex-grow text-sm w-7/12">
                   <p
-                    onClick={() => {
-                      socket.emit("nextSong", {
-                        nextSong: song,
-                        callback: true,
-                      });
+                    onClick={(e) => {
+                      e.stopPropagation(),
+                        socket.emit("nextSong", {
+                          nextSong: song,
+                          callback: true,
+                        });
                     }}
                     className=" cursor-pointer font-semibold truncate"
                   >
@@ -106,7 +114,8 @@ function AddToQueue() {
                       ) &&
                       "fill-yellow-500 text-yellow-500"
                     } cursor-pointer`}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleUpVote(song);
                       if (song.queueId) {
                         setUpVotes((prev) => {
@@ -121,18 +130,47 @@ function AddToQueue() {
                           }
 
                           // Return previous state if the song is already voted or queueId is invalid
-                          return prev.filter((r) => r.queueId !== song.queueId);
+                          return prev.filter(
+                            (r) => r?.queueId !== song?.queueId
+                          );
                         });
                       }
                     }}
                   />
-                  <div className="flex -mt-1 text-xs items-center">
-                    {/* <Avatar className="size-6 rounded-full">
-                      <AvatarImage
-                        src={song.image[song.image.length - 1].url}
-                      />
-                    </Avatar> */}
-                    {song?.voteCount || 0}
+                  <div className="flex text-xs items-center">
+                    <div className=" flex items-center">
+                      {song.topVoters?.map((voter, i) => (
+                        <TooltipProvider key={voter._id}>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <div
+                                className={` ${i !== 0 && "-ml-2.5"} size-5`}
+                              >
+                                <Image
+                                  alt={voter.name}
+                                  height={200}
+                                  width={200}
+                                  className=" rounded-full"
+                                  src={voter.imageUrl}
+                                />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="mr-20 bg-[#9870d3] mb-1 text-white">
+                              <p>{voter.username}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                      {listener && listener?.totalUsers > 4 && (
+                        <div
+                          className={` -ml-2.5 px-2 py-1 text-xs bg-zinc-200 rounded-full`}
+                        >
+                          <div className=" rounded-full text-black">
+                            {listener?.totalUsers - 4}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

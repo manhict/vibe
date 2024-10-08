@@ -69,8 +69,8 @@ function Player() {
         </p>
       </div>
 
-      <div className="flex items-center w-full justify-center gap-2.5">
-        <div className=" flex items-center w-fit gap-2.5">
+      <div className="flex items-center w-full justify-center gap-2">
+        <div className=" flex items-center w-fit gap-2">
           <SkipBack
             onClick={playPrev}
             aria-label="play prev"

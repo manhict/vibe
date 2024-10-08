@@ -92,6 +92,8 @@ export default function useSocket() {
       "votes",
       async (data?: { votes: upvVotes[]; queue: searchResults[] }) => {
         if (data?.votes) {
+          console.log(data.votes);
+
           setUpVotes(data?.votes);
         }
         if (data?.queue) {

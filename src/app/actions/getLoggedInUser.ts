@@ -1,6 +1,8 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
+import Room from "@/models/roomModel";
+import RoomUser from "@/models/roomUsers";
 import User from "@/models/userModel";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
@@ -23,12 +25,22 @@ export async function getLoggedInUser() {
 
     await dbConnect();
 
-    const user = await User.findById(decoded.userId);
+    const [user, room] = await Promise.all([
+      User.findById(decoded.userId), // Fetch the user by ID
+      Room.findOne({ roomId }), // Fetch the room by roomId
+    ]);
+
+    const role = await RoomUser.findOne({
+      userId: decoded.userId,
+      roomId: room?._id,
+    }).select("role");
+
     return JSON.parse(
       JSON.stringify({
         ...user.toObject(),
         token: session.value,
         roomId: roomId,
+        role: role?.toObject()?.role,
       })
     );
   } catch (error: any) {
