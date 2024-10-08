@@ -48,7 +48,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     if (roomId && socket.disconnected && user) {
       socket.io.opts.extraHeaders = {
         Authorization: `${user.token}`,
-        Room: `${user.roomId}`,
+        Room: `${roomId}`,
       };
       socket.connect();
       socket.emit("addToQueue");
