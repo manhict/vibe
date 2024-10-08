@@ -37,29 +37,9 @@ function AddToQueue() {
       toast.error(error.message);
     }
   }, [roomId, user]);
-  const upVote = useCallback(
-    (song: searchResults) => {
-      socket.emit("upVote", song);
-
-      if (song.queueId) {
-        setUpVotes((prev) => {
-          // Check if the song is already in the upVotes array to avoid duplicates
-          const isAlreadyVoted = prev.some(
-            (upVote) => upVote.queueId === song.queueId
-          );
-
-          // If not already voted, add it to the state
-          if (!isAlreadyVoted && song.queueId) {
-            return [...prev, { queueId: song.queueId }];
-          }
-
-          // Return previous state if the song is already voted or queueId is invalid
-          return prev;
-        });
-      }
-    },
-    [setUpVotes]
-  );
+  const upVote = useCallback((song: searchResults) => {
+    socket.emit("upVote", song);
+  }, []);
   const handleUpVote = useDebounce(upVote, 400);
   return (
     <div className=" select-none max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
@@ -118,7 +98,25 @@ function AddToQueue() {
                       upVotes.find((r) => r.queueId == song.queueId) &&
                       "fill-yellow-500 text-yellow-500"
                     } cursor-pointer`}
-                    onClick={() => handleUpVote(song)}
+                    onClick={() => {
+                      handleUpVote(song);
+                      if (song.queueId) {
+                        setUpVotes((prev) => {
+                          // Check if the song is already in the upVotes array to avoid duplicates
+                          const isAlreadyVoted = prev.some(
+                            (upVote) => upVote.queueId === song.queueId
+                          );
+
+                          // If not already voted, add it to the state
+                          if (!isAlreadyVoted && song.queueId) {
+                            return [...prev, { queueId: song.queueId }];
+                          }
+
+                          // Return previous state if the song is already voted or queueId is invalid
+                          return prev;
+                        });
+                      }
+                    }}
                   />
                   <div className="flex text-xs items-center">
                     {/* <Avatar className="size-6 rounded-full">
