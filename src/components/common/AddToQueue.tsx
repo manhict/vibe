@@ -98,7 +98,9 @@ function AddToQueue() {
                     className={`${
                       song.queueId &&
                       upVotes.length > 0 &&
-                      upVotes.find((r) => r.queueId == song.queueId) &&
+                      upVotes.find(
+                        (r) => r.queueId?.toString() == song.queueId
+                      ) &&
                       "fill-yellow-500 text-yellow-500"
                     } cursor-pointer`}
                     onClick={() => {
