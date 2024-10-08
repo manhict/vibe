@@ -142,7 +142,7 @@ function AddToQueue() {
             {user &&
               listener?.roomUsers
                 ?.filter((r) => r.userId._id !== user._id)
-                ?.slice(0, 3)
+                ?.slice(0, 4)
                 ?.map((roomUser, i) => (
                   <TooltipProvider key={roomUser._id}>
                     <Tooltip>
