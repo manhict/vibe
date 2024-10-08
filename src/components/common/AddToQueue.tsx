@@ -136,29 +136,30 @@ function AddToQueue() {
           <p>Listening</p>
 
           <div className=" flex items-center">
-            {listener?.roomUsers
-              .filter((r) => r._id !== user?._id)
-              .slice(0, 3)
-              .map((roomUser, i) => (
-                <TooltipProvider key={roomUser._id}>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
-                        <Image
-                          alt={roomUser.userId.name}
-                          height={200}
-                          width={200}
-                          className=" rounded-full"
-                          src={roomUser.userId.imageUrl}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                      <p>{roomUser.userId.username}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
+            {user &&
+              listener?.roomUsers
+                ?.filter((r) => r._id !== user._id)
+                ?.slice(0, 3)
+                ?.map((roomUser, i) => (
+                  <TooltipProvider key={roomUser._id}>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
+                          <Image
+                            alt={roomUser.userId.name}
+                            height={200}
+                            width={200}
+                            className=" rounded-full"
+                            src={roomUser.userId.imageUrl}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                        <p>{roomUser.userId.username}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
           </div>
         </div>
         <Button
