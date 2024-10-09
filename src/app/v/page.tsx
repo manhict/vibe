@@ -24,7 +24,7 @@ export async function generateMetadata({
         await RoomUser.findOne({ roomId: roomId?._id, role: "admin" }).populate(
           "userId"
         )
-      ).userId;
+      )?.userId;
     }
   }
   if (!user) return {};
