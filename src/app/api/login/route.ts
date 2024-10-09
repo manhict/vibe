@@ -13,7 +13,12 @@ export async function POST(req: NextRequest) {
 
     const isAlready = await User.findOne({ email: data.email });
     if (isAlready) {
-      return proceed(isAlready);
+      const user = await User.findOneAndUpdate(
+        { email: data.email },
+        { imageUrl: data.photoURL },
+        { new: true }
+      );
+      return proceed(user);
     } else {
       const user = await User.create({
         username: data.email?.split("@gmail.com")[0],
