@@ -56,7 +56,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentProgress, setProgress] = useState<number>(0);
   const [currentDuration, setDuration] = useState<number>(0);
   const [currentVolume, setVolume] = useState<number>(1);
-  const { queue, isConnected, user } = useUserContext();
+  const { queue, isConnected } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
@@ -151,39 +151,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
-    if (user?.role !== "admin") return;
-    if (queue && queue.length > 0) {
-      const currentIndex = queue.findIndex(
-        (song) => song.id === currentSong?.id
-      );
-      const nextSong =
-        currentIndex !== -1 && currentIndex < queue.length - 1
-          ? queue[currentIndex + 1] // Play the next song
-          : queue[0]; // If at the end, loop to the first song
-      play(nextSong);
-      if (isConnected) {
-        socket.emit("nextSong", { nextSong });
-      }
+    if (isConnected) {
+      socket.emit("nextSong", { nextSong: currentSong });
     }
-  }, [currentSong?.id, play, queue, isConnected, user]);
+  }, [currentSong, isConnected]);
 
   // Play the previous song in the queue
   const playPrev = useCallback(() => {
-    if (user?.role !== "admin") return;
-    if (queue && queue.length > 0) {
-      const currentIndex = queue.findIndex(
-        (song) => song.id === currentSong?.id
-      );
-      const prevSong =
-        currentIndex > 0
-          ? queue[currentIndex - 1] // Play the previous song
-          : queue[queue.length - 1]; // If at the start, loop to the last song
-      play(prevSong);
-      if (isConnected) {
-        socket.emit("prevSong", { prevSong });
-      }
+    if (isConnected) {
+      socket.emit("prevSong", { prevSong: currentSong });
     }
-  }, [currentSong?.id, play, queue, isConnected, user]);
+  }, [currentSong, isConnected]);
 
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {
@@ -201,13 +179,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       });
       navigator.mediaSession.setActionHandler("play", handleBlock);
       navigator.mediaSession.setActionHandler("pause", handleBlock);
-      navigator.mediaSession.setActionHandler("previoustrack", handleBlock);
-      navigator.mediaSession.setActionHandler("nexttrack", handleBlock);
+      navigator.mediaSession.setActionHandler("previoustrack", playPrev);
+      navigator.mediaSession.setActionHandler("nexttrack", playNext);
       navigator.mediaSession.setActionHandler("seekto", handleBlock);
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
       navigator.mediaSession.setActionHandler("seekforward", handleBlock);
     }
-  }, [currentSong]);
+  }, [currentSong, playNext, playPrev]);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);

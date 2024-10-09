@@ -17,7 +17,7 @@ export interface searchResults {
   downloadUrl: downloadUrl[];
   addedBy?: string;
   queueId?: string;
-  voteCount?: number;
+  voteCount: number;
   topVoters?: TUser[];
 }
 export interface downloadUrl {

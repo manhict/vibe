@@ -14,8 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import Image from "next/image";
 import { socket } from "@/app/socket";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 function SearchSongPopup() {
   const [songs, setSongs] = useState<searchSongResult | null>(null);
@@ -33,9 +33,11 @@ function SearchSongPopup() {
       return;
     }
 
+    const url = `${process.env.BACKEND_URI}/api/search/songs?query=${value}&page=0`;
+
     setPage(0); // Reset page on a new search
     setLoading(true);
-    const res = await api.get(`/api/search/${value}`);
+    const res = await api.get(url);
     if (res.success) {
       setSongs(res.data as searchSongResult);
     }
@@ -49,7 +51,11 @@ function SearchSongPopup() {
       return;
 
     setLoading(true);
-    const res = await api.get(`/api/search/${query}?page=${page + 1}`);
+    const url = `${
+      process.env.BACKEND_URI
+    }/api/search/songs?query=${query}&page=${page + 1}`;
+
+    const res = await api.get(url);
     if (res.success) {
       setSongs((prevSongs) => ({
         ...prevSongs!,
@@ -120,14 +126,18 @@ function SearchSongPopup() {
                       i != songs.data.results.length - 1 && "border-b"
                     }  border-[#1D192B] p-2.5 items-center`}
                   >
-                    <div className="size-14 rounded-none">
-                      <Image
+                    <Avatar className=" h-14 w-14 rounded-none">
+                      <AvatarImage
                         alt={song?.name}
                         height={500}
                         width={500}
-                        src={song.image[song.image.length - 1].url}
+                        className=" h-fll w-full"
+                        src={
+                          song?.image[song?.image?.length - 1]?.url ||
+                          "/cache.jpg"
+                        }
                       />
-                    </div>
+                    </Avatar>
                     <div className="text-sm font-medium w-full">
                       <p className="font-semibold truncate w-10/12">
                         {song.name}

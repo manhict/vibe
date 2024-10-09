@@ -18,6 +18,7 @@ import useSocket from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 function AddToQueue() {
   const { queue, roomId, listener, user, upVotes, setUpVotes } =
@@ -112,7 +113,8 @@ function AddToQueue() {
                 <div className=" flex flex-col items-center gap-2">
                   <Heart
                     className={`${
-                      upVotes.find((r) => r.queueId == song.queueId)
+                      upVotes.filter((r) => r.queueId == song.queueId).length >
+                      0
                         ? "fill-yellow-500 text-yellow-500"
                         : ""
                     } cursor-pointer`}
@@ -142,34 +144,40 @@ function AddToQueue() {
                   <div className="flex text-xs items-center">
                     <div className=" flex items-center">
                       {song.topVoters?.map((voter, i) => (
-                        <TooltipProvider key={voter._id}>
+                        <TooltipProvider key={voter?._id}>
                           <Tooltip>
                             <TooltipTrigger>
                               <div
-                                className={` ${i !== 0 && "-ml-2.5"} size-5`}
+                                className={` ${i !== 0 && "-ml-2.5"} size-6`}
                               >
-                                <Image
-                                  alt={voter.name}
-                                  height={200}
-                                  width={200}
-                                  className=" rounded-full"
-                                  src={voter.imageUrl}
-                                />
+                                <Avatar className=" size-6">
+                                  <AvatarImage
+                                    alt={voter?.name}
+                                    height={200}
+                                    width={200}
+                                    className=" rounded-full"
+                                    src={voter?.imageUrl}
+                                  />
+                                </Avatar>
                               </div>
                             </TooltipTrigger>
-                            <TooltipContent className="mr-20 bg-[#9870d3] mb-1 text-white">
-                              <p>{voter.username}</p>
+                            <TooltipContent className="mr-44 bg-[#9870d3] mb-1 text-white">
+                              <p>
+                                {voter?.username} ({voter?.name})
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       ))}
                       {song.voteCount && song.voteCount > 4 && (
                         <div
-                          className={` -ml-2.5 px-1.5 py-0.5 text-xs bg-zinc-200 rounded-full`}
+                          className={` -ml-4 px-2 py-1 text-[9px] rounded-full`}
                         >
-                          <div className=" rounded-full text-black">
-                            {song?.voteCount - 4}
-                          </div>
+                          <Avatar className=" size-6 border-white border">
+                            <AvatarFallback>
+                              +{song?.voteCount - 4}
+                            </AvatarFallback>
+                          </Avatar>
                         </div>
                       )}
                     </div>
@@ -186,34 +194,41 @@ function AddToQueue() {
           <div className=" flex items-center">
             {user &&
               listener?.roomUsers
-                ?.filter((r) => r.userId._id !== user._id)
+                ?.filter((r) => r.userId?._id !== user?._id)
                 ?.map((roomUser, i) => (
-                  <TooltipProvider key={roomUser._id}>
+                  <TooltipProvider key={roomUser?._id}>
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
-                          <Image
-                            alt={roomUser.userId.name}
-                            height={200}
-                            width={200}
-                            className=" rounded-full"
-                            src={roomUser.userId.imageUrl}
-                          />
+                        <div className={` ${i !== 0 && "-ml-2"} size-6`}>
+                          <Avatar className=" size-6">
+                            <AvatarImage
+                              alt={roomUser?.userId?.name}
+                              height={200}
+                              width={200}
+                              className=" rounded-full"
+                              src={roomUser?.userId?.imageUrl}
+                            />
+                          </Avatar>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                        <p>{roomUser.userId.username}</p>
+                        <p>
+                          {roomUser?.userId?.username} ({roomUser?.userId?.name}
+                          )
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 ))}
             {listener && listener?.totalUsers > 4 && (
-              <div
-                className={` -ml-2.5 px-2 py-1 text-xs bg-zinc-200 rounded-full`}
-              >
-                <div className=" rounded-full text-black">
-                  {listener?.totalUsers - 4}
-                </div>
+              <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
+                <Avatar className=" size-6 border-white border">
+                  <AvatarFallback>
+                    {" "}
+                    +
+                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 4}
+                  </AvatarFallback>
+                </Avatar>
               </div>
             )}
           </div>

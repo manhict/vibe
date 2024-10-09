@@ -10,19 +10,20 @@ export async function POST(req: NextRequest) {
   try {
     const data: userType = await req.json();
     await dbConnect();
+    console.log(data);
 
     const isAlready = await User.findOne({ email: data.email });
     if (isAlready) {
       const user = await User.findOneAndUpdate(
         { email: data.email },
-        { imageUrl: data.photoURL, name: data.displayName },
+        { imageUrl: data.photoURL, name: data.providerData[0].displayName },
         { new: true }
       );
       return proceed(user);
     } else {
       const user = await User.create({
         username: data.email?.split("@gmail.com")[0],
-        name: data.displayName,
+        name: data.providerData[0].displayName,
         email: data.email,
         imageUrl: data.photoURL,
       });

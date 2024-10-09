@@ -16,6 +16,13 @@ import React, { useEffect, useState } from "react";
 import VolumeControl from "./VolumeControl";
 import { useUserContext } from "@/app/store/userStore";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 function Player() {
   const { user } = useUserContext();
   const {
@@ -69,7 +76,7 @@ function Player() {
         </p>
       </div>
 
-      <div className="flex items-center w-full justify-center gap-2">
+      <div className="flex items-center w-full justify-center gap-4">
         <div className=" flex items-center w-fit gap-2">
           <SkipBack
             onClick={playPrev}
@@ -96,7 +103,7 @@ function Player() {
             } cursor-pointer size-5`}
           />
         </div>
-        <div className="text-sm gap-1.5 w-[30%] items-center flex">
+        <div className="text-sm cursor-pointer gap-1.5 w-[30%] items-center flex">
           {volume == 0 ? (
             <VolumeX onClick={() => setVolume(0.5)} className=" size-6" />
           ) : volume < 0.5 ? (
@@ -124,6 +131,45 @@ function Player() {
         <Repeat className=" size-5" />
         {/* <Shuffle className=" size-5" /> */}
         <MessageSquare className=" size-5" />
+      </div>
+      <div className=" w-full flex gap-2 min-h-5 items-center justify-center">
+        {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
+          <p>Requested by</p>
+        )}
+        <div className=" flex items-center justify-center">
+          {currentSong?.topVoters?.map((voter, i) => (
+            <TooltipProvider key={voter._id}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className={` ${i !== 0 && "-ml-2"} size-5`}>
+                    <Avatar className=" size-6">
+                      <AvatarImage
+                        alt={voter?.name}
+                        height={200}
+                        width={200}
+                        className=" rounded-full"
+                        src={voter?.imageUrl}
+                      />
+                    </Avatar>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="mr-20 bg-[#9870d3] mb-1 text-white">
+                  <p>
+                    {voter?.username} ({voter?.name})
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ))}
+
+          {currentSong && currentSong.voteCount > 4 && (
+            <div className={` -ml-4 px-2 py-1 text-[9px] rounded-full`}>
+              <Avatar className=" size-6 border-white border">
+                <AvatarFallback>+{currentSong?.voteCount - 4}</AvatarFallback>
+              </Avatar>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
