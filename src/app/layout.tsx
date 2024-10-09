@@ -36,14 +36,14 @@ export default function RootLayout({
       >
         <noscript
           dangerouslySetInnerHTML={{
-            __html: (
+            __html: `
               <iframe
                 src="https://www.googletagmanager.com/ns.html?id=GTM-KS6FPVS3"
                 height="0"
                 width="0"
-                style={{ display: "none", visibility: "hidden" }}
+                style="display:none;visibility:hidden"
               ></iframe>
-            ),
+            `,
           }}
         />
         <Suspense>
