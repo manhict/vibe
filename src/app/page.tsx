@@ -4,7 +4,14 @@ import { InstagramLogo } from "@phosphor-icons/react/InstagramLogo";
 import { XLogo } from "@phosphor-icons/react/XLogo";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { socket } from "./socket";
 function Page() {
+  useEffect(() => {
+    if (socket.connected) {
+      socket.disconnect();
+    }
+  }, []);
   return (
     <div className=" h-dvh w-dvw bg-[url('/background.png')] bg-cover">
       <div className="  w-full h-[90dvh] flex justify-center items-center">
