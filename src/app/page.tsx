@@ -12,6 +12,7 @@ function Page() {
       socket.disconnect();
     }
   }, []);
+
   return (
     <div className=" h-dvh w-dvw bg-[url('/background.png')] bg-cover">
       <div className="  w-full h-[90dvh] flex justify-center items-center">
@@ -28,9 +29,7 @@ function Page() {
               Delightful <br />
               Music Parties
             </p>
-            <p className=" -mt-2 text-7xl bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-              Start Here.
-            </p>
+            <p className=" -mt-4 text-7xl text-with-image">Start Here.</p>
             <span className="ml-1 font-normal text-lg leading-tight my-2.5 mb-1">
               High quality music, invite friends
               <br />& host a memorable event today.

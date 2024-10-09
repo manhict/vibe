@@ -11,7 +11,6 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { toast } from "sonner";
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
 
@@ -106,8 +105,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     } else {
       if (currentSong) {
         resume();
-      } else {
-        toast.warning("No song is currently selected.");
       }
     }
   }, [isPlaying, currentSong, pause, resume]);
