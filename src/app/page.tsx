@@ -15,7 +15,7 @@ function Page() {
 
   return (
     <div className=" h-dvh w-dvw bg-[url('/background.png')] bg-cover">
-      <div className="  w-full h-[90dvh] flex justify-center items-center">
+      <div className="  w-full h-[87dvh] flex justify-center items-center">
         <div className=" w-8/12">
           <div className=" w-1/2 flex font-semibold gap-4 flex-col">
             <Image
