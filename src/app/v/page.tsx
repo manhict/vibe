@@ -1,4 +1,5 @@
 import Home from "@/components/common/Home";
+import dbConnect from "@/lib/dbConnect";
 import Room from "@/models/roomModel";
 import RoomUser from "@/models/roomUsers";
 import User from "@/models/userModel";
@@ -10,6 +11,7 @@ type Props = {
 export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
+  await dbConnect();
   const room = searchParams["room"];
   const username = searchParams["ref"];
   let user = null;
