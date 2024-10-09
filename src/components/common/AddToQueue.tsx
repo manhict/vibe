@@ -112,12 +112,9 @@ function AddToQueue() {
                 <div className=" flex flex-col items-center gap-2">
                   <Heart
                     className={`${
-                      song.queueId &&
-                      upVotes.length > 0 &&
-                      upVotes.find(
-                        (r) => r.queueId?.toString() == song.queueId
-                      ) &&
-                      "fill-yellow-500 text-yellow-500"
+                      upVotes.find((r) => r.queueId == song.queueId)
+                        ? "fill-yellow-500 text-yellow-500"
+                        : ""
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
