@@ -60,10 +60,13 @@ export default function useSocket() {
       }
     );
 
-    currentSocket.on("songQueue", (data: searchResults[]) => {
-      if (data && data.length > 0) {
-        setQueue(data);
-      }
+    currentSocket.on("songQueue", () => {
+      socket.emit("getSongQueue");
+    });
+    currentSocket.on("queueList", (data) => {
+      console.log(data);
+
+      setQueue(data);
     });
     currentSocket.on(
       "songEnded",
@@ -75,9 +78,7 @@ export default function useSocket() {
         if (data?.play) {
           play(data.play);
         }
-        if (data?.queue) {
-          setQueue(data.queue);
-        }
+        socket.emit("getSongQueue");
         if (data?.votes) {
           setUpVotes(data?.votes);
         }

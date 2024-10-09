@@ -19,6 +19,7 @@ export interface searchResults {
   queueId?: string;
   voteCount: number;
   topVoters?: TUser[];
+  isVoted?: boolean;
 }
 export interface downloadUrl {
   quality: string;

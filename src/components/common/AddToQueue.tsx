@@ -21,8 +21,7 @@ import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 function AddToQueue() {
-  const { queue, roomId, listener, user, upVotes, setUpVotes } =
-    useUserContext();
+  const { queue, roomId, listener, user, setQueue } = useUserContext();
   const { currentSong } = useAudio();
   useSocket();
   const handleShare = useCallback(() => {
@@ -113,32 +112,29 @@ function AddToQueue() {
                 <div className=" flex flex-col items-center gap-2">
                   <Heart
                     className={`${
-                      upVotes.filter((r) => r.queueId == song.queueId).length >
-                      0
-                        ? "fill-yellow-500 text-yellow-500"
-                        : ""
+                      song?.isVoted ? "fill-yellow-500 text-yellow-500" : ""
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleUpVote(song);
-                      if (song.queueId) {
-                        setUpVotes((prev) => {
-                          // Check if the song is already in the upVotes array to avoid duplicates
-                          const isAlreadyVoted = prev.some(
-                            (upVote) => upVote.queueId === song.queueId
-                          );
 
-                          // If not already voted, add it to the state
-                          if (!isAlreadyVoted && song.queueId) {
-                            return [...prev, { queueId: song.queueId }];
-                          }
+                      setQueue((prev) => {
+                        const songExists = prev.find(
+                          (item) => item.id === song.id
+                        );
 
-                          // Return previous state if the song is already voted or queueId is invalid
-                          return prev.filter(
-                            (r) => r?.queueId !== song?.queueId
+                        if (songExists) {
+                          // If the song is already in the queue, update it
+                          return prev.map((item) =>
+                            item.id === song.id
+                              ? { ...item, isVoted: !item.isVoted } // Toggle isVoted
+                              : item
                           );
-                        });
-                      }
+                        } else {
+                          // If the song is not in the queue, add it with isVoted set to true
+                          return [...prev, { ...song, isVoted: true }];
+                        }
+                      });
                     }}
                   />
                   <div className="flex text-xs items-center">

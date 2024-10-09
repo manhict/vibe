@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { toast } from "sonner";
 function Player() {
   const { user } = useUserContext();
   const {
@@ -48,7 +49,8 @@ function Player() {
 
   const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = Number(event.target.value);
-    if (user?.role !== "admin") return;
+    if (user?.role !== "admin")
+      return toast.error("Only admin is allowed to seek");
     seek(newTime);
   };
 
