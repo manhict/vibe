@@ -109,9 +109,9 @@ function Player() {
           {volume == 0 ? (
             <VolumeX onClick={() => setVolume(0.5)} className=" size-6" />
           ) : volume < 0.5 ? (
-            <Volume1 className="size-6" />
+            <Volume1 onClick={() => setVolume(0)} className="size-6" />
           ) : (
-            <Volume2 className="size-6" />
+            <Volume2 onClick={() => setVolume(0)} className="size-6" />
           )}
 
           <VolumeControl />
