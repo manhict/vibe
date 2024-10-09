@@ -17,7 +17,7 @@ function Page() {
               height={80}
               width={80}
             />
-            <p className=" text-7xl">
+            <p className=" text-7xl -mt-2">
               Delightful <br />
               Music Parties
             </p>
