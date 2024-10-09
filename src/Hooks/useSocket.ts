@@ -3,7 +3,13 @@
 import { socket } from "@/app/socket";
 import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
-import { listener, searchResults, TUser, upvVotes } from "@/lib/types";
+import {
+  listener,
+  messages,
+  searchResults,
+  TUser,
+  upvVotes,
+} from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
@@ -11,7 +17,8 @@ import { toast } from "sonner";
 export default function useSocket() {
   const { isConnected, setIsConnected } = useUserContext();
   const [transport, setTransport] = useState("N/A");
-  const { setListener, setUser, setQueue, user, setUpVotes } = useUserContext();
+  const { setListener, setUser, setQueue, user, setUpVotes, setMessages } =
+    useUserContext();
   const { play, seek } = useAudio();
   const router = useRouter();
   const socketRef = useRef(socket);
@@ -64,10 +71,9 @@ export default function useSocket() {
       socket.emit("getSongQueue");
     });
     currentSocket.on("queueList", (data) => {
-      console.log(data);
-
       setQueue(data);
     });
+
     currentSocket.on(
       "songEnded",
       (data?: {
@@ -126,7 +132,9 @@ export default function useSocket() {
         }
       }
     );
-
+    currentSocket.on("message", (message: messages) => {
+      setMessages((prev) => [...prev, message]);
+    });
     currentSocket.on(
       "seek",
       (data: { seek: number; role: string; userId: string }) => {
@@ -134,7 +142,6 @@ export default function useSocket() {
         seek(data.seek);
       }
     );
-
     currentSocket.on("error", (message: string) => {
       toast.error(message, {
         style: { background: "#e94625" },
@@ -160,6 +167,8 @@ export default function useSocket() {
       currentSocket.off("seek");
       currentSocket.off("getVotes");
       currentSocket.off("votes");
+      currentSocket.off("queueList");
+      currentSocket.off("message");
     };
   }, [
     onConnect,
@@ -172,6 +181,7 @@ export default function useSocket() {
     seek,
     user?._id,
     setUpVotes,
+    setMessages,
   ]);
 
   return {

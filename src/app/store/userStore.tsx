@@ -1,5 +1,11 @@
 "use client";
-import { listener, searchResults, TUser, upvVotes } from "@/lib/types";
+import {
+  listener,
+  messages,
+  searchResults,
+  TUser,
+  upvVotes,
+} from "@/lib/types";
 import { generateRoomId, setCookie } from "@/utils/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, {
@@ -26,6 +32,8 @@ interface UserContextType {
   listener: listener | null;
   upVotes: upvVotes[];
   setUpVotes: React.Dispatch<SetStateAction<upvVotes[]>>;
+  messages: messages[];
+  setMessages: React.Dispatch<SetStateAction<messages[]>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -36,6 +44,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
   const [queue, setQueue] = React.useState<searchResults[]>([]);
+  const [messages, setMessages] = React.useState<messages[]>([]);
   const [upVotes, setUpVotes] = React.useState<upvVotes[]>([]);
   const [user, setUser] = React.useState<TUser | null>(null);
   const [listener, setListener] = React.useState<listener | null>(null);
@@ -79,6 +88,8 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         setListener,
         upVotes,
         setUpVotes,
+        messages,
+        setMessages,
       }}
     >
       {children}

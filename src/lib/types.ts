@@ -71,3 +71,8 @@ export interface queue {
 export interface upvVotes {
   queueId: string;
 }
+
+export interface messages {
+  user: TUser;
+  message: string;
+}

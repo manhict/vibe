@@ -6,12 +6,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { socket } from "./socket";
+import { useAudio } from "./store/AudioContext";
 function Page() {
+  const { pause } = useAudio();
   useEffect(() => {
     if (socket.connected) {
       socket.disconnect();
+      pause();
     }
-  }, []);
+  }, [pause]);
 
   return (
     <div className=" h-dvh w-dvw bg-[url('/background.png')] bg-cover">
