@@ -27,7 +27,7 @@ export async function generateMetadata({
       ).userId;
     }
   }
-
+  if (!user) return {};
   return {
     title: `${user?.name || "404"} Vibe`,
     description: `${user?.name || "404"}'s Inviting you to listen together`,
