@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 import { UserProvider } from "./store/userStore";
 import { AudioProvider } from "./store/AudioContext";
 import { Suspense } from "react";
-
+import { GoogleTagManager } from "@next/third-parties/google";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -30,9 +30,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <GoogleTagManager gtmId="GTM-KS6FPVS3" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: (
+              <iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-KS6FPVS3"
+                height="0"
+                width="0"
+                style={{ display: "none", visibility: "hidden" }}
+              ></iframe>
+            ),
+          }}
+        />
         <Suspense>
           <UserProvider>
             <AudioProvider>
