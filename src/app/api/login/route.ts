@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
         { imageUrl: data.photoURL, name: data.providerData[0].displayName },
         { new: true }
       );
-      return proceed(user);
+      return proceed(isAlready, user);
     } else {
       const user = await User.create({
         username: data.email?.split("@gmail.com")[0],
@@ -44,13 +44,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-const proceed = (saved: any) => {
+const proceed = (saved: any, user?: any) => {
   const accessToken = jwt.sign({ userId: saved._id }, jwt_secret, {
     expiresIn: "7d",
   });
 
   // Create a response and set the cookie
-  const response = NextResponse.json({ success: true, data: saved });
+  const response = NextResponse.json({ success: true, data: user || saved });
 
   response.cookies.set("vibeId", accessToken, {
     httpOnly: true,
