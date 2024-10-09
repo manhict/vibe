@@ -12,7 +12,7 @@ function Page() {
           <div className=" w-1/2 flex font-semibold gap-4 flex-col">
             <Image
               src={"/logo.svg"}
-              className=" ml-1"
+              className=" ml-1 size-20"
               alt="logo"
               height={80}
               width={80}
