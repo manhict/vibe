@@ -22,7 +22,7 @@ const nextConfig = {
     BACKEND_URI: process.env.BACKEND_URI,
     MONGODB_URL: process.env.MONGODB_URL,
     JWT_SECRET: process.env.JWT_SECRET,
-    SOCKET_URI: "http://89.116.20.44:8009",
+    SOCKET_URI: "https://vibe-backend-p1jh.onrender.com",
   },
 };
 
