@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     if (isAlready) {
       const user = await User.findOneAndUpdate(
         { email: data.email },
-        { imageUrl: data.photoURL },
+        { imageUrl: data.photoURL, name: data.displayName },
         { new: true }
       );
       return proceed(user);
