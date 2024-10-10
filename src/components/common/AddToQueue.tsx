@@ -12,8 +12,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import Image from "next/image";
-
 import useSocket from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
@@ -77,20 +75,20 @@ function AddToQueue() {
             .map((song, i) => (
               <div key={i} className=" flex gap-2 items-center justify-between">
                 <div className="relative">
-                  <div className="size-12 relative group">
-                    <Image
+                  <Avatar className="size-12 rounded-md relative group">
+                    <AvatarImage
                       alt={song.name}
                       height={500}
                       width={500}
                       className="rounded-md group-hover:opacity-40 transition-all duration-500"
                       src={song.image[song.image.length - 1].url}
                     />
-
+                    <AvatarFallback>SX</AvatarFallback>
                     <Trash
                       onClick={() => handleDelete(song)}
                       className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     />
-                  </div>
+                  </Avatar>
                 </div>
                 <div className="flex  flex-col flex-grow text-sm w-7/12">
                   <p
@@ -137,16 +135,16 @@ function AddToQueue() {
                       });
                     }}
                   />
-                  <div className="flex text-xs items-center">
+                  <div className="flex -mt-1.5 text-xs items-center">
                     <div className=" flex items-center">
-                      {song.topVoters?.map((voter, i) => (
+                      {song.topVoters?.slice(0, 2).map((voter, i) => (
                         <TooltipProvider key={voter?._id}>
                           <Tooltip>
                             <TooltipTrigger>
                               <div
                                 className={` ${i !== 0 && "-ml-2.5"} size-6`}
                               >
-                                <Avatar className=" size-6">
+                                <Avatar className=" size-6 border border-white">
                                   <AvatarImage
                                     alt={voter?.name}
                                     height={200}
@@ -154,6 +152,7 @@ function AddToQueue() {
                                     className=" rounded-full"
                                     src={voter?.imageUrl}
                                   />
+                                  <AvatarFallback>SX</AvatarFallback>
                                 </Avatar>
                               </div>
                             </TooltipTrigger>
@@ -165,13 +164,13 @@ function AddToQueue() {
                           </Tooltip>
                         </TooltipProvider>
                       ))}
-                      {song.voteCount && song.voteCount > 4 && (
+                      {song.voteCount && song.voteCount > 2 && (
                         <div
                           className={` -ml-4 px-2 py-1 text-[9px] rounded-full`}
                         >
                           <Avatar className=" size-6 border-white border">
                             <AvatarFallback>
-                              +{song?.voteCount - 4}
+                              +{song?.voteCount - 2}
                             </AvatarFallback>
                           </Avatar>
                         </div>
@@ -196,7 +195,7 @@ function AddToQueue() {
                     <Tooltip>
                       <TooltipTrigger>
                         <div className={` ${i !== 0 && "-ml-2"} size-6`}>
-                          <Avatar className=" size-6">
+                          <Avatar className=" size-6 border border-white">
                             <AvatarImage
                               alt={roomUser?.userId?.name}
                               height={200}
@@ -204,6 +203,7 @@ function AddToQueue() {
                               className=" rounded-full"
                               src={roomUser?.userId?.imageUrl}
                             />
+                            <AvatarFallback>SX</AvatarFallback>
                           </Avatar>
                         </div>
                       </TooltipTrigger>
@@ -216,13 +216,13 @@ function AddToQueue() {
                     </Tooltip>
                   </TooltipProvider>
                 ))}
-            {listener && listener?.totalUsers > 4 && (
+            {listener && listener?.totalUsers > 5 && (
               <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
                 <Avatar className=" size-6 border-white border">
                   <AvatarFallback>
                     {" "}
                     +
-                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 4}
+                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
                   </AvatarFallback>
                 </Avatar>
               </div>

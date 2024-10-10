@@ -37,3 +37,7 @@ export function generateRoomId(length = 8) {
 export const setCookie = (name: string, value: string) => {
   document.cookie = `${name}=${value};path=/`;
 };
+
+export const isImageUrl = (url: string): boolean => {
+  return /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+};

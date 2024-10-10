@@ -95,17 +95,11 @@ export default function useSocket() {
       socket.emit("upVote");
     });
 
-    currentSocket.on(
-      "votes",
-      async (data?: { votes: upvVotes[]; queue: searchResults[] }) => {
-        if (data?.votes) {
-          setUpVotes(data?.votes);
-        }
-        if (data?.queue) {
-          setQueue(data?.queue);
-        }
+    currentSocket.on("votes", async (data?: { queue: searchResults[] }) => {
+      if (data?.queue) {
+        setQueue(data?.queue);
       }
-    );
+    });
 
     currentSocket.on(
       "userJoinedRoom",

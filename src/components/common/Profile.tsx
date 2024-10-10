@@ -12,13 +12,18 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
+import { toast } from "sonner";
 function Profile({ user }: { user: TUser }) {
-  const { setUser } = useUserContext();
+  const { setUser, roomId } = useUserContext();
 
   useEffect(() => {
     setUser(user);
   }, [user, setUser]);
-
+  useEffect(() => {
+    if (!user && roomId) {
+      toast.warning("Login to join room " + roomId);
+    }
+  }, [user, roomId]);
   if (!user) {
     return <Login />;
   }
