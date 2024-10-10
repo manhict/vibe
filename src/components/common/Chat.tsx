@@ -175,7 +175,7 @@ function Chat({
                       <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
                         {message.user?.name}
                       </p>
-                      <p className=" w-fit text-nowrap overflow-scroll  max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
+                      <p className=" w-fit  max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
                         {message.message}
                       </p>
                     </div>

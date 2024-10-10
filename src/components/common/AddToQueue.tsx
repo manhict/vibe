@@ -107,7 +107,7 @@ function AddToQueue() {
                     {formatArtistName(song.artists.primary)}
                   </span>
                 </div>
-                <div className=" flex flex-col items-center gap-2">
+                <div className=" flex flex-col self-end items-center gap-2">
                   <Heart
                     className={`${
                       song?.isVoted ? "fill-yellow-500 text-yellow-500" : ""
