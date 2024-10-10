@@ -16,8 +16,11 @@ import {
 } from "./ui/dialog";
 import { socket } from "@/app/socket";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { useUserContext } from "@/app/store/userStore";
+import { toast } from "sonner";
 
 function SearchSongPopup() {
+  const { user } = useUserContext();
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -78,9 +81,15 @@ function SearchSongPopup() {
     }
   }, [inView, loading, searchMoreSongs]);
 
-  const handlePlay = useCallback(async (song: searchResults) => {
-    socket.emit("addToQueue", song);
-  }, []);
+  const handlePlay = useCallback(
+    async (song: searchResults) => {
+      if (!user) {
+        toast.warning("Login to play");
+      }
+      socket.emit("addToQueue", song);
+    },
+    [user]
+  );
 
   return (
     <Dialog key={"songs"}>
