@@ -10,7 +10,6 @@ import {
   TUser,
   upvVotes,
 } from "@/lib/types";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
@@ -20,16 +19,12 @@ export default function useSocket() {
   const { setListener, setUser, setQueue, user, setUpVotes, setMessages } =
     useUserContext();
   const { play, seek } = useAudio();
-  const router = useRouter();
   const socketRef = useRef(socket);
 
-  const onConnect = useCallback(async () => {
-    try {
-      setIsConnected(true);
-      setTransport(socketRef.current.io.engine.transport.name);
-    } catch (error) {
-      toast.error("Failed to connect");
-    }
+  // Memoized connect and disconnect functions
+  const onConnect = useCallback(() => {
+    setIsConnected(true);
+    setTransport(socketRef.current.io.engine.transport.name);
 
     socketRef.current.io.engine.on("upgrade", (transport) => {
       setTransport(transport.name);
@@ -41,140 +36,117 @@ export default function useSocket() {
     setTransport("N/A");
   }, [setIsConnected]);
 
+  const handleJoinedRoom = useCallback(
+    ({ user, listeners }: { user: TUser; listeners: listener }) => {
+      toast.dismiss("joining");
+      toast.message("Joined successfully");
+
+      if (user) setUser((prev) => ({ ...prev, ...user }));
+      if (listeners) setListener(listeners);
+    },
+    [setUser, setListener]
+  );
+
+  const handleUserJoinedRoom = useCallback(
+    ({ user, listeners }: { user: TUser; listeners: listener }) => {
+      if (user) toast(`${user.username} has joined`);
+      if (listeners) setListener(listeners);
+    },
+    [setListener]
+  );
+
+  const handleUserLeftRoom = useCallback(
+    ({ user, listeners }: { user: TUser; listeners: listener }) => {
+      if (user)
+        toast(`${user.username} left`, {
+          style: { backgroundColor: "#e94225" },
+        });
+      if (listeners) setListener(listeners);
+    },
+    [setListener]
+  );
+
+  const handleSongEnded = useCallback(
+    (data?: {
+      play?: searchResults;
+      queue?: searchResults[];
+      votes?: upvVotes[];
+    }) => {
+      if (data?.play) play(data.play);
+      socket.emit("getSongQueue");
+
+      if (data?.votes) setUpVotes(data.votes);
+    },
+    [play, setUpVotes]
+  );
+
+  const handleSeek = useCallback(
+    (data: { seek: number; role: string; userId: string }) => {
+      if (data.role === "admin" && data.userId === user?._id) return;
+      seek(data.seek);
+    },
+    [seek, user?._id]
+  );
+
+  // Centralized event listeners setup and cleanup
   useEffect(() => {
     const currentSocket = socketRef.current;
 
-    const handleNextSong = (nextSong: searchResults) => play(nextSong);
-    const handlePrevSong = (prevSong: searchResults) => play(prevSong);
-
     currentSocket.on("connect", onConnect);
     currentSocket.on("disconnect", onDisconnect);
+    currentSocket.on("nextSong", play);
+    currentSocket.on("prevSong", play);
+    currentSocket.on("joinedRoom", handleJoinedRoom);
+    currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
+    currentSocket.on("userLeftRoom", handleUserLeftRoom);
+    currentSocket.on("songEnded", handleSongEnded);
+    currentSocket.on("seek", handleSeek);
 
-    currentSocket.on("nextSong", handleNextSong);
-    currentSocket.on("prevSong", handlePrevSong);
-
-    currentSocket.on(
-      "joinedRoom",
-      ({ user, listeners }: { user: TUser; listeners: listener }) => {
-        toast.dismiss("joining");
-        toast.message(`Joined successfully`);
-        if (user) {
-          setUser((prev) => ({ ...prev, ...user }));
-        }
-        if (listeners) {
-          setListener(listeners);
-        }
-      }
+    currentSocket.on("songQueue", () => socket.emit("getSongQueue"));
+    currentSocket.on("queueList", setQueue);
+    currentSocket.on("votes", (data) => data?.queue && setQueue(data.queue));
+    currentSocket.on("getVotes", () => socket.emit("upVote"));
+    currentSocket.on("message", (message: messages) =>
+      setMessages((prev) => [...prev, message])
     );
 
-    currentSocket.on("songQueue", () => {
-      socket.emit("getSongQueue");
-    });
-    currentSocket.on("queueList", (data) => {
-      setQueue(data);
-    });
-
-    currentSocket.on(
-      "songEnded",
-      (data?: {
-        play?: searchResults;
-        queue?: searchResults[];
-        votes?: upvVotes[];
-      }) => {
-        if (data?.play) {
-          play(data.play);
-        }
-        socket.emit("getSongQueue");
-        if (data?.votes) {
-          setUpVotes(data?.votes);
-        }
-      }
-    );
-
-    currentSocket.on("getVotes", () => {
-      socket.emit("upVote");
-    });
-
-    currentSocket.on("votes", async (data?: { queue: searchResults[] }) => {
-      if (data?.queue) {
-        setQueue(data?.queue);
-      }
-    });
-
-    currentSocket.on(
-      "userJoinedRoom",
-      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
-        if (user) {
-          toast(`${user?.username} has joined`);
-        }
-        if (listeners) {
-          setListener(listeners);
-        }
-      }
-    );
-
-    currentSocket.on(
-      "userLeftRoom",
-      async ({ user, listeners }: { user: TUser; listeners: listener }) => {
-        if (user) {
-          toast(`${user.username} left `, {
-            style: { backgroundColor: "#e94225" },
-          });
-        }
-        if (listeners) {
-          setListener(listeners);
-        }
-      }
-    );
-    currentSocket.on("message", (message: messages) => {
-      setMessages((prev) => [...prev, message]);
-    });
-    currentSocket.on(
-      "seek",
-      (data: { seek: number; role: string; userId: string }) => {
-        if (data.role == "admin" && data.userId == user?._id) return;
-        seek(data.seek);
-      }
-    );
     currentSocket.on("error", (message: string) => {
-      toast.error(message, {
-        style: { background: "#e94625" },
-      });
+      toast.error(message, { style: { background: "#e94625" } });
     });
     currentSocket.on("connect_error", (error: any) => {
       toast.error(error?.message || "Something went wrong", {
         style: { background: "#e94625" },
       });
     });
+
     return () => {
-      currentSocket.off("connect_error");
       currentSocket.off("connect", onConnect);
       currentSocket.off("disconnect", onDisconnect);
-      currentSocket.off("nextSong", handleNextSong);
-      currentSocket.off("prevSong", handlePrevSong);
-      currentSocket.off("joinedRoom");
-      currentSocket.off("userJoinedRoom");
-      currentSocket.off("error");
+      currentSocket.off("nextSong", play);
+      currentSocket.off("prevSong", play);
+      currentSocket.off("joinedRoom", handleJoinedRoom);
+      currentSocket.off("userJoinedRoom", handleUserJoinedRoom);
+      currentSocket.off("userLeftRoom", handleUserLeftRoom);
+      currentSocket.off("songEnded", handleSongEnded);
+      currentSocket.off("seek", handleSeek);
       currentSocket.off("songQueue");
-      currentSocket.off("userLeftRoom");
-      currentSocket.off("update");
-      currentSocket.off("seek");
-      currentSocket.off("getVotes");
-      currentSocket.off("votes");
       currentSocket.off("queueList");
+      currentSocket.off("votes");
+      currentSocket.off("getVotes");
       currentSocket.off("message");
+      currentSocket.off("error");
+      currentSocket.off("connect_error");
     };
   }, [
     onConnect,
     onDisconnect,
     play,
-    router,
-    setUser,
-    setListener,
+    handleJoinedRoom,
+    handleUserJoinedRoom,
+    handleUserLeftRoom,
+    handleSongEnded,
+    handleSeek,
     setQueue,
-    seek,
-    user?._id,
-    setUpVotes,
     setMessages,
   ]);
 

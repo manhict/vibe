@@ -29,7 +29,7 @@ export async function generateMetadata({
   }
   if (!user) return {};
   return {
-    title: `${user?.name || "404"} Vibe`,
+    title: `Vibe x ${user?.name || "404"} `,
     description: `${user?.name || "404"}'s Inviting you to listen together`,
     icons: [
       {

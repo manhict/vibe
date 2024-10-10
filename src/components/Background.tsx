@@ -1,8 +1,10 @@
 "use client";
 import { useAudio } from "@/app/store/AudioContext";
+import useSocket from "@/Hooks/useSocket";
 import React from "react";
 
 function Background() {
+  useSocket();
   const { currentSong } = useAudio();
   return (
     <div

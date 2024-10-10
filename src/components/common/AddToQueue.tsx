@@ -12,7 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import useSocket from "@/Hooks/useSocket";
+
 import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
@@ -21,7 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 function AddToQueue() {
   const { queue, roomId, listener, user, setQueue } = useUserContext();
   const { currentSong } = useAudio();
-  useSocket();
+
   const handleShare = useCallback(() => {
     if (!user) return;
     try {
