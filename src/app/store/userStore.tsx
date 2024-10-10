@@ -61,12 +61,14 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         Authorization: `${user.token}`,
         Room: `${roomId}`,
       };
-      socket.connect();
-      socket.emit("getSongQueue");
-      toast.loading(`Joining room ${roomId}`, {
-        id: "joining",
-        duration: Infinity,
-      });
+      if (socket.disconnected) {
+        socket.connect();
+        socket.emit("getSongQueue");
+        toast.loading(`Joining room ${roomId}`, {
+          id: "joining",
+          duration: Infinity,
+        });
+      }
     }
   }, [roomId, router, user, path]);
 
