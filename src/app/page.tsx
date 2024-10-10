@@ -40,7 +40,9 @@ function Page() {
               <br />& host a memorable event today.
             </span>
             <Link href={"/v"}>
-              <Button className=" w-fit ml-1 ">Start Vibing</Button>
+              <Button size={"lg"} className="text-lg w-fit ml-1 ">
+                Start Vibing
+              </Button>
             </Link>
           </div>
         </div>
