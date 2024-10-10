@@ -29,7 +29,7 @@ function Login() {
         <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
       </DialogTrigger>
       <DialogContent className="w-fit flex items-center justify-center bg-transparent border-none">
-        <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500 rounded-2xl shadow-md">
+        <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500/70 rounded-2xl shadow-md">
           <div>
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
             <p className=" text-zinc-400 text-xl">
