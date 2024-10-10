@@ -19,8 +19,8 @@ function Page() {
   return (
     <div className=" h-dvh w-dvw bg-[url('/background.png')] bg-cover">
       <div className="  w-full h-[87dvh] flex justify-center items-center">
-        <div className=" w-8/12">
-          <div className=" w-1/2 flex font-semibold gap-4 flex-col">
+        <div className=" w-8/12 max-md:w-full max-md:px-5">
+          <div className=" w-1/2 max-md:text-center  max-md:w-full flex font-semibold gap-4 flex-col max-md:justify-center max-md:items-center">
             <Image
               src={"/logo.svg"}
               className=" ml-1 size-20"
@@ -28,11 +28,13 @@ function Page() {
               height={80}
               width={80}
             />
-            <p className=" text-7xl -mt-2">
+            <p className=" text-7xl max-md:text-5xl -mt-2">
               Delightful <br />
               Music Parties
             </p>
-            <p className=" -mt-4 text-7xl text-with-image">Start Here.</p>
+            <p className=" -mt-4 text-7xl max-md:text-5xl   text-with-image">
+              Start Here.
+            </p>
             <span className="ml-1 font-normal text-lg leading-tight my-2.5 mb-1">
               High quality music, invite friends
               <br />& host a memorable event today.
@@ -44,7 +46,7 @@ function Page() {
         </div>
       </div>
       <footer className="  absolute bottom-7 w-full flex justify-center items-center">
-        <div className=" w-9/12 border-t py-4 px-7 text-sm flex justify-between items-center border-white/20">
+        <div className=" w-9/12  max-md:w-full max-md:px-5 border-t py-4 px-7 text-sm flex justify-between items-center border-white/20">
           <p className=" text-white/70">
             Built by{" "}
             <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
