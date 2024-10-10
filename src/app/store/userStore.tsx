@@ -56,7 +56,9 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     if (!path.startsWith("/v")) return;
     router.push(`/v?room=${roomId}`);
     setCookie("room", roomId);
-
+    if (!user && roomId) {
+      toast.warning("Login to join room");
+    }
     if (roomId && socket.disconnected && user) {
       socket.io.opts.extraHeaders = {
         Authorization: `${user.token}`,
