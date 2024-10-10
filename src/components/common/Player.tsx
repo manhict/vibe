@@ -83,7 +83,7 @@ function Player() {
   }, [messages]);
 
   return (
-    <div className=" relative max-md:rounded-none max-md:border-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+    <div className=" relative max-md:w-full max-md:rounded-none max-md:border-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
       <AnimatePresence>
         {isChatOpen && (
           <motion.div
@@ -120,7 +120,7 @@ function Player() {
                 alt={currentSong?.name || ""}
                 height={300}
                 width={300}
-                className=" h-full max-md:min-h-96 object-cover  w-full"
+                className=" h-full object-cover  w-full"
                 src={
                   currentSong?.image[currentSong.image.length - 1].url ||
                   "/cache.jpg"
