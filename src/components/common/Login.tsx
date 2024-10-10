@@ -7,7 +7,7 @@ import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { TUser } from "@/lib/types";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { LogIn } from "lucide-react";
 function Login() {
   const { setUser } = useUserContext();
   const handleLogin = () => {
@@ -26,7 +26,7 @@ function Login() {
     <Dialog key={"user Login"}>
       <DialogTrigger className=" border max-md:px-0 max-md:border-none border-[#79747E] h-full flex justify-center items-center px-5 rounded-xl text-base">
         <p className=" max-md:hidden">Login / SignUp</p>
-        <HamburgerMenuIcon className=" size-7 text-zinc-200 hidden max-md:block" />
+        <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
       </DialogTrigger>
       <DialogContent className="w-fit flex items-center justify-center bg-transparent border-none">
         <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500 rounded-2xl shadow-md">
