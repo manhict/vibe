@@ -83,7 +83,7 @@ function Player() {
   }, [messages]);
 
   return (
-    <div className=" relative select-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+    <div className=" relative max-md:rounded-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
       <AnimatePresence>
         {isChatOpen && (
           <motion.div

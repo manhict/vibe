@@ -84,7 +84,7 @@ function SearchSongPopup() {
 
   return (
     <Dialog key={"songs"}>
-      <DialogTrigger className="  w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
+      <DialogTrigger className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
         <Search />
         <input
           type="text"
@@ -94,7 +94,7 @@ function SearchSongPopup() {
         />
         <Star />
       </DialogTrigger>
-      <DialogContent className="w-[40%] border flex justify-center items-center  bg-transparent border-none">
+      <DialogContent className="w-[40%] max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
         <DialogTitle />
         <div className="w-full flex items-center justify-center">
           <div className="flex flex-col w-full overflow-hidden rounded-2xl">

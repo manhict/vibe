@@ -49,7 +49,7 @@ function AddToQueue() {
   }, []);
   const handleUpVote = useDebounce(upVote, 400);
   return (
-    <div className=" select-none backdrop-blur-lg  max-h-full border flex flex-col gap-2 border-[#49454F] w-[45%] rounded-xl p-4">
+    <div className=" select-none max-md:rounded-none max-md:border-t-0 backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
         <p className=" text-lg font-semibold">In Queue</p>
         <div className=" flex items-center">
