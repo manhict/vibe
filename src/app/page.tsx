@@ -64,20 +64,20 @@ function Page() {
               </Link>
             </span>
           </p>
-          <div className=" flex items-center text-white/70 gap-2">
+          <div className="flex text-xl items-center text-white/70 gap-2">
             <Link
               href="https://www.instagram.com/justcrazzyxd/"
               target="_blank"
             >
               <InstagramLogo
-                size={24}
+                // size={24}
                 className=" hover:text-white transition-all duration-500"
               />
             </Link>
 
             <Link href="https://twitter.com/tanmay11117" target="_blank">
               <XLogo
-                size={24}
+                // size={24}
                 className=" hover:text-white transition-all duration-500"
               />
             </Link>
