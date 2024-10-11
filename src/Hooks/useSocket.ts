@@ -106,9 +106,18 @@ export default function useSocket() {
     currentSocket.on("queueList", setQueue);
     currentSocket.on("votes", (data) => data?.queue && setQueue(data.queue));
     currentSocket.on("getVotes", () => socket.emit("upVote"));
-    currentSocket.on("message", (message: messages) =>
-      setMessages((prev) => [...prev, message])
-    );
+    currentSocket.on("message", (message: messages) => {
+      setMessages((prev) => [...prev, message]);
+      const audio = new Audio(
+        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
+      );
+      if (document.hidden) {
+        audio.play();
+      } else {
+        audio.pause();
+        audio.currentTime = 0; // Reset the audio if needed
+      }
+    });
 
     currentSocket.on("error", (message: string) => {
       toast.error(message, { style: { background: "#e94625" } });

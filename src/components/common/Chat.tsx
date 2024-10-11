@@ -139,8 +139,7 @@ function Chat({
         <div className=" flex-grow gap-4 flex flex-col py-6 overflow-y-scroll">
           {user &&
             messages.map((message) => (
-              //@ts-expect-error:ex
-              <div ref={messagesEndRef} key={message.message}>
+              <div key={message.message}>
                 {message.user._id !== user?._id ? (
                   <div className=" flex gap-2">
                     <Avatar className="size-9">
@@ -231,6 +230,10 @@ function Chat({
                 )}
               </div>
             ))}
+          <div
+            //@ts-expect-error:ex
+            ref={messagesEndRef}
+          ></div>
         </div>
         <form onSubmit={sendMessage} className=" relative">
           <Input
