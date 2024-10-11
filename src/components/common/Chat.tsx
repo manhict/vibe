@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, isImageUrl } from "@/utils/utils";
+import Linkify from "linkify-react";
 import Link from "next/link";
 function Chat({
   messagesEndRef,
@@ -158,59 +159,63 @@ function Chat({
                       </p>
 
                       {isImageUrl(message?.message) ? (
-                        <img
-                          src={message?.message}
-                          alt="User sent image"
-                          className="w-fit max-w-7/12 rounded-lg rounded-tl-none"
-                        />
+                        <Link href={message?.message} target="_blank">
+                          <img
+                            src={message?.message}
+                            alt="User sent image"
+                            className="w-fit h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                          />
+                        </Link>
                       ) : (
-                        <>
-                          {message?.message.startsWith("http") ? (
-                            <Link
-                              href={message?.message}
-                              target="_blank"
-                              className="w-fit max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none"
-                            >
-                              {message?.message}
-                            </Link>
-                          ) : (
-                            <p className="w-fit max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
-                              {message?.message}
-                            </p>
-                          )}
-                        </>
+                        <Linkify
+                          as="p"
+                          options={{
+                            target: "_blank",
+
+                            render: {
+                              hashtag: renderLink,
+                              mention: renderLink,
+                            },
+                          }}
+                        >
+                          <p className="w-fit max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
+                            {message?.message}
+                          </p>
+                        </Linkify>
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className=" flex w-full self-end gap-2">
                     <div className=" w-full flex flex-col justify-end items-end">
-                      {isImageUrl(message?.message) ? (
-                        <img
-                          src={message?.message}
-                          alt="User sent image"
-                          className="w-fit max-w-7/12 self-end rounded-lg rounded-tl-none"
-                        />
-                      ) : (
-                        <>
-                          {message.message.startsWith("http") ? (
-                            <Link
-                              href={message?.message}
-                              target="_blank"
-                              className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12"
-                            >
-                              {message.user?.name}
-                            </Link>
-                          ) : (
-                            <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
-                              {message.user?.name}
-                            </p>
-                          )}
-                        </>
-                      )}
-                      <p className=" w-fit  max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
-                        {message?.message}
+                      <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
+                        {message.user?.name}
                       </p>
+                      {isImageUrl(message?.message) ? (
+                        <Link href={message?.message} target="_blank">
+                          <img
+                            src={message?.message}
+                            alt="User sent image"
+                            className="w-fit h-72 max-w-7/12 self-end rounded-lg rounded-tr-none"
+                          />
+                        </Link>
+                      ) : (
+                        <Linkify
+                          as="p"
+                          options={{
+                            target: "_blank",
+
+                            render: {
+                              hashtag: renderLink,
+                              mention: renderLink,
+                            },
+                          }}
+                        >
+                          <p className=" w-fit  text-end max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
+                            {message?.message}
+                          </p>
+                        </Linkify>
+                      )}
                     </div>
                     <Avatar className="size-9">
                       <AvatarImage
@@ -248,5 +253,15 @@ function Chat({
     </>
   );
 }
+
+//@ts-expect-error:ex
+const renderLink = ({ attributes, content }) => {
+  const { href, ...props } = attributes;
+  return (
+    <Link to={href} {...props}>
+      {content}
+    </Link>
+  );
+};
 
 export default Chat;

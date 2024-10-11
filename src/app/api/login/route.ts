@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
   try {
     const data: userType = await req.json();
     await dbConnect();
-    console.log(data);
-
     const isAlready = await User.findOne({ email: data.email });
     if (isAlready) {
       const user = await User.findOneAndUpdate(
