@@ -55,6 +55,9 @@ function Profile({ user }: { user: TUser }) {
                 }
               />
             </div>
+            <p className=" my-4">
+              {user?.name} ({user?.username})
+            </p>
             <Button
               onClick={async () => {
                 const res = await api.get("/api/logout");
@@ -62,7 +65,6 @@ function Profile({ user }: { user: TUser }) {
                   window.location.reload();
                 }
               }}
-              className=" mt-5"
             >
               Logout
             </Button>
