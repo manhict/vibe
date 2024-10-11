@@ -163,7 +163,7 @@ function Chat({
                           <img
                             src={message?.message}
                             alt="User sent image"
-                            className="w-fit h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                            className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
                           />
                         </Link>
                       ) : (
@@ -196,7 +196,7 @@ function Chat({
                           <img
                             src={message?.message}
                             alt="User sent image"
-                            className="w-fit h-72 max-w-7/12 self-end rounded-lg rounded-tr-none"
+                            className="w-fit max-h-72 max-w-7/12 self-end rounded-lg rounded-tr-none"
                           />
                         </Link>
                       ) : (
