@@ -139,6 +139,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const seek = useCallback((value: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = value;
+      socket.emit("seek", value);
     }
   }, []);
 
