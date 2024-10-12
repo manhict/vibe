@@ -41,3 +41,9 @@ export const setCookie = (name: string, value: string) => {
 export const isImageUrl = (url: string): boolean => {
   return /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)$/i.test(url);
 };
+
+export const linkifyOptions = {
+  target: "_blank",
+  nl2br: true,
+  className: "custom-link",
+};

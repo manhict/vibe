@@ -11,6 +11,8 @@ import { Dialog } from "@radix-ui/react-dialog";
 import {
   DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
@@ -104,7 +106,10 @@ function SearchSongPopup() {
         <Star />
       </DialogTrigger>
       <DialogContent className="w-[40%] max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
-        <DialogTitle />
+        <DialogHeader>
+          <DialogTitle />
+          <DialogDescription />
+        </DialogHeader>
         <div className="w-full flex items-center justify-center">
           <div className="flex flex-col w-full overflow-hidden rounded-2xl">
             <div className="bg-black flex items-center gap-2 justify-between p-2.5 px-4">

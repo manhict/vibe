@@ -16,10 +16,27 @@ import { toast } from "sonner";
 export default function useSocket() {
   const { isConnected, setIsConnected } = useUserContext();
   const [transport, setTransport] = useState("N/A");
-  const { setListener, setUser, setQueue, user, setUpVotes, setMessages } =
-    useUserContext();
+  const {
+    setListener,
+    setUser,
+    setQueue,
+    user,
+    setUpVotes,
+    setMessages,
+    roomId,
+  } = useUserContext();
   const { play, seek } = useAudio();
   const socketRef = useRef(socket);
+
+  // notify user to login to join room
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!user && roomId) {
+        toast.warning("Login to join room " + roomId);
+      }
+    }, 2000);
+    return () => clearTimeout(t);
+  }, [user, roomId]);
 
   // Memoized connect and disconnect functions
   const onConnect = useCallback(() => {
@@ -40,7 +57,8 @@ export default function useSocket() {
     ({ user, listeners }: { user: TUser; listeners: listener }) => {
       toast.dismiss("joining");
       toast.message("Joined successfully");
-
+      socket.emit("getProgress");
+      socket.emit("getSongQueue");
       if (user) setUser((prev) => ({ ...prev, ...user }));
       if (listeners) setListener(listeners);
     },
@@ -48,22 +66,23 @@ export default function useSocket() {
   );
 
   const handleUserJoinedRoom = useCallback(
-    ({ user, listeners }: { user: TUser; listeners: listener }) => {
-      if (user) toast(`${user.username} has joined`);
+    ({ user: newUser, listeners }: { user: TUser; listeners: listener }) => {
+      if (newUser && user && newUser._id !== user._id)
+        toast(`${newUser.username} has joined`);
       if (listeners) setListener(listeners);
     },
-    [setListener]
+    [setListener, user]
   );
 
   const handleUserLeftRoom = useCallback(
-    ({ user, listeners }: { user: TUser; listeners: listener }) => {
-      if (user)
-        toast(`${user.username} left`, {
+    ({ user: newUser, listeners }: { user: TUser; listeners: listener }) => {
+      if (newUser && user && newUser._id !== user._id)
+        toast(`${newUser.username} left`, {
           style: { backgroundColor: "#e94225" },
         });
       if (listeners) setListener(listeners);
     },
-    [setListener]
+    [setListener, user]
   );
 
   const handleSongEnded = useCallback(
@@ -88,6 +107,22 @@ export default function useSocket() {
     [seek, user?._id]
   );
 
+  const handleMessage = useCallback(
+    (message: messages) => {
+      setMessages((prev) => [...prev, message]);
+      const audio = new Audio(
+        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
+      );
+      if (document.hidden) {
+        audio.play();
+      } else {
+        audio.pause();
+        audio.currentTime = 0; // Reset the audio if needed
+      }
+    },
+    [setMessages]
+  );
+
   // Centralized event listeners setup and cleanup
   useEffect(() => {
     const currentSocket = socketRef.current;
@@ -106,18 +141,9 @@ export default function useSocket() {
     currentSocket.on("queueList", setQueue);
     currentSocket.on("votes", (data) => data?.queue && setQueue(data.queue));
     currentSocket.on("getVotes", () => socket.emit("upVote"));
-    currentSocket.on("message", (message: messages) => {
-      setMessages((prev) => [...prev, message]);
-      const audio = new Audio(
-        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
-      );
-      if (document.hidden) {
-        audio.play();
-      } else {
-        audio.pause();
-        audio.currentTime = 0; // Reset the audio if needed
-      }
-    });
+    currentSocket.on("message", handleMessage);
+
+    currentSocket.on("updateProgress", seek);
 
     currentSocket.on("error", (message: string) => {
       toast.error(message, { style: { background: "#e94625" } });
@@ -139,6 +165,7 @@ export default function useSocket() {
       currentSocket.off("songEnded", handleSongEnded);
       currentSocket.off("seek", handleSeek);
       currentSocket.off("songQueue");
+      currentSocket.off("updateProgress");
       currentSocket.off("queueList");
       currentSocket.off("votes");
       currentSocket.off("getVotes");
@@ -150,6 +177,7 @@ export default function useSocket() {
     onConnect,
     onDisconnect,
     play,
+    handleMessage,
     handleJoinedRoom,
     handleUserJoinedRoom,
     handleUserLeftRoom,
@@ -157,6 +185,7 @@ export default function useSocket() {
     handleSeek,
     setQueue,
     setMessages,
+    seek,
   ]);
 
   return {

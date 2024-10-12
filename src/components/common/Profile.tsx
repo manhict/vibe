@@ -2,6 +2,8 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -12,18 +14,13 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
-import { toast } from "sonner";
 function Profile({ user }: { user: TUser }) {
-  const { setUser, roomId } = useUserContext();
+  const { setUser } = useUserContext();
 
   useEffect(() => {
     setUser(user);
   }, [user, setUser]);
-  useEffect(() => {
-    if (!user && roomId) {
-      toast.warning("Login to join room " + roomId);
-    }
-  }, [user, roomId]);
+
   if (!user) {
     return <Login />;
   }
@@ -41,7 +38,10 @@ function Profile({ user }: { user: TUser }) {
         </div>
       </DialogTrigger>
       <DialogContent className="w-fit border-none bg-transparent p-0">
-        <DialogTitle className=" w-fit" />
+        <DialogHeader>
+          <DialogTitle className=" w-fit" />
+          <DialogDescription />
+        </DialogHeader>
         <div className="w-fit  flex items-center justify-center">
           <div className="flex flex-col bg-black/80 p-5 items-center justify-center w-[20rem] overflow-hidden rounded-2xl">
             <div className=" size-24 cursor-pointer">

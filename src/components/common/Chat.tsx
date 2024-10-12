@@ -13,9 +13,10 @@ import {
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/app/store/AudioContext";
-import { formatArtistName, isImageUrl } from "@/utils/utils";
+import { formatArtistName, isImageUrl, linkifyOptions } from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";
+
 function Chat({
   messagesEndRef,
   setIsChatOpen,
@@ -170,17 +171,7 @@ function Chat({
                           />
                         </Link>
                       ) : (
-                        <Linkify
-                          as="p"
-                          options={{
-                            target: "_blank",
-
-                            render: {
-                              hashtag: renderLink,
-                              mention: renderLink,
-                            },
-                          }}
-                        >
+                        <Linkify as="p" options={linkifyOptions}>
                           <p className="w-fit  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
                             {message?.message}
                           </p>
@@ -203,17 +194,7 @@ function Chat({
                           />
                         </Link>
                       ) : (
-                        <Linkify
-                          as="p"
-                          options={{
-                            target: "_blank",
-
-                            render: {
-                              hashtag: renderLink,
-                              mention: renderLink,
-                            },
-                          }}
-                        >
+                        <Linkify as="p" options={linkifyOptions}>
                           <p className=" w-fit  text-end  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
                             {message?.message}
                           </p>
@@ -256,15 +237,5 @@ function Chat({
     </>
   );
 }
-
-//@ts-expect-error:ex
-const renderLink = ({ attributes, content }) => {
-  const { href, ...props } = attributes;
-  return (
-    <Link to={href} {...props}>
-      {content}
-    </Link>
-  );
-};
 
 export default Chat;

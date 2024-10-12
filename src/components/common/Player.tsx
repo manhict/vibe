@@ -24,11 +24,10 @@ import {
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "sonner";
-
 import { AnimatePresence, motion } from "framer-motion";
-
 import Chat from "./Chat";
 import Listeners from "./Listeners";
+
 function Player() {
   const { user, messages } = useUserContext();
   const {
@@ -54,8 +53,9 @@ function Player() {
 
   const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = Number(event.target.value);
-    if (user?.role !== "admin")
+    if (user && user.role !== "admin") {
       return toast.error("Only admin is allowed to seek");
+    }
     seek(newTime);
   };
   const chatVariants = {

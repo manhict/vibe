@@ -13,6 +13,7 @@ import React, {
 } from "react";
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
+import useDebounce from "@/Hooks/useDebounce";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -129,22 +130,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const handleVolumeChange = (value: number) => {
     if (audioRef.current) {
       audioRef.current.volume = value;
+      localStorage.setItem("volume", String(value));
     }
     setVolume(value);
   };
 
   // seek
-  const seek = useCallback(
-    (value: number) => {
-      if (audioRef.current) {
-        if (isConnected) {
-          socket.emit("seek", value);
-        }
-        audioRef.current.currentTime = value;
-      }
-    },
-    [isConnected]
-  );
+  const seek = useCallback((value: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = value;
+    }
+  }, []);
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
@@ -174,15 +170,31 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           src: image.url,
         })),
       });
-      navigator.mediaSession.setActionHandler("play", handleBlock);
-      navigator.mediaSession.setActionHandler("pause", handleBlock);
+      navigator.mediaSession.setActionHandler("play", resume);
+      navigator.mediaSession.setActionHandler("pause", pause);
       navigator.mediaSession.setActionHandler("previoustrack", playPrev);
       navigator.mediaSession.setActionHandler("nexttrack", playNext);
-      navigator.mediaSession.setActionHandler("seekto", handleBlock);
+      navigator.mediaSession.setActionHandler("seekto", (e) => {
+        if (e.seekTime) {
+          seek(e.seekTime);
+        }
+      });
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
       navigator.mediaSession.setActionHandler("seekforward", handleBlock);
     }
-  }, [currentSong, playNext, playPrev]);
+  }, [currentSong, playNext, playPrev, pause, resume, seek]);
+
+  // Debounced function to emit progress
+
+  const [lastEmittedTime, setLastEmittedTime] = useState(0);
+
+  const emitProgress = useDebounce((currentTime) => {
+    if (socket && socket.connected) {
+      socket.emit("progress", currentTime);
+    } else {
+      console.warn("Socket not connected. Unable to emit progress.");
+    }
+  }, 1000);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
@@ -196,8 +208,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
     const updateProgress = () => {
       if (audioRef.current) {
-        setProgress(audioRef.current.currentTime);
+        const currentTime = audioRef.current.currentTime;
+        setProgress(currentTime);
         setDuration(audioRef.current.duration);
+        if (Math.abs(currentTime - lastEmittedTime) >= 1) {
+          // 1 second threshold
+          emitProgress(currentTime);
+          setLastEmittedTime(currentTime);
+        }
       }
     };
     const audioElement = audioRef.current;
@@ -216,12 +234,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("timeupdate", updateProgress);
       };
     }
-  }, [setMediaSession, currentSong, play, queue, playNext]);
+  }, [
+    setMediaSession,
+    currentSong,
+    play,
+    queue,
+    playNext,
+    emitProgress,
+    lastEmittedTime,
+  ]);
+
   useEffect(() => {
     if (!currentSong && queue.length > 0) {
       play(queue[0]);
     }
   }, [queue, play, currentSong]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
@@ -237,32 +265,54 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
+    const volume = localStorage.getItem("volume");
+    if (volume) {
+      handleVolumeChange(Number(volume));
+    }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [togglePlayPause]);
+
+  const value = useMemo(
+    () => ({
+      play,
+      pause,
+      resume,
+      togglePlayPause,
+      mute,
+      unmute,
+      setVolume: handleVolumeChange, // Add the volume setter to the context
+      isPlaying,
+      isMuted,
+      volume,
+      currentSong,
+      progress,
+      playPrev,
+      playNext,
+      seek,
+      duration,
+    }),
+    [
+      play,
+      pause,
+      resume,
+      togglePlayPause,
+      mute,
+      unmute,
+      isPlaying,
+      isMuted,
+      volume,
+      currentSong,
+      progress,
+      playPrev,
+      playNext,
+      seek,
+      duration,
+    ]
+  );
   return (
-    <AudioContext.Provider
-      value={{
-        play,
-        pause,
-        resume,
-        togglePlayPause,
-        mute,
-        unmute,
-        setVolume: handleVolumeChange, // Add the volume setter to the context
-        isPlaying,
-        isMuted,
-        volume,
-        currentSong,
-        progress,
-        playPrev,
-        playNext,
-        seek,
-        duration,
-      }}
-    >
+    <AudioContext.Provider value={value}>
       {children}
       <audio ref={audioRef} hidden />
     </AudioContext.Provider>

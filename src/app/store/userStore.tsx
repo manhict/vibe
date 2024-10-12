@@ -62,7 +62,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         Room: `${roomId}`,
       };
       socket.connect();
-      socket.emit("getSongQueue");
+
       toast.loading(`Joining room ${roomId}`, {
         id: "joining",
         duration: Infinity,

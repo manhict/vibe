@@ -132,3 +132,8 @@ input[type="range"]::-ms-thumb {
     background-position: 0% 50%;
   }
 }
+
+.custom-link {
+  color: rgb(186, 130, 254);
+  text-decoration: underline;
+}
