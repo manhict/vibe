@@ -122,12 +122,12 @@ function Chat({
                   </Tooltip>
                 </TooltipProvider>
               ))}
-          {listener && listener?.totalUsers > 4 && (
+          {listener && listener?.totalUsers > 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
                 <AvatarFallback>
                   {" "}
-                  +{listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 4}
+                  +{listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -139,7 +139,11 @@ function Chat({
         <div className=" flex-grow gap-4 flex flex-col py-6 overflow-y-scroll">
           {user &&
             messages.map((message) => (
-              <div key={message.message}>
+              <div
+                //@ts-expect-error:ex
+                ref={messagesEndRef}
+                key={message.message}
+              >
                 {message.user._id !== user?._id ? (
                   <div className=" flex gap-2">
                     <Avatar className="size-9">
@@ -177,7 +181,7 @@ function Chat({
                             },
                           }}
                         >
-                          <p className="w-fit max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
+                          <p className="w-fit  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
                             {message?.message}
                           </p>
                         </Linkify>
@@ -195,7 +199,7 @@ function Chat({
                           <img
                             src={message?.message}
                             alt="User sent image"
-                            className="w-fit max-h-72 max-w-7/12 self-end rounded-lg rounded-tr-none"
+                            className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
                           />
                         </Link>
                       ) : (
@@ -210,7 +214,7 @@ function Chat({
                             },
                           }}
                         >
-                          <p className=" w-fit  text-end max-w-7/12 bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
+                          <p className=" w-fit  text-end  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
                             {message?.message}
                           </p>
                         </Linkify>
@@ -230,10 +234,6 @@ function Chat({
                 )}
               </div>
             ))}
-          <div
-            //@ts-expect-error:ex
-            ref={messagesEndRef}
-          ></div>
         </div>
         <form onSubmit={sendMessage} className=" relative">
           <Input
@@ -242,7 +242,7 @@ function Chat({
             name="message"
             id="message"
             type="text"
-            className=" bg-white/5 rounded-xl py-5 border border-white/20"
+            className=" bg-white/5 pr-20 rounded-xl py-5 border border-white/20"
             placeholder="Send Message"
           />
           <Button
