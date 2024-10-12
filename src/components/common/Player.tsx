@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 
 import Chat from "./Chat";
+import Listeners from "./Listeners";
 function Player() {
   const { user, messages } = useUserContext();
   const {
@@ -240,6 +241,7 @@ function Player() {
                 )}
               </div>
             </div>
+            <Listeners className=" max-md:flex hidden mt-10 -mb-10" />
           </motion.div>
         )}
       </AnimatePresence>
