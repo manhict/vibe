@@ -147,7 +147,7 @@ function AddToQueue() {
                       ))}
                       {song.voteCount && song.voteCount > 2 && (
                         <div
-                          className={` -ml-4 px-2 py-1 text-[9px] rounded-full`}
+                          className={` -ml-4 pl-1.5 py-1 text-[9px] rounded-full`}
                         >
                           <Avatar className=" size-6 border-white border">
                             <AvatarFallback>
