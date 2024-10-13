@@ -14,6 +14,7 @@ export interface searchResults {
   name: string;
   artists: { primary: artists[] };
   image: downloadUrl[];
+  source?: "youtube";
   downloadUrl: downloadUrl[];
   addedBy?: string;
   queueId?: string;

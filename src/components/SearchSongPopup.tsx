@@ -129,7 +129,7 @@ function SearchSongPopup() {
               </DialogClose>
             </div>
             {songs && (
-              <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-[#49454F]/60 max-h-[50dvh] overflow-y-scroll">
+              <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] overflow-y-scroll">
                 {songs?.data.results.map((song, i) => (
                   <DialogClose
                     key={i}
@@ -157,6 +157,9 @@ function SearchSongPopup() {
                       <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                         {formatArtistName(song.artists.primary)}
                       </p>
+                      {song?.source == "youtube" && (
+                        <p className=" text-xs text-[#a176eb]">Premium ☆</p>
+                      )}
                     </div>
                   </DialogClose>
                 ))}

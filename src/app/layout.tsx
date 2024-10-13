@@ -19,7 +19,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Vibe",
-  description: "Vote to play next!",
+  description: "Let Your Votes Choose the Beat",
   icons: ["/favicon.png"],
 };
 

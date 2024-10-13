@@ -128,7 +128,7 @@ function Player() {
                 }
               />
             </div>
-            <div className=" text-center w-full items-center justify-center flex flex-col text-sm">
+            <div className=" text-center w-full -mt-2 items-center justify-center flex flex-col text-sm">
               <p className=" text-xl font-medium w-60 truncate">
                 {currentSong?.name || "Not Playing"}
               </p>
@@ -247,6 +247,11 @@ function Player() {
           </motion.div>
         )}
       </AnimatePresence>
+      {currentSong?.source == "youtube" && (
+        <p className=" absolute bottom-2.5 text-xs mt-1 text-[#a176eb]">
+          Premium ☆
+        </p>
+      )}
     </div>
   );
 }
