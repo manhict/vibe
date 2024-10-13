@@ -99,7 +99,7 @@ function Listeners({ className }: { className?: string }) {
           </div>
         </div>
         <Button
-          onClick={handleShare}
+          onClick={(e) => (e.stopPropagation(), handleShare())}
           size={"sm"}
           variant={"secondary"}
           className=" bg-[#8D50F9] w-fit hover:bg-[#7140c5]"
