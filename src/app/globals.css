@@ -137,3 +137,14 @@ input[type="range"]::-ms-thumb {
   color: rgb(186, 130, 254);
   text-decoration: underline;
 }
+
+@keyframes heartAnimation {
+  0% {
+    transform: translate(-50%, -50%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -5000%);
+    opacity: 0.2;
+  }
+}

@@ -32,7 +32,8 @@
     "socket.io-client": "^4.7.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "ytmusic-api": "^5.2.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
