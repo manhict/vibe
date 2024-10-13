@@ -12,7 +12,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import VolumeControl from "./VolumeControl";
 import { useUserContext } from "@/app/store/userStore";
 import Image from "next/image";
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import Chat from "./Chat";
 import Listeners from "./Listeners";
+import { Slider } from "../ui/slider";
 
 function Player() {
   const { user, messages } = useUserContext();
@@ -41,6 +42,7 @@ function Player() {
     seek,
     volume,
     setVolume,
+    setProgress,
   } = useAudio();
 
   const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
@@ -51,13 +53,15 @@ function Player() {
     setFormattedDuration(formatElapsedTime(duration));
   }, [progress, duration]);
 
-  const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = Number(event.target.value);
-    if (user && user.role !== "admin") {
-      return toast.error("Only admin is allowed to seek");
+  const handleSeek = (e: number[]) => {
+    if (e[0]) {
+      if (user && user.role !== "admin") {
+        return toast.error("Only admin is allowed to seek");
+      }
+      seek(e[0]);
     }
-    seek(newTime);
   };
+
   const chatVariants = {
     hidden: { y: "100%" },
     visible: { y: 0 },
@@ -82,6 +86,26 @@ function Player() {
       setSeen(false);
     }
   }, [messages]);
+
+  const handleProgress = useCallback(
+    (value: number[]) => {
+      if (value && value[0] !== undefined) {
+        setProgress(value[0]);
+      }
+    },
+    [setProgress]
+  );
+
+  const handleValueChange = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickPosition = e.clientX - rect.left;
+      const newProgress = (clickPosition / rect.width) * duration;
+      setProgress(newProgress);
+      seek(newProgress);
+    },
+    [duration, seek, setProgress]
+  );
 
   return (
     <div className=" relative max-md:w-full max-md:rounded-none max-md:border-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
@@ -116,7 +140,7 @@ function Player() {
             transition={{ duration: 0.3 }}
             className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
           >
-            <div className=" h-auto  overflow-hidden rounded-xl">
+            <div className=" h-auto min-h-52  overflow-hidden rounded-xl">
               <Image
                 alt={currentSong?.name || ""}
                 height={300}
@@ -181,14 +205,15 @@ function Player() {
             </div>
             <div className=" flex items-center gap-4 px-4 w-full text-xs">
               <p>{formattedProgress}</p>
-              <input
-                type="range"
+
+              <Slider
                 max={duration || 0}
-                value={progress || 0}
-                onChange={handleSeek}
-                className="w-full h-1.5 bg-zinc-200/20 transition-all duration-300 overflow-hidden rounded-lg appearance-none cursor-pointer"
-                aria-label="Seek control"
+                value={[progress]}
+                onClick={handleValueChange}
+                onValueCommit={handleSeek}
+                onValueChange={handleProgress}
               />
+
               <p>{formattedDuration}</p>
             </div>
             <div className=" flex text-zinc-600 gap-3 items-center">

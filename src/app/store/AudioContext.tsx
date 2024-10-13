@@ -10,6 +10,7 @@ import React, {
   ReactNode,
   useCallback,
   useMemo,
+  SetStateAction,
 } from "react";
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
@@ -32,6 +33,7 @@ interface AudioContextType {
   duration: number;
   progress: number;
   currentSong: searchResults | null;
+  setProgress: React.Dispatch<SetStateAction<number>>;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -289,6 +291,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       volume,
       currentSong,
       progress,
+      setProgress,
       playPrev,
       playNext,
       seek,
@@ -306,6 +309,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       volume,
       currentSong,
       progress,
+      setProgress,
       playPrev,
       playNext,
       seek,
