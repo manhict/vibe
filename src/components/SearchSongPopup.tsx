@@ -38,7 +38,7 @@ function SearchSongPopup() {
       return;
     }
 
-    const url = `${process.env.BACKEND_URI}/api/search/songs?query=${value}&page=0`;
+    const url = `/api/search/${value}?page=0`;
 
     setPage(0); // Reset page on a new search
     setLoading(true);
@@ -56,9 +56,7 @@ function SearchSongPopup() {
       return;
 
     setLoading(true);
-    const url = `${
-      process.env.BACKEND_URI
-    }/api/search/songs?query=${query}&page=${page + 1}`;
+    const url = `/api/search/${query}?page=${page + 1}`;
 
     const res = await api.get(url);
     if (res.success) {

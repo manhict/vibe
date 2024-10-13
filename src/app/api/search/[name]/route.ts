@@ -10,7 +10,10 @@ export async function GET(
   const data = await fetch(
     `${process.env.BACKEND_URI}/api/search/songs?query=${
       params.params.name
-    }&page=${page || 0}`
+    }&page=${page || 0}`,
+    {
+      cache: "force-cache",
+    }
   );
 
   if (data.ok) {
