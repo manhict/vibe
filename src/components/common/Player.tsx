@@ -272,11 +272,11 @@ function Player() {
           </motion.div>
         )}
       </AnimatePresence>
-      {currentSong?.source == "youtube" && (
+      {/* {currentSong?.source == "youtube" && (
         <p className=" absolute bottom-2.5 text-xs mt-1 text-[#a176eb]">
           Premium ☆
         </p>
-      )}
+      )} */}
     </div>
   );
 }
