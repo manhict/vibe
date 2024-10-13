@@ -1,4 +1,5 @@
 import { searchSongResult } from "@/lib/types";
+import { ytmusic } from "@/lib/ytMusic";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -7,18 +8,55 @@ export async function GET(
 ) {
   const page = req.nextUrl.searchParams.get("page");
 
-  const data = await fetch(
-    `${process.env.BACKEND_URI}/api/search/songs?query=${
-      params.params.name
-    }&page=${page || 0}`,
-    {
-      cache: "force-cache",
-    }
-  );
+  const [data, ytSongs] = await Promise.all([
+    await fetch(
+      `${process.env.BACKEND_URI}/api/search/songs?query=${
+        params.params.name
+      }&page=${page || 0}`,
+      {
+        next: { revalidate: Infinity },
+      }
+    ),
+    await ytmusic.searchSongs(params.params.name),
+  ]);
+
+  const songs = ytSongs.map((s) => ({
+    id: s.videoId,
+    name: s.name,
+    artists: {
+      primary: [
+        {
+          id: s.artist.artistId,
+          name: s.artist.name,
+          role: "",
+          image: [],
+          type: "artist",
+          url: "",
+        },
+      ],
+    },
+    image: [
+      {
+        quality: "500x500",
+        url: `https://wsrv.nl/?url=${s.thumbnails[
+          s.thumbnails.length - 1
+        ].url.replace(/w\d+-h\d+/, "w500-h500")}`,
+      },
+    ],
+    downloadUrl: [
+      {
+        quality: "320kbps",
+        url: `https://sstream.onrender.com/stream/${s.videoId}`,
+      },
+    ],
+  }));
 
   if (data.ok) {
     const result = (await data.json()) as searchSongResult;
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(
+      { data: { ...result.data, results: [...songs, ...result.data.results] } },
+      { status: 200 }
+    );
   } else {
     return NextResponse.json({ message: "Failed to fetch" }, { status: 500 });
   }
