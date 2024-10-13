@@ -116,8 +116,9 @@ function Listeners({ className }: { className?: string }) {
         <div className="w-full flex items-center justify-center">
           <div className="flex flex-col w-full overflow-hidden rounded-2xl">
             <div className="bg-black/80 w-full p-2.5 px-4">
-              <p className=" font-semibold">
-                {listener && `${listener?.totalUsers}`} Listeners
+              <p className=" font-semibold flex w-full justify-between">
+                <span>Vibing with</span>{" "}
+                {listener && `${listener?.totalUsers - 1}`}
               </p>
             </div>
             <div className="bg-black/80 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
