@@ -1,8 +1,14 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
-function Blur() {
+function Blur({ className }: { className?: string }) {
   return (
-    <div className=" absolute h-dvh w-dvw bg-black/80 backdrop-blur-sm top-0"></div>
+    <div
+      className={cn(
+        "absolute h-dvh w-dvw bg-black/80 backdrop-blur-sm top-0",
+        className
+      )}
+    ></div>
   );
 }
 
