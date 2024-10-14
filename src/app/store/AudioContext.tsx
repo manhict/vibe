@@ -194,9 +194,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   const [lastEmittedTime, setLastEmittedTime] = useState(0);
 
-  const emitProgress = useDebounce((currentTime) => {
+  const emitProgress = useDebounce(() => {
     if (socket && socket.connected) {
-      socket.emit("progress", currentTime);
+      // socket.emit("progress", currentTime);
     } else {
       console.warn("Socket not connected. Unable to emit progress.");
     }
