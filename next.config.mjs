@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -10,6 +9,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "wsrv.nl",
       },
       {
         protocol: "https",
@@ -22,7 +25,7 @@ const nextConfig = {
     BACKEND_URI: process.env.BACKEND_URI,
     MONGODB_URL: process.env.MONGODB_URL,
     JWT_SECRET: process.env.JWT_SECRET,
-    SOCKET_URI: "https://vibe-backend-p1jh.onrender.com",
+    SOCKET_URI: "https://vibe-backend-1-59yh.onrender.com",
   },
 };
 
