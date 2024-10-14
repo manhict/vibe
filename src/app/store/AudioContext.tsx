@@ -34,6 +34,8 @@ interface AudioContextType {
   progress: number;
   currentSong: searchResults | null;
   setProgress: React.Dispatch<SetStateAction<number>>;
+  isLooped: boolean;
+  setLoop: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -51,13 +53,14 @@ interface AudioProviderProps {
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(new Audio());
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
   const [currentProgress, setProgress] = useState<number>(0);
   const [currentDuration, setDuration] = useState<number>(0);
   const [currentVolume, setVolume] = useState<number>(1);
+  const [isLooped, setLoop] = useState<boolean>(false);
   const { queue, isConnected } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
@@ -207,7 +210,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
 
     const handleEnd = () => {
-      socket.emit("songEnded", currentSong);
+      if (isLooped) {
+        socket.emit("nextSong", { nextSong: currentSong });
+      } else {
+        socket.emit("songEnded", currentSong);
+      }
     };
     const updateProgress = () => {
       if (audioRef.current) {
@@ -245,6 +252,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     playNext,
     emitProgress,
     lastEmittedTime,
+    isLooped,
   ]);
 
   useEffect(() => {
@@ -296,6 +304,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       playNext,
       seek,
       duration,
+      isLooped,
+      setLoop,
     }),
     [
       play,
@@ -309,17 +319,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       volume,
       currentSong,
       progress,
-      setProgress,
       playPrev,
       playNext,
       seek,
       duration,
+      isLooped,
     ]
   );
   return (
-    <AudioContext.Provider value={value}>
-      {children}
-      <audio ref={audioRef} hidden />
-    </AudioContext.Provider>
+    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
   );
 };
