@@ -23,9 +23,13 @@ function QueueList({ name = "" }: { name?: string }) {
   const upVote = useCallback((song: searchResults) => {
     socket.emit("upVote", song);
   }, []);
-  const handleDelete = useCallback((song: searchResults) => {
-    socket.emit("deleteSong", song);
-  }, []);
+  const handleDelete = useCallback(
+    (song: searchResults) => {
+      socket.emit("deleteSong", song);
+      setQueue((prev) => prev.filter((s) => s.id !== song.id));
+    },
+    [setQueue]
+  );
   const handleUpVote = useDebounce(upVote, 300);
 
   const triggerUpVote = useCallback(
