@@ -24,6 +24,7 @@ import api from "@/lib/api";
 import { extractPlaylistID } from "@/utils/utils";
 import { searchResults } from "@/lib/types";
 import { socket } from "@/app/socket";
+import useDebounce from "@/Hooks/useDebounce";
 
 function AddToQueue() {
   const { queue, roomId, user, setQueue } = useUserContext();
@@ -56,7 +57,7 @@ function AddToQueue() {
   }, [queue]);
   const [loading, setLoading] = useState<boolean>(false);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const handleLoad = useCallback(
+  const loadPlaylist = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const playlistuRL = e.target.value;
       if (playlistuRL.trim().length === 0) {
@@ -77,6 +78,7 @@ function AddToQueue() {
     },
     [roomId, setQueue]
   );
+  const handleLoad = useDebounce(loadPlaylist, 500);
   return (
     <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
