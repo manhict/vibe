@@ -1,19 +1,32 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Search, Share2, Trash2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2Icon,
+  Search,
+  Share2,
+  Trash2,
+  X,
+} from "lucide-react";
 import Listeners from "./Listeners";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/app/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import { FaSpotify } from "react-icons/fa";
-import React, { useCallback, useEffect, useState } from "react";
+import { FaSpotify, FaYoutube } from "react-icons/fa";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import SpotifyPlaylist from "./SpotifyPlaylist";
 import { Input } from "../ui/input";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import api from "@/lib/api";
+import { extractPlaylistID } from "@/utils/utils";
+import { searchResults } from "@/lib/types";
+import { socket } from "@/app/socket";
 
 function AddToQueue() {
-  const { queue, roomId, user } = useUserContext();
+  const { queue, roomId, user, setQueue } = useUserContext();
   const handleShare = useCallback(async () => {
     if (!user) return;
     try {
@@ -41,6 +54,29 @@ function AddToQueue() {
       setIsDeleting(false);
     }
   }, [queue]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const handleLoad = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const playlistuRL = e.target.value;
+      if (playlistuRL.trim().length === 0) {
+        return;
+      }
+      setLoading(true);
+
+      const tracks = await api.get(
+        `/api/youtube?id=${extractPlaylistID(playlistuRL)}&room=${roomId}`
+      );
+      if (tracks.success) {
+        toast.success("Imported successfully");
+        setQueue(tracks.data as searchResults[]);
+        closeRef.current?.click();
+        socket.emit("getSongQueue");
+      }
+      setLoading(false);
+    },
+    [roomId, setQueue]
+  );
   return (
     <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
@@ -112,10 +148,34 @@ function AddToQueue() {
               )}
             </>
           )}
-          {/* <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-2 text-xs bg-red-500 opacity-50 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
+          <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
             {" "}
-            <FaYoutube className="size-4" />
-          </div> */}
+            <Dialog>
+              <DialogTrigger>
+                <FaYoutube className="size-4" />
+              </DialogTrigger>
+              <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
+                <div className="bg-black rounded-t-xl flex items-center justify-between p-2.5 px-5">
+                  <DialogClose>
+                    <ArrowLeft className="text-zinc-500 cursor-pointer" />
+                  </DialogClose>
+                  <Input
+                    autoFocus
+                    onChange={handleLoad}
+                    placeholder="Paste youtube playlist url"
+                    className="border-none focus-visible:ring-0"
+                  />
+                  <DialogClose ref={closeRef}>
+                    {loading ? (
+                      <Loader2Icon className="text-zinc-500 animate-spin" />
+                    ) : (
+                      <X className="text-zinc-500 cursor-pointer" />
+                    )}
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
     </div>

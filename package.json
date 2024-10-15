@@ -36,7 +36,8 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "youtubei.js": "^10.5.0",
-    "ytmusic-api": "^5.2.2"
+    "ytmusic-api": "^5.2.2",
+    "ytpl": "^2.3.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",

@@ -124,11 +124,11 @@ function QueueList({
   return (
     <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {isDeleting && queue.length > 1 && (
-        <div className=" flex text-white items-center gap-1">
+        <div className=" flex overflow-x-scroll  items-center gap-1">
           <Button
             onClick={handleBulkDelete}
             size={"sm"}
-            className=" w-fit bg-purple hover:bg-purple/80"
+            className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
             Remove Selected {selectedSongs.length}
           </Button>
@@ -136,14 +136,14 @@ function QueueList({
             disabled={selectedSongs.length == 0}
             onClick={() => setSelectedSongs([])}
             size={"sm"}
-            className=" w-fit bg-purple hover:bg-purple/80"
+            className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
             Deselect all
           </Button>
           <Button
             onClick={handleRemoveALL}
             size={"sm"}
-            className=" w-fit bg-purple hover:bg-purple/80"
+            className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
             Remove all
           </Button>
