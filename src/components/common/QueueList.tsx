@@ -124,7 +124,7 @@ function QueueList({
   return (
     <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {isDeleting && queue.length > 1 && (
-        <div className=" flex items-center gap-1">
+        <div className=" flex text-white items-center gap-1">
           <Button
             onClick={handleBulkDelete}
             size={"sm"}
