@@ -73,7 +73,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         socket.connect();
         toast.loading(`Joining room ${roomId}`, {
           id: "joining",
-          duration: Infinity,
+          duration: 7000,
         });
       }, 1000);
       return () => clearTimeout(t);

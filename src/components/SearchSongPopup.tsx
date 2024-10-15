@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
@@ -12,13 +13,15 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
 import { socket } from "@/app/socket";
-import { Avatar, AvatarImage } from "./ui/avatar";
-
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { toast } from "sonner";
+import parse from "html-react-parser";
 function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
@@ -77,10 +80,30 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
       searchMoreSongs();
     }
   }, [inView, loading, searchMoreSongs]);
+  const [selectedSongs, setSelectedSongs] = useState<searchResults[]>([]);
 
-  const handlePlay = useCallback(async (song: searchResults) => {
-    socket.emit("addToQueue", song);
-  }, []);
+  const handlePlay = useCallback(async () => {
+    if (selectedSongs.length == 0) return toast.error("No song selected");
+    socket.emit("addToQueue", selectedSongs);
+    setSelectedSongs([]);
+  }, [selectedSongs]);
+
+  const handleSelect = useCallback(
+    async (song: searchResults) => {
+      if (!song) return;
+      if (selectedSongs.length >= 5)
+        return toast.error("Limit reached only 5 songs at a time");
+
+      if (selectedSongs.includes(song)) {
+        // If the song is already selected (uncheck), remove it from the list
+        setSelectedSongs(selectedSongs.filter((s) => s !== song));
+      } else {
+        // If the song is not selected (check), add it to the list
+        setSelectedSongs([song, ...selectedSongs]);
+      }
+    },
+    [selectedSongs]
+  );
 
   return (
     <Dialog key={"songs"}>
@@ -112,12 +135,12 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
         </DialogTrigger>
       )}
 
-      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-3xl max-md:max-w-sm">
+      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
         <DialogHeader>
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className="bg-black rounded-t-xl flex items-center justify-between p-2.5 px-4">
+        <div className="bg-black rounded-t-xl flex items-center justify-between p-2.5 px-5">
           <DialogClose>
             <ArrowLeft className="text-zinc-500 cursor-pointer" />
           </DialogClose>
@@ -136,11 +159,14 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
           </DialogClose>
         </div>
         {songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] overflow-y-scroll">
+          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] px-2.5 overflow-y-scroll">
             {songs?.data.results.map((song, i) => (
-              <DialogClose
+              <label
+                htmlFor={song?.id}
                 key={i}
-                onClick={() => handlePlay(song)}
+                title={`${parse(song.name)} (${
+                  formatArtistName(song?.artists?.primary) || "Unknown"
+                })`}
                 className={`flex gap-2 text-start cursor-pointer hover:bg-zinc-800/20 ${
                   i != songs.data.results.length - 1 && "border-b"
                 }  border-[#1D192B] p-2.5 items-center`}
@@ -150,11 +176,12 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
                     alt={song?.name}
                     height={500}
                     width={500}
-                    className=" h-fll w-full"
+                    className=" h-full w-full"
                     src={
                       song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
                     }
                   />
+                  <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
                 <div className="text-sm font-medium w-full">
                   <p className="font-semibold truncate w-10/12">{song.name}</p>
@@ -165,7 +192,18 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
                     <p className=" text-xs text-[#a176eb]">Premium ☆</p>
                   )}
                 </div>
-              </DialogClose>
+                <div className=" relative mr-0.5">
+                  <input
+                    onChange={() => handleSelect(song)}
+                    checked={selectedSongs.includes(song)}
+                    name={song?.id}
+                    id={song?.id}
+                    type="checkbox"
+                    className="peer appearance-none w-5 h-5 border border-gray-400 rounded-sm checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  />
+                  <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
+                </div>
+              </label>
             ))}
 
             {/* Infinite Scroll Trigger */}
@@ -177,6 +215,63 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
               <p className="text-center text-zinc-500 py-4">No songs found.</p>
             )}
           </div>
+        )}
+        {selectedSongs.length > 0 && (
+          <>
+            <div className=" p-2 bg-[#49454F]/70 border-t pb-2  py-4 px-4 overflow-x-scroll">
+              <div className="flex overflow-x-scroll items-center gap-2.5">
+                {selectedSongs.map((song) => (
+                  <div
+                    key={song?.id}
+                    className=" gap-1 bg-[#8D50F9]/20 p-1 rounded-lg border-zinc-600 border text-xs px-2 flex items-center"
+                  >
+                    <Avatar className="  size-8  rounded-sm">
+                      <AvatarImage
+                        alt={song?.name}
+                        height={500}
+                        width={500}
+                        className=" h-full w-full rounded-md border"
+                        src={
+                          song?.image[song?.image?.length - 1]?.url ||
+                          "/cache.jpg"
+                        }
+                      />
+                      <AvatarFallback>SX</AvatarFallback>
+                    </Avatar>
+                    <div
+                      title={`${parse(song.name)} (${
+                        formatArtistName(song?.artists?.primary) || "Unknown"
+                      })`}
+                      className=" flex flex-col cursor-pointer leading-tight"
+                    >
+                      <p className=" w-24 font-semibold truncate">
+                        {parse(song.name)}
+                      </p>
+                      <p className=" w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
+                        {formatArtistName(song?.artists?.primary) || "Unknown"}
+                      </p>
+                    </div>
+                    <X
+                      onClick={() =>
+                        setSelectedSongs((prev) =>
+                          prev.filter((r) => r.id !== song.id)
+                        )
+                      }
+                      className=" cursor-pointer hover:text-zinc-400 transition-all duration-300 size-5"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
+              <DialogClose
+                onClick={handlePlay}
+                className=" py-3 w-full  rounded-xl bg-purple/80 font-semibold text-sm"
+              >
+                <p className="w-full text-center">Add song</p>
+              </DialogClose>
+            </DialogFooter>
+          </>
         )}
       </DialogContent>
     </Dialog>

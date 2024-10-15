@@ -182,7 +182,7 @@ function Player() {
               </p>
               <p className=" w-56 text-zinc-200 truncate">
                 {(currentSong &&
-                  formatArtistName(currentSong?.artists.primary)) ||
+                  formatArtistName(currentSong?.artists?.primary)) ||
                   "Unknown"}
               </p>
             </div>
