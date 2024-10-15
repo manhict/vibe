@@ -31,7 +31,7 @@ import { Slider } from "../ui/slider";
 import LikeButton from "./LinkeButton";
 import { socket } from "@/app/socket";
 import useDebounce from "@/Hooks/useDebounce";
-
+import parse from "html-react-parser";
 function Player() {
   const { user, messages } = useUserContext();
   const {
@@ -178,7 +178,7 @@ function Player() {
             </div>
             <div className=" text-center w-full -mt-2 items-center justify-center flex flex-col text-sm">
               <p className=" text-xl font-medium w-60 truncate">
-                {currentSong?.name || "Not Playing"}
+                {parse(currentSong?.name || "Not Playing")}
               </p>
               <p className=" w-56 text-zinc-200 truncate">
                 {(currentSong &&

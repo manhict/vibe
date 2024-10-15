@@ -15,8 +15,8 @@ import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "sonner";
-
-function QueueList() {
+import parse from "html-react-parser";
+function QueueList({ name = "" }: { name?: string }) {
   const { queue, setQueue, user } = useUserContext();
   const { currentSong } = useAudio();
 
@@ -82,7 +82,8 @@ function QueueList() {
     <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
-        .map((song, i) => (
+        ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))
+        ?.map((song, i) => (
           <div key={i} className=" flex gap-2 items-center justify-between">
             <div className="relative">
               <Avatar className="size-12 rounded-md relative group">
@@ -114,7 +115,7 @@ function QueueList() {
                       }}
                       className="  cursor-pointer font-semibold truncate"
                     >
-                      {song.name}
+                      {parse(song.name)}
                     </p>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#9870d3] mb-2 text-white">

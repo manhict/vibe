@@ -12,6 +12,7 @@ import { useUserContext } from "@/app/store/userStore";
 import { useEffect } from "react";
 import { spotifyPlaylist } from "@/lib/types";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import parse from "html-react-parser";
 function SpotifyPlaylist() {
   const { user, setSpotifyPlaylists, spotifyPlaylists } = useUserContext();
 
@@ -32,34 +33,34 @@ function SpotifyPlaylist() {
     };
     fetchPlaylist();
   }, [user, setSpotifyPlaylists, spotifyPlaylists]);
-  //   const handleLoadPlaylist = useCallback(
-  //     async (playlistId: string) => {
-  //       try {
-  //         const response = await api.get(
-  //           `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${user?.spotifyData.access_token}`,
-  //             },
-  //           }
-  //         );
-
-  //         if (response.success) {
-  //           const tracks = (response.data as any).items.map(
-  //             (item: any) => item.track
-  //           );
-  //           console.log(tracks);
+  // const handleLoadPlaylist = useCallback(
+  //   async (playlistId: string) => {
+  //     try {
+  //       const response = await api.get(
+  //         `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${user?.spotifyData.access_token}`,
+  //           },
   //         }
-  //       } catch (error) {
-  //         console.error("Error fetching playlist tracks:", error);
+  //       );
+
+  //       if (response.success) {
+  //         const tracks = (response.data as any).items.map(
+  //           (item: any) => item.track
+  //         );
+  //         console.log(tracks);
   //       }
-  //     },
-  //     [user]
-  //   );
+  //     } catch (error) {
+  //       console.error("Error fetching playlist tracks:", error);
+  //     }
+  //   },
+  //   [user]
+  // );
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-3 text-xs bg-green-500 w-fit hover:bg-green-500">
+        <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-2 text-xs bg-green-500 w-fit hover:bg-green-500">
           {" "}
           <FaSpotify className="size-4" />
         </div>
@@ -105,8 +106,11 @@ function SpotifyPlaylist() {
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {playlist?.owner?.display_name}
                   </p>
-                  <p className=" text-xs text-[#a176eb] truncate w-10/12">
-                    {playlist?.description}
+                  <p
+                    title={parse(playlist?.description).toString()}
+                    className=" text-xs text-[#a176eb] truncate w-10/12"
+                  >
+                    {parse(playlist.description).toString()}
                   </p>
                 </div>
               </div>

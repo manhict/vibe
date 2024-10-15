@@ -93,3 +93,12 @@ export interface spotifyPlaylist {
   ];
   owner: { display_name: string };
 }
+
+export interface spotifyTrack {
+  name: string;
+  artists: [
+    {
+      name: string;
+    }
+  ];
+}
