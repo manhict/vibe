@@ -57,16 +57,20 @@ function AddToQueue() {
             <Share2 className="size-3.5 mr-0.5" /> <span>Invite Friends</span>
           </div>
 
-          {user?.spotify ? (
-            <SpotifyPlaylist />
-          ) : (
-            <Link
-              href={`https://accounts.spotify.com/en/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&scope=playlist-read-private&response_type=code&redirect_uri=${process.env.SPOTIFY_REDIRECT_URL}`}
-              className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-3 text-xs bg-green-500 opacity-50 w-fit hover:bg-green-500 hover:opacity-80 duration-300"
-            >
-              {" "}
-              <FaSpotify className="size-4" />
-            </Link>
+          {user && (
+            <>
+              {user?.spotify ? (
+                <SpotifyPlaylist />
+              ) : (
+                <Link
+                  href={`https://accounts.spotify.com/en/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&scope=playlist-read-private&response_type=code&redirect_uri=${process.env.SPOTIFY_REDIRECT_URL}`}
+                  className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-3 text-xs bg-green-500 opacity-50 w-fit hover:bg-green-500 hover:opacity-80 duration-300"
+                >
+                  {" "}
+                  <FaSpotify className="size-4" />
+                </Link>
+              )}
+            </>
           )}
         </div>
       </div>

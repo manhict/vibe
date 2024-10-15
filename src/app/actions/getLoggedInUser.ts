@@ -46,7 +46,7 @@ export async function getLoggedInUser() {
         },
         body: new URLSearchParams({
           grant_type: "refresh_token",
-          refresh_token: user.spotifyData.refresh_token,
+          refresh_token: user?.spotifyData?.refresh_token,
           redirect_uri: redirect_uri,
           client_id: client_id,
           client_secret: client_secret,
@@ -67,7 +67,7 @@ export async function getLoggedInUser() {
         token: session.value,
         roomId: roomId,
         role: role?.toObject()?.role || "guest",
-        spotify: refresh_token.ok,
+        spotify: refresh_token.status === 200,
       })
     );
   } catch (error: any) {
