@@ -79,7 +79,7 @@ function QueueList() {
     [handleUpVote, setQueue, user]
   );
   return (
-    <div className=" py-2 group-hover:opacity-100 flex flex-col overflow-y-scroll gap-4">
+    <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         .map((song, i) => (
@@ -135,7 +135,7 @@ function QueueList() {
               <Heart
                 className={`${
                   song?.isVoted ? "fill-yellow-500 text-yellow-500" : ""
-                } cursor-pointer mr-1.5`}
+                } cursor-pointer`}
                 onClick={(e) => triggerUpVote(e, song)}
               />
               <div className="flex -mt-1.5 text-xs items-center">

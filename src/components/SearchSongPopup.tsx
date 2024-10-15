@@ -35,7 +35,7 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
       return;
     }
 
-    const url = `/api/search/${value}?page=0`;
+    const url = `/api/search/?name=${value}&page=0`;
 
     setPage(0); // Reset page on a new search
     setLoading(true);
@@ -53,7 +53,7 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
       return;
 
     setLoading(true);
-    const url = `/api/search/${query}?page=${page + 1}`;
+    const url = `/api/search/?name=${query}&page=${page + 1}`;
 
     const res = await api.get(url);
     if (res.success) {
