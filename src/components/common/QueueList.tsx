@@ -135,7 +135,7 @@ function QueueList() {
               <Heart
                 className={`${
                   song?.isVoted ? "fill-yellow-500 text-yellow-500" : ""
-                } cursor-pointer`}
+                } cursor-pointer mr-1.5`}
                 onClick={(e) => triggerUpVote(e, song)}
               />
               <div className="flex -mt-1.5 text-xs items-center">
