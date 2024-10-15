@@ -1,11 +1,21 @@
 import dbConnect from "@/lib/dbConnect";
 import Queue from "@/models/queueModel";
 import Room from "@/models/roomModel";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import ytpl from "ytpl";
+import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   const roomID = req.nextUrl.searchParams.get("room");
+  const session = cookies().get("vibeId");
+  if (!session || !session.value) {
+    throw new Error("No session found");
+  }
+  const decoded: any = jwt.verify(session.value, process.env.JWT_SECRET || "");
+  if (!decoded || !decoded.userId) {
+    throw new Error("Invalid token");
+  }
   if (!id) throw new Error("Invalid song ID");
   if (!roomID) throw new Error("Invalid room ID");
   try {
@@ -30,6 +40,7 @@ export async function GET(req: NextRequest) {
           },
         ],
       },
+      addedBy: decoded.userId,
       image: [
         {
           quality: "500x500",
