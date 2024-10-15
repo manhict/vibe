@@ -26,9 +26,11 @@ function QueueList({ name = "" }: { name?: string }) {
   const handleDelete = useCallback(
     (song: searchResults) => {
       socket.emit("deleteSong", song);
-      setQueue((prev) => prev.filter((s) => s.id !== song.id));
+      if (user?.role == "admin") {
+        setQueue((prev) => prev.filter((s) => s.id !== song.id));
+      }
     },
-    [setQueue]
+    [setQueue, user]
   );
   const handleUpVote = useDebounce(upVote, 300);
 
