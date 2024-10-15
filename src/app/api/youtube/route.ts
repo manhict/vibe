@@ -55,8 +55,29 @@ export async function GET(req: NextRequest) {
       songData: track,
     }));
 
-    // Insert all items in bulk to the database
-    await Queue.insertMany(queueItems);
+    // Extract unique track IDs from the new tracks
+    const trackIds = tracks.map((track) => track.id);
+
+    // Find existing tracks in the queue with matching track IDs
+    const existingTracks = await Queue.find({
+      roomId: room._id,
+      "songData.id": { $in: trackIds }, // Match tracks by their unique ID
+    });
+
+    // Extract the IDs of tracks already in the queue
+    const existingTrackIds = existingTracks.map(
+      (queueItem) => queueItem.songData.id
+    );
+
+    // Filter out the tracks that already exist in the queue
+    const newTracksToInsert = queueItems.filter(
+      (queueItem) => !existingTrackIds.includes(queueItem.songData.id)
+    );
+
+    // Insert only the non-duplicate tracks in bulk to the database
+    if (newTracksToInsert.length > 0) {
+      await Queue.insertMany(newTracksToInsert);
+    }
 
     return NextResponse.json(tracks);
   } catch (error: any) {

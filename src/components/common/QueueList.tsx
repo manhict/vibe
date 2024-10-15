@@ -126,12 +126,13 @@ function QueueList({
       {isDeleting && queue.length > 1 && (
         <div className=" flex overflow-x-scroll  items-center gap-1">
           <Button
-            onClick={handleBulkDelete}
+            onClick={handleRemoveALL}
             size={"sm"}
             className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
-            Remove Selected {selectedSongs.length}
+            Remove all
           </Button>
+
           <Button
             disabled={selectedSongs.length == 0}
             onClick={() => setSelectedSongs([])}
@@ -141,11 +142,11 @@ function QueueList({
             Deselect all
           </Button>
           <Button
-            onClick={handleRemoveALL}
+            onClick={handleBulkDelete}
             size={"sm"}
             className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
-            Remove all
+            Remove Selected {selectedSongs.length}
           </Button>
         </div>
       )}
