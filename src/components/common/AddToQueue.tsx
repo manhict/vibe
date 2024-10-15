@@ -89,7 +89,11 @@ function AddToQueue() {
             variant={"secondary"}
             className=" bg-purple p-2.5 hover:bg-purple/80 rounded-md"
           >
-            <Search className=" size-4" />
+            {isSearchedOpened ? (
+              <X className=" size-4" />
+            ) : (
+              <Search className=" size-4" />
+            )}
           </Button>
           {user && user.role == "admin" && queue.length > 1 && (
             <Button
