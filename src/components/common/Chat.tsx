@@ -74,7 +74,7 @@ function Chat({
             />
             <div
               onClick={togglePlayPause}
-              className=" bg-[#8D50F9] cursor-pointer p-4 rounded-full"
+              className=" bg-purple cursor-pointer p-4 rounded-full"
             >
               {isPlaying ? (
                 <Pause className=" size-4" />
@@ -228,7 +228,7 @@ function Chat({
           />
           <Button
             size={"sm"}
-            className=" absolute right-1.5 top-1 bg-[#8D50F9]  hover:bg-[#8D50F9] text-white rounded-lg px-4"
+            className=" absolute right-1.5 top-1 bg-purple  hover:bg-purple text-white rounded-lg px-4"
           >
             Send
           </Button>

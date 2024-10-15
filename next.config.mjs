@@ -26,7 +26,11 @@ const nextConfig = {
     BACKEND_URI: process.env.BACKEND_URI,
     MONGODB_URL: process.env.MONGODB_URL,
     JWT_SECRET: process.env.JWT_SECRET,
-    SOCKET_URI: "https://vibe-backend-1-59yh.onrender.com",
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
+    SPOTIFY_REDIRECT_URL: process.env.SPOTIFY_REDIRECT_URL,
+    SOCKET_URI: process.env.SOCKET_URI,
+    COOKIES: process.env.COOKIES,
   },
 };
 

@@ -6,7 +6,9 @@ import RoomUser from "@/models/roomUsers";
 import User from "@/models/userModel";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-
+const client_id = process.env.SPOTIFY_CLIENT_ID || "";
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
+const redirect_uri = process.env.SPOTIFY_REDIRECT_URL || "";
 export async function getLoggedInUser() {
   try {
     const session = cookies().get("vibeId");
@@ -35,12 +37,37 @@ export async function getLoggedInUser() {
       roomId: room?._id,
     }).select("role");
 
+    const refresh_token = await fetch(
+      "https://accounts.spotify.com/api/token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: user.spotifyData.refresh_token,
+          redirect_uri: redirect_uri,
+          client_id: client_id,
+          client_secret: client_secret,
+        }),
+      }
+    );
+
+    if (refresh_token.ok) {
+      const spotifyData = await refresh_token.json();
+      await User.findByIdAndUpdate(decoded.userId, {
+        "spotifyData.access_token": spotifyData.access_token,
+      });
+    }
+
     return JSON.parse(
       JSON.stringify({
         ...user.toObject(),
         token: session.value,
         roomId: roomId,
-        role: role?.toObject()?.role,
+        role: role?.toObject()?.role || "guest",
+        spotify: refresh_token.ok,
       })
     );
   } catch (error: any) {

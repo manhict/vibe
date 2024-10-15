@@ -85,7 +85,7 @@ const api = {
       const response = await fetch(url, {
         method,
         ...options,
-        next: { revalidate: 60 },
+        next: { revalidate: Infinity },
         headers,
       });
 

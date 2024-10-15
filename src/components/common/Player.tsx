@@ -28,6 +28,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import Chat from "./Chat";
 import Listeners from "./Listeners";
 import { Slider } from "../ui/slider";
+import LikeButton from "./LinkeButton";
+import { socket } from "@/app/socket";
+import useDebounce from "@/Hooks/useDebounce";
 
 function Player() {
   const { user, messages } = useUserContext();
@@ -43,6 +46,8 @@ function Player() {
     volume,
     setVolume,
     setProgress,
+    isLooped,
+    setLoop,
   } = useAudio();
 
   const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
@@ -90,25 +95,39 @@ function Player() {
   const handleProgress = useCallback(
     (value: number[]) => {
       if (value && value[0] !== undefined) {
+        if (user?.role !== "admin") {
+          return toast.error("Only admin is allowed to seek");
+        }
         setProgress(value[0]);
       }
     },
-    [setProgress]
+    [setProgress, user]
   );
 
   const handleValueChange = useCallback(
     (e: React.MouseEvent) => {
+      if (user?.role !== "admin") {
+        return toast.error("Only admin is allowed to seek");
+      }
       const rect = e.currentTarget.getBoundingClientRect();
       const clickPosition = e.clientX - rect.left;
       const newProgress = (clickPosition / rect.width) * duration;
       setProgress(newProgress);
       seek(newProgress);
     },
-    [duration, seek, setProgress]
+    [duration, seek, setProgress, user]
   );
-
+  const loop = useCallback(() => {
+    if (user?.role === "admin") {
+      if (!currentSong) return;
+      socket.emit("loop", !isLooped);
+      return;
+    }
+    toast.warning("Only admin can Loop");
+  }, [user, isLooped, currentSong]);
+  const handleLoop = useDebounce(loop, 500);
   return (
-    <div className=" relative max-md:w-full max-md:rounded-none max-md:border-none overflow-hidden w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
+    <div className=" relative max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
       <AnimatePresence>
         {isChatOpen && (
           <motion.div
@@ -140,7 +159,7 @@ function Player() {
             transition={{ duration: 0.3 }}
             className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
           >
-            <div className=" h-auto min-h-52  overflow-hidden rounded-xl">
+            <div className=" relative h-auto min-h-40  overflow-hidden rounded-xl">
               <Image
                 alt={currentSong?.name || ""}
                 height={300}
@@ -151,6 +170,11 @@ function Player() {
                   "/cache.jpg"
                 }
               />
+              {currentSong?.source == "youtube" && (
+                <p className=" absolute bottom-2 right-2 text-xl mt-1 text-[#a176eb]">
+                  ☆
+                </p>
+              )}
             </div>
             <div className=" text-center w-full -mt-2 items-center justify-center flex flex-col text-sm">
               <p className=" text-xl font-medium w-60 truncate">
@@ -173,7 +197,7 @@ function Player() {
                 />
                 <div
                   onClick={togglePlayPause}
-                  className=" bg-[#8D50F9] cursor-pointer p-4 rounded-full"
+                  className=" bg-purple cursor-pointer p-4 rounded-full"
                 >
                   {isPlaying ? (
                     <Pause className=" size-5" />
@@ -200,15 +224,14 @@ function Player() {
 
                 <VolumeControl />
               </div>
-
-              {/* <LikeButton /> */}
             </div>
-            <div className=" flex items-center gap-4 px-4 w-full text-xs">
+            <div className=" select-none flex items-center gap-4 px-4 w-full text-xs">
               <p>{formattedProgress}</p>
 
               <Slider
                 max={duration || 0}
                 value={[progress]}
+                disabled={user?.role !== "admin"}
                 onClick={handleValueChange}
                 onValueCommit={handleSeek}
                 onValueChange={handleProgress}
@@ -217,7 +240,12 @@ function Player() {
               <p>{formattedDuration}</p>
             </div>
             <div className=" flex text-zinc-600 gap-3 items-center">
-              <Repeat className=" size-5 text-zinc-600" />
+              <Repeat
+                onClick={() => (setLoop(!isLooped), handleLoop())}
+                className={`${
+                  isLooped ? "text-zinc-100" : "text-zinc-600"
+                } size-5 cursor-pointer transition-all duration-300`}
+              />
               {/* <Shuffle className=" size-5" /> */}
               <MessageSquare
                 onClick={() => setIsChatOpen(true)}
@@ -225,6 +253,7 @@ function Player() {
                   seen ? "" : "text-red-500"
                 } size-5 cursor-pointer hover:text-zinc-200 transition-all duration-500`}
               />
+              <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
             </div>
             <div className=" w-full flex gap-2 min-h-5 items-center justify-center">
               {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
@@ -272,11 +301,6 @@ function Player() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* {currentSong?.source == "youtube" && (
-        <p className=" absolute bottom-2.5 text-xs mt-1 text-[#a176eb]">
-          Premium ☆
-        </p>
-      )} */}
     </div>
   );
 }

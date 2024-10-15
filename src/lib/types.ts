@@ -16,7 +16,7 @@ export interface searchResults {
   image: downloadUrl[];
   source?: "youtube";
   downloadUrl: downloadUrl[];
-  addedBy?: string;
+  addedByUser?: TUser;
   queueId?: string;
   voteCount: number;
   topVoters?: TUser[];
@@ -46,9 +46,11 @@ export interface TUser {
   name: string;
   username: string;
   imageUrl: string;
+  spotify: boolean;
   role?: "admin" | "listener" | string;
   token?: string;
   roomId?: string;
+  spotifyData: spotifyToken;
 }
 
 export interface listener {
@@ -69,11 +71,25 @@ export interface queue {
   playing: boolean;
 }
 
-export interface upvVotes {
-  queueId: string;
-}
-
 export interface messages {
   user: TUser;
   message: string;
+}
+
+export interface spotifyToken {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+}
+
+export interface spotifyPlaylist {
+  description: string;
+  id: string;
+  name: string;
+  images: [
+    {
+      url: string;
+    }
+  ];
+  owner: { display_name: string };
 }

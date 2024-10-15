@@ -64,51 +64,34 @@
     @apply bg-background text-foreground;
   }
 }
+/* WebKit scrollbar styles (for Chrome, Safari) */
 *::-webkit-scrollbar {
-  width: 1px;
-  height: 1px;
+  width: 0; /* Initially hide the scrollbar */
+  height: 0; /* Initially hide the horizontal scrollbar */
 }
 
+/* Show scrollbar on hover */
+*:hover::-webkit-scrollbar {
+  width: 2px; /* Show scrollbar width on hover */
+  height: 2px; /* Show horizontal scrollbar width on hover if needed */
+}
+
+/* Scrollbar track */
 *::-webkit-scrollbar-track {
-  background: none;
+  background: none; /* Track background */
 }
 
+/* Scrollbar thumb */
 *::-webkit-scrollbar-thumb {
-  background-color: none;
-  border-radius: 1rem;
+  background-color: gray; /* Color of the scrollbar */
+  border-radius: 2rem; /* Rounded corners */
 }
 
+/* Scrollbar thumb on hover */
 *::-webkit-scrollbar-thumb:hover {
-  background: #b2b2b2;
+  background: #b2b2b2; /* Darker color on hover */
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  width: 0;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 5px;
-  background: #8d50f9;
-  box-shadow: -405px 0 0 400px #8d50f9;
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 0;
-  cursor: pointer;
-  appearance: none;
-  height: 5px;
-  background: #8d50f9;
-  box-shadow: -405px 0 0 400px #8d50f9;
-}
-
-input[type="range"]::-ms-thumb {
-  width: 2px;
-  cursor: pointer;
-  appearance: none;
-  height: 5px;
-  background: #8d50f9;
-  box-shadow: -405px 0 0 400px #8d50f9;
-}
 .text-with-image {
   font-size: 4.5rem; /* Adjust to your needs */
   margin-top: -1rem;
@@ -118,7 +101,7 @@ input[type="range"]::-ms-thumb {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent; /* Make the text itself transparent */
-  animation: imageMove 8s linear infinite;
+  animation: imageMove 4s linear infinite;
 }
 
 @keyframes imageMove {

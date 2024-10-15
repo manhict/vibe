@@ -1,95 +1,132 @@
 "use client";
 
+import { socket } from "@/app/socket";
 import { useUserContext } from "@/app/store/userStore";
+import useDebounce from "@/Hooks/useDebounce";
 import { Heart } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-const LikeButton = () => {
-  const { user } = useUserContext();
+interface LikeButtonProps {
+  hearts?: string[]; // Array of heart emojis or icons
+  maxSize?: number; // Maximum size for the images/hearts
+}
+
+const LikeButton: React.FC<LikeButtonProps> = ({
+  hearts = [],
+  maxSize = 40,
+}) => {
+  const { user, likEffectUser: users, setLikEffectUser } = useUserContext();
+  const heartRef = useRef<SVGSVGElement>(null);
   const handleClick = useCallback(
     (event: React.MouseEvent) => {
       const xPos = event.clientX;
       const yPos = event.clientY;
 
-      // Create a div for the background image
-      const imageEl = document.createElement("div");
-      const imageE2 = document.createElement("div");
-      imageEl.style.zIndex = "100";
-      imageEl.style.position = "absolute";
-      imageEl.style.left = xPos + "px";
-      imageEl.style.top = yPos + "px";
+      // Function to create and style an element
+      const createElement = (
+        url: string | null,
+        size: number,
+        left: number,
+        top: number,
+        isHeart: boolean
+      ) => {
+        const el = document.createElement("div");
+        el.style.zIndex = "100";
+        el.style.position = "absolute";
+        el.style.left = left + "px";
+        el.style.top = top + "px";
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.style.background = isHeart ? "none" : `url('${url}')`; // Use image URL or no background for heart
+        el.style.backgroundSize = "cover"; // Ensure the image covers the div
+        el.style.borderRadius = "50%"; // Make it rounded
+        el.style.pointerEvents = "none"; // Disable pointer events
+        el.style.animation = "heartAnimation 6s linear"; // Set the animation
+        el.style.opacity = "0.5"; // Set opacity
 
-      // Set a random size up to a maximum of 50px
-      const size = Math.random() * 40; // Generates a number between 0 and 50
-      imageEl.style.width = size + "px";
-      imageEl.style.height = size + "px";
-      imageEl.style.right = xPos - size + "px"; // Same position as image
-      imageEl.style.top = yPos + 20 + "px";
-      imageEl.style.background = `url('${user?.imageUrl}')`; // Background image
-      imageEl.style.backgroundSize = "cover"; // Ensure the image covers the div
-      imageEl.style.borderRadius = "50%"; // Make it rounded
-      imageEl.style.pointerEvents = "none"; // Disable pointer events
-      imageEl.style.animation = "heartAnimation 6s linear"; // Set the animation
-      imageEl.style.opacity = "20";
+        if (isHeart) {
+          el.textContent = hearts![Math.floor(Math.random() * hearts!.length)]; // Set a random heart emoji from the array
+          el.style.fontSize = size + "px"; // Set font size for heart
+          el.style.color = "red"; // Set heart color
+          el.style.lineHeight = `${size}px`; // Center heart vertically
+          el.style.textAlign = "center"; // Center heart horizontally
+        }
 
-      imageE2.style.zIndex = "100";
-      imageE2.style.position = "absolute";
-      imageE2.style.left = xPos + "px";
-      imageE2.style.top = yPos + "px";
-      imageE2.style.width = size + "px";
-      imageE2.style.height = size + "px";
-      imageE2.style.right = xPos + "px"; // Same position as image
-      imageE2.style.top = yPos + 20 + "px";
-      imageE2.style.background = `url('${user?.imageUrl}')`; // Background image
-      imageE2.style.backgroundSize = "cover"; // Ensure the image covers the div
-      imageE2.style.borderRadius = "50%"; // Make it rounded
-      imageE2.style.pointerEvents = "none"; // Disable pointer events
-      imageE2.style.animation = "heartAnimation 6s linear"; // Set the animation
-      imageE2.style.opacity = "20";
-      // Create a div for the heart emoji
-      const heartEl = document.createElement("div");
-      heartEl.style.zIndex = "100";
-      heartEl.style.opacity = "20";
-      heartEl.textContent = "❤️"; // Heart emoji
-      heartEl.style.position = "absolute"; // Position relative to the parent
-      heartEl.style.left = xPos + 20 + "px"; // Same position as image
-      heartEl.style.top = yPos + 20 + "px"; // Same position as image
-      heartEl.style.fontSize = size / 1 + "px"; // Set the font size to half of the image size
-      heartEl.style.pointerEvents = "none"; // Disable pointer events
-      heartEl.style.animation = "heartAnimation 6s linear"; // Set the same animation
-      const heartE2 = document.createElement("div");
-      heartE2.style.zIndex = "100";
-      heartE2.style.opacity = "20";
-      heartE2.textContent = "❤️"; // Heart emoji
-      heartE2.style.position = "absolute"; // Position relative to the parent
-      heartE2.style.left = xPos - 30 + "px"; // Same position as image
-      heartE2.style.top = yPos - 10 + "px"; // Same position as image
-      heartE2.style.fontSize = size / 1 + "px"; // Set the font size to half of the image size
-      heartE2.style.pointerEvents = "none"; // Disable pointer events
-      heartE2.style.animation = "heartAnimation 6s linear"; // Set the same animation
+        return el;
+      };
 
-      // Append both elements to the body
-      document.body.appendChild(imageEl);
-      document.body.appendChild(heartEl);
-      document.body.appendChild(heartE2);
-      document.body.appendChild(imageE2);
+      // Generate a size based on the number of users or the maximum size
+      const size = Math.min(maxSize, 40 / users!.length); // Adjust size based on number of users
 
-      // Remove both elements after the animation completes (6 seconds)
-      setTimeout(() => {
-        imageEl.remove();
-        heartE2.remove();
-        heartEl.remove();
-        imageE2.remove();
-      }, 3000);
+      // Loop through users and create elements for each user's image
+      users?.forEach((user) => {
+        if (user.imageUrl) {
+          // Generate random offsets for better spacing
+          const randomXOffset = Math.random() * 80 - 40; // Random offset between -40 and 40
+          const randomYOffset = Math.random() * 80 - 40; // Random offset between -40 and 40
+
+          // Adjust yPos to create the effect of spawning above the heart
+          const imageEl = createElement(
+            user.imageUrl,
+            size,
+            xPos + randomXOffset,
+            yPos - size + randomYOffset, // Change this to spawn above
+            false
+          );
+
+          const heartEl = createElement(
+            null,
+            size / 2,
+            xPos + randomXOffset + 20,
+            yPos - size + randomYOffset, // Change this to spawn above
+            true
+          );
+
+          // Append elements to the body
+          document.body.appendChild(imageEl);
+          document.body.appendChild(heartEl);
+
+          // Remove elements after the animation completes (6 seconds)
+          setTimeout(() => {
+            imageEl.remove();
+            heartEl.remove();
+            setLikEffectUser([]);
+          }, 2500);
+        }
+      });
     },
-    [user?.imageUrl]
+    [users, hearts, maxSize, setLikEffectUser]
   );
+  useEffect(() => {
+    if (heartRef.current && users?.length > 0) {
+      // Get the bounding box of the Heart component
+      const heartRect = heartRef.current.getBoundingClientRect();
 
+      // Simulate a click at the center of the Heart component
+      handleClick({
+        clientX: heartRect.left + heartRect.width / 2, // Center horizontally
+        clientY: heartRect.top + heartRect.height / 2, // Center vertically
+      } as React.MouseEvent<HTMLDivElement>); // Manually cast as a MouseEvent
+    }
+  }, [handleClick, users]);
+
+  const emitHeart = useDebounce(() => {
+    if (user?.imageUrl) {
+      socket.emit("heart", { imageUrl: user.imageUrl });
+    }
+  }, 400);
+
+  const handleEmit = () => {
+    if (user?.imageUrl) {
+      setLikEffectUser([{ imageUrl: user.imageUrl }]);
+      emitHeart();
+    }
+  };
   return (
     <Heart
-      onClick={handleClick}
-      size={22}
-      className=" hover:opacity-70 opacity-40 transition-all duration-500 cursor-pointer"
+      ref={heartRef}
+      onClick={handleEmit}
+      className="size-[1.27rem] text-zinc-100 hover:fill-red-500 hover:text-red-500 hover:opacity-100 opacity-40 transition-all hover:scale-125 active:scale-75 duration-300 cursor-pointer"
     />
   );
 };

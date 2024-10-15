@@ -1,7 +1,6 @@
 "use client";
 import { useUserContext } from "@/app/store/userStore";
-import { useCallback } from "react";
-import { toast } from "sonner";
+
 import {
   Tooltip,
   TooltipContent,
@@ -9,8 +8,6 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
-import { Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -20,28 +17,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-
 function Listeners({ className }: { className?: string }) {
-  const { roomId, listener, user } = useUserContext();
-  const handleShare = useCallback(() => {
-    if (!user) return;
-    try {
-      navigator
-        .share({
-          url:
-            window.location.origin +
-            "/v/?room=" +
-            roomId +
-            "&ref=" +
-            user.username,
-        })
-        .then(() => {
-          toast.success("Shared the link successfully!");
-        });
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  }, [roomId, user]);
+  const { listener, user } = useUserContext();
+
   return (
     <Dialog>
       <DialogTrigger
@@ -98,15 +76,6 @@ function Listeners({ className }: { className?: string }) {
             )}
           </div>
         </div>
-        <Button
-          onClick={(e) => (e.stopPropagation(), handleShare())}
-          size={"sm"}
-          variant={"secondary"}
-          className=" bg-[#8D50F9] w-fit hover:bg-[#7140c5]"
-        >
-          {" "}
-          <Share2 className="size-4 mr-2" /> Invite Friends
-        </Button>
       </DialogTrigger>
       <DialogContent className="w-[40%] max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
         <DialogHeader>

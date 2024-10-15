@@ -14,6 +14,7 @@ import React, {
 } from "react";
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
+import useDebounce from "@/Hooks/useDebounce";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -193,15 +194,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Debounced function to emit progress
 
-  // const [lastEmittedTime, setLastEmittedTime] = useState(0);
+  const [lastEmittedTime, setLastEmittedTime] = useState(0);
 
-  // const emitProgress = useDebounce(() => {
-  //   if (socket && socket.connected) {
-  //     // socket.emit("progress", currentTime);
-  //   } else {
-  //     console.warn("Socket not connected. Unable to emit progress.");
-  //   }
-  // }, 1000);
+  const emitProgress = useDebounce((currentTime: number) => {
+    if (socket && socket.connected) {
+      socket.emit("progress", currentTime);
+    } else {
+      console.warn("Socket not connected. Unable to emit progress.");
+    }
+  }, 1000);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
@@ -222,11 +223,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         const currentTime = audioRef.current.currentTime;
         setProgress(currentTime);
         setDuration(audioRef.current.duration);
-        // if (Math.abs(currentTime - lastEmittedTime) >= 1) {
-        //   // 1 second threshold
-        //   // emitProgress(currentTime);
-        //   setLastEmittedTime(currentTime);
-        // }
+        if (Math.abs(currentTime - lastEmittedTime) >= 10) {
+          // 10 second threshold
+          emitProgress(currentTime);
+          setLastEmittedTime(currentTime);
+        }
       }
     };
     const audioElement = audioRef.current;
@@ -245,7 +246,16 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("timeupdate", updateProgress);
       };
     }
-  }, [setMediaSession, currentSong, play, queue, playNext, isLooped]);
+  }, [
+    setMediaSession,
+    currentSong,
+    play,
+    queue,
+    playNext,
+    isLooped,
+    emitProgress,
+    lastEmittedTime,
+  ]);
 
   useEffect(() => {
     if (!currentSong && queue.length > 0) {
