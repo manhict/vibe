@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { MdDone } from "react-icons/md";
-import { searchResults, searchSongResult } from "@/lib/types";
+import { searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
 import { formatArtistName } from "@/utils/utils";
@@ -22,6 +22,7 @@ import { socket } from "@/app/socket";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
+import useSelect from "@/Hooks/useSelect";
 function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
@@ -80,30 +81,13 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
       searchMoreSongs();
     }
   }, [inView, loading, searchMoreSongs]);
-  const [selectedSongs, setSelectedSongs] = useState<searchResults[]>([]);
 
+  const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
   const handlePlay = useCallback(async () => {
     if (selectedSongs.length == 0) return toast.error("No song selected");
     socket.emit("addToQueue", selectedSongs);
     setSelectedSongs([]);
-  }, [selectedSongs]);
-
-  const handleSelect = useCallback(
-    async (song: searchResults) => {
-      if (!song) return;
-      if (selectedSongs.length >= 5)
-        return toast.error("Limit reached only 5 songs at a time");
-
-      if (selectedSongs.includes(song)) {
-        // If the song is already selected (uncheck), remove it from the list
-        setSelectedSongs(selectedSongs.filter((s) => s !== song));
-      } else {
-        // If the song is not selected (check), add it to the list
-        setSelectedSongs([song, ...selectedSongs]);
-      }
-    },
-    [selectedSongs]
-  );
+  }, [setSelectedSongs, selectedSongs]);
 
   return (
     <Dialog key={"songs"}>
@@ -194,7 +178,7 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
                 </div>
                 <div className=" relative mr-0.5">
                   <input
-                    onChange={() => handleSelect(song)}
+                    onChange={() => handleSelect(song, true)}
                     checked={selectedSongs.includes(song)}
                     name={song?.id}
                     id={song?.id}

@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Search, Share2 } from "lucide-react";
+import { Search, Share2, Trash2, X } from "lucide-react";
 import Listeners from "./Listeners";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/app/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
 import { FaSpotify } from "react-icons/fa";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import SpotifyPlaylist from "./SpotifyPlaylist";
@@ -35,18 +35,40 @@ function AddToQueue() {
   }, [roomId, user]);
   const [name, setName] = useState<string>("");
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  useEffect(() => {
+    if (queue.length <= 1) {
+      setIsDeleting(false);
+    }
+  }, [queue]);
   return (
     <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4">
       <div className=" flex items-center justify-between">
         <p className=" text-lg font-semibold">In Queue</p>
-        <div className=" flex items-center">
+        <div className=" flex items-center gap-1">
           <Button
             onClick={() => setOpenSearch((prev) => !prev)}
             variant={"secondary"}
-            className=" bg-purple p-2.5 rounded-md"
+            className=" bg-purple p-2.5 hover:bg-purple/80 rounded-md"
           >
             <Search className=" size-4" />
           </Button>
+          {user && user.role == "admin" && queue.length > 1 && (
+            <Button
+              onClick={() => {
+                if (queue.length <= 1) return;
+                setIsDeleting((prev) => !prev);
+              }}
+              variant={"secondary"}
+              className=" bg-purple p-2.5 hover:bg-purple/80 rounded-md"
+            >
+              {isDeleting ? (
+                <X className=" size-4" />
+              ) : (
+                <Trash2 className=" size-4" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
       {isSearchedOpened && (
@@ -59,7 +81,7 @@ function AddToQueue() {
       )}
       <div className="h-full z-50 overflow-y-scroll">
         {queue.length > 0 ? (
-          <QueueList name={name} />
+          <QueueList name={name} isDeleting={isDeleting} />
         ) : (
           <SearchSongPopup isAddToQueue />
         )}
