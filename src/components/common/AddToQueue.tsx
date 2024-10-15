@@ -51,6 +51,7 @@ function AddToQueue() {
       </div>
       {isSearchedOpened && (
         <Input
+          autoFocus
           onChange={(e) => setName(e.target.value)}
           placeholder="Search in queue"
           className=" mt-2 py-2"
