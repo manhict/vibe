@@ -29,7 +29,7 @@ export async function generateMetadata({
   }
   if (!user) return {};
   return {
-    title: `Vibe x ${user?.name || "404"} `,
+    title: `Vibe x ${user?.name?.split(" ")[0] || "404"} `,
     description: `${user?.name || "404"}'s Inviting you to listen together`,
     icons: [
       {
@@ -47,8 +47,8 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       site: "@tanmay11117",
-      title: `${user?.name} Vibe`,
-      description: `${user?.name} is listening on Vibe`,
+      title: `${user?.name?.split(" ")[0]} Vibe`,
+      description: `${user?.name?.split(" ")[0]} is listening on Vibe`,
       images: user?.imageUrl || "/",
     },
   };
