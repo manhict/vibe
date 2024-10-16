@@ -36,7 +36,7 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId, listener } = useUserContext();
+  const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
 
   const search = useCallback(
@@ -306,7 +306,7 @@ function SearchSongPopup({
         {youtube &&
           songs &&
           songs?.data?.results?.length > 0 &&
-          listener?.totalUsers == 1 &&
+          user?.role == "admin" &&
           selectedSongs?.length == 0 && (
             <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
               <DialogClose
