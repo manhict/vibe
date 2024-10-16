@@ -5,11 +5,8 @@ import Listeners from "./Listeners";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/app/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import { FaSpotify } from "react-icons/fa";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
-import SpotifyPlaylist from "./SpotifyPlaylist";
 import { Input } from "../ui/input";
 import Youtube from "./Youtube";
 import { motion } from "framer-motion";
@@ -203,7 +200,7 @@ function AddToQueue() {
             <Share2 className="size-3.5 mr-0.5" /> <span>Invite Friends</span>
           </div>
 
-          {user && (
+          {/* {user && (
             <>
               {user?.spotify ? (
                 <SpotifyPlaylist />
@@ -216,7 +213,7 @@ function AddToQueue() {
                 </Link>
               )}
             </>
-          )}
+          )} */}
           <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-md px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
             <Youtube />
           </div>

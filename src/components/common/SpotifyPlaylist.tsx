@@ -9,7 +9,7 @@ import {
 } from "../ui/dialog";
 import { FaSpotify } from "react-icons/fa";
 import { useUserContext } from "@/app/store/userStore";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { spotifyPlaylist } from "@/lib/types";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import parse from "html-react-parser";
@@ -33,30 +33,30 @@ function SpotifyPlaylist() {
     };
     fetchPlaylist();
   }, [user, setSpotifyPlaylists, spotifyPlaylists]);
-  // const handleLoadPlaylist = useCallback(
-  //   async (playlistId: string) => {
-  //     try {
-  //       const response = await api.get(
-  //         `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${user?.spotifyData.access_token}`,
-  //           },
-  //         }
-  //       );
+  const handleLoadPlaylist = useCallback(
+    async (playlistId: string) => {
+      try {
+        const response = await api.get(
+          `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.spotifyData.access_token}`,
+            },
+          }
+        );
 
-  //       if (response.success) {
-  //         const tracks = (response.data as any).items.map(
-  //           (item: any) => item.track
-  //         );
-  //         console.log(tracks);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching playlist tracks:", error);
-  //     }
-  //   },
-  //   [user]
-  // );
+        if (response.success) {
+          const tracks = (response.data as any).items.map(
+            (item: any) => item.track
+          );
+          console.log(tracks);
+        }
+      } catch (error) {
+        console.error("Error fetching playlist tracks:", error);
+      }
+    },
+    [user]
+  );
   return (
     <Dialog>
       <DialogTrigger>
@@ -72,17 +72,14 @@ function SpotifyPlaylist() {
           <DialogDescription />
         </DialogHeader>
         <div className="bg-black rounded-t-xl font-semibold text-lg flex items-center justify-between p-2.5 px-4 text-zinc-200">
-          <p>
-            Add tracks from your spotify playlists{" "}
-            <span className=" text-red-500">(not available right now )</span>
-          </p>
+          <p>Add tracks from your spotify playlists</p>
         </div>
         {spotifyPlaylists && (
           <div className="flex border-zinc-500 border-t-0 flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] overflow-y-scroll">
             {spotifyPlaylists.map((playlist, i) => (
               <div
                 key={playlist.id}
-                // onClick={() => handleLoadPlaylist(playlist.id)}
+                onClick={() => handleLoadPlaylist(playlist.id)}
                 className={`flex gap-2 text-start cursor-pointer hover:bg-zinc-800/20 ${
                   i != spotifyPlaylists.length - 1 && "border-b"
                 }  border-[#1D192B] p-2.5 items-center`}
