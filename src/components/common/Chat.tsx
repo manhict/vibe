@@ -32,7 +32,7 @@ function Chat({
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (message.length > 200) return toast.error("Message size exceeded");
+      if (message.length > 500) return toast.error("Message size exceeded");
       if (String(message).trim().length == 0) return;
       socket.emit("message", message);
       setMessage("");

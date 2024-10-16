@@ -25,7 +25,10 @@ const VoteIcon = ({
 
   const handleAnimationComplete = () => {
     // Trigger the appearance of TopVotes after animation ends
-    setShowTopVotes(true);
+    const t = setTimeout(() => {
+      setShowTopVotes(true);
+    }, 650);
+    return () => clearTimeout(t);
   };
 
   return (
