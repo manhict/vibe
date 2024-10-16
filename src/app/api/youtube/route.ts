@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   const roomID = req.nextUrl.searchParams.get("room");
+  const save = req.nextUrl.searchParams.get("save");
   const session = cookies().get("vibeId");
   if (!session || !session.value) {
     throw new Error("No session found");
@@ -57,39 +58,40 @@ export async function GET(req: NextRequest) {
         },
       ],
     }));
-    const room = await Room.findOne({ roomId: roomID });
-    if (!room) throw new Error("room not found");
-    // Bulk insert all tracks into the queue
-    const queueItems = tracks.map((track) => ({
-      roomId: room._id,
-      isPlaying: false, // Default state, adjust as needed
-      songData: track,
-    }));
+    if (save) {
+      const room = await Room.findOne({ roomId: roomID });
+      if (!room) throw new Error("room not found");
+      // Bulk insert all tracks into the queue
+      const queueItems = tracks.map((track) => ({
+        roomId: room._id,
+        isPlaying: false, // Default state, adjust as needed
+        songData: track,
+      }));
 
-    // Extract unique track IDs from the new tracks
-    const trackIds = tracks.map((track) => track.id);
+      // Extract unique track IDs from the new tracks
+      const trackIds = tracks.map((track) => track.id);
 
-    // Find existing tracks in the queue with matching track IDs
-    const existingTracks = await Queue.find({
-      roomId: room._id,
-      "songData.id": { $in: trackIds }, // Match tracks by their unique ID
-    });
+      // Find existing tracks in the queue with matching track IDs
+      const existingTracks = await Queue.find({
+        roomId: room._id,
+        "songData.id": { $in: trackIds }, // Match tracks by their unique ID
+      });
 
-    // Extract the IDs of tracks already in the queue
-    const existingTrackIds = existingTracks.map(
-      (queueItem) => queueItem.songData.id
-    );
+      // Extract the IDs of tracks already in the queue
+      const existingTrackIds = existingTracks.map(
+        (queueItem) => queueItem.songData.id
+      );
 
-    // Filter out the tracks that already exist in the queue
-    const newTracksToInsert = queueItems.filter(
-      (queueItem) => !existingTrackIds.includes(queueItem.songData.id)
-    );
+      // Filter out the tracks that already exist in the queue
+      const newTracksToInsert = queueItems.filter(
+        (queueItem) => !existingTrackIds.includes(queueItem.songData.id)
+      );
 
-    // Insert only the non-duplicate tracks in bulk to the database
-    if (newTracksToInsert.length > 0) {
-      await Queue.insertMany(newTracksToInsert);
+      // Insert only the non-duplicate tracks in bulk to the database
+      if (newTracksToInsert.length > 0) {
+        await Queue.insertMany(newTracksToInsert);
+      }
     }
-
     return NextResponse.json(tracks);
   } catch (error: any) {
     console.log(error?.message);

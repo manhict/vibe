@@ -3,10 +3,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { MdDone } from "react-icons/md";
-import { searchSongResult } from "@/lib/types";
+import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
-import { formatArtistName } from "@/utils/utils";
+import { extractPlaylistID, formatArtistName } from "@/utils/utils";
 import { useInView } from "react-intersection-observer";
 import { Dialog } from "@radix-ui/react-dialog";
 import {
@@ -23,32 +23,58 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
-function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
+import { FaYoutube } from "react-icons/fa";
+import { useUserContext } from "@/app/store/userStore";
+function SearchSongPopup({
+  isAddToQueue = false,
+  youtube = false,
+}: {
+  isAddToQueue?: boolean;
+  youtube?: boolean;
+}) {
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
+  const { roomId } = useUserContext();
   const [query, setQuery] = useState<string>("");
 
-  const search = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim();
-    setQuery(value);
-    if (value.length <= 0) {
-      setSongs(null);
+  const search = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.trim();
+      setQuery(value);
+      if (value.length <= 0) {
+        setSongs(null);
+        setLoading(false);
+        return;
+      }
+
+      const url = youtube
+        ? `/api/youtube?id=${extractPlaylistID(value)}&room=${roomId}`
+        : `/api/search/?name=${value}&page=0`;
+
+      setPage(0); // Reset page on a new search
+      setLoading(true);
+      const res = await api.get(url);
+      if (res.success) {
+        if (youtube) {
+          const tracks = res.data as searchResults[];
+          setSongs({
+            success: true,
+            data: {
+              total: tracks.length,
+              start: 0,
+              results: tracks,
+            },
+          });
+        } else {
+          setSongs(res.data as searchSongResult);
+        }
+      }
       setLoading(false);
-      return;
-    }
-
-    const url = `/api/search/?name=${value}&page=0`;
-
-    setPage(0); // Reset page on a new search
-    setLoading(true);
-    const res = await api.get(url);
-    if (res.success) {
-      setSongs(res.data as searchSongResult);
-    }
-    setLoading(false);
-  }, []);
+    },
+    [youtube, roomId]
+  );
 
   const handleSearch = useDebounce(search, 400);
 
@@ -91,34 +117,43 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
 
   return (
     <Dialog key={"songs"}>
-      {!isAddToQueue ? (
-        <DialogTrigger className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
-          <Search />
-          <input
-            type="text"
-            readOnly
-            className=" bg-transparent hidden md:flex font-medium text-white p-2 w-full outline-none"
-            placeholder="What do you want to play next?"
-          />
-          <input
-            type="text"
-            readOnly
-            className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
-            placeholder="Search songs"
-          />
-          <Star />
+      {youtube ? (
+        <DialogTrigger>
+          <FaYoutube className="size-4" />
         </DialogTrigger>
       ) : (
-        <DialogTrigger className="flex-col hidden md:flex w-full h-full text-zinc-200 justify-center items-center">
-          <p className=" font-semibold text-4xl ">Seems like</p>
-          <p className=" font-medium text-2xl">your queue is empty</p>
-          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-4 mb-2">
-            Add Songs
-          </div>
-          <p className=" font-normal text-sm mt-1">don&apos;t tell anyone 🤫</p>
-        </DialogTrigger>
+        <>
+          {!isAddToQueue ? (
+            <DialogTrigger className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
+              <Search />
+              <input
+                type="text"
+                readOnly
+                className=" bg-transparent hidden md:flex font-medium text-white p-2 w-full outline-none"
+                placeholder="What do you want to play next?"
+              />
+              <input
+                type="text"
+                readOnly
+                className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
+                placeholder="Search songs"
+              />
+              <Star />
+            </DialogTrigger>
+          ) : (
+            <DialogTrigger className="flex-col hidden md:flex w-full h-full text-zinc-200 justify-center items-center">
+              <p className=" font-semibold text-4xl ">Seems like</p>
+              <p className=" font-medium text-2xl">your queue is empty</p>
+              <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-4 mb-2">
+                Add Songs
+              </div>
+              <p className=" font-normal text-sm mt-1">
+                don&apos;t tell anyone 🤫
+              </p>
+            </DialogTrigger>
+          )}
+        </>
       )}
-
       <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
         <DialogHeader>
           <DialogTitle />
@@ -131,7 +166,7 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
           <Input
             autoFocus
             onChange={handleSearch}
-            placeholder="Search Song"
+            placeholder={youtube ? "Paste youtube playlist url" : "Search Song"}
             className="border-none focus-visible:ring-0"
           />
           <DialogClose>
@@ -167,8 +202,8 @@ function SearchSongPopup({ isAddToQueue = false }: { isAddToQueue?: boolean }) {
                   />
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
-                <div className="text-sm font-medium w-full">
-                  <p className="font-semibold truncate w-10/12">{song.name}</p>
+                <div className="text-sm font-medium w-10/12">
+                  <p className="font-semibold truncate w-11/12">{song.name}</p>
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {formatArtistName(song.artists.primary)}
                   </p>
