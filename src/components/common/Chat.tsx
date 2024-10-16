@@ -17,6 +17,7 @@ import { formatArtistName, isImageUrl, linkifyOptions } from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
+import { toast } from "sonner";
 
 function Chat({
   messagesEndRef,
@@ -31,6 +32,7 @@ function Chat({
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (message.length > 200) return toast.error("Message size exceeded");
       if (String(message).trim().length == 0) return;
       socket.emit("message", message);
       setMessage("");

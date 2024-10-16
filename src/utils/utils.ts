@@ -39,9 +39,12 @@ export const setCookie = (name: string, value: string) => {
 };
 
 export const isImageUrl = (url: string): boolean => {
-  return /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  return (
+    /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|bmp|svg|tiff|ico|heic|heif|jfif|pjpeg|pjp)$/i.test(
+      url
+    ) || /^https?:\/\/.*\/.*(\?.*)?(#.*)?$/i.test(url)
+  ); // Handle URLs that might return images without extensions
 };
-
 export const linkifyOptions = {
   target: "_blank",
   nl2br: true,

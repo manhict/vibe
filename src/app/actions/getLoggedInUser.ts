@@ -27,8 +27,8 @@ export async function getLoggedInUser() {
     }
 
     const [user, room] = await Promise.all([
-      User.findById(decoded.userId), // Fetch the user by ID
-      Room.findOne({ roomId }), // Fetch the room by roomId
+      await User.findById(decoded.userId), // Fetch the user by ID
+      await Room.findOne({ roomId }), // Fetch the room by roomId
     ]);
 
     const role = await RoomUser.findOne({
