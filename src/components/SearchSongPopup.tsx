@@ -68,7 +68,7 @@ function SearchSongPopup({
             },
           });
         } else {
-          setSongs(res.data as searchSongResult);
+          setSongs((res?.data as searchSongResult) || []);
         }
       }
       setLoading(false);
