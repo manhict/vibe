@@ -2,7 +2,7 @@
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/app/store/userStore";
-import { Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
+import { SkipBack, SkipForward, X } from "lucide-react";
 import { socket } from "@/app/socket";
 import React, { SetStateAction, useCallback, useState } from "react";
 import {
@@ -16,6 +16,7 @@ import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, isImageUrl, linkifyOptions } from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";
+import PlayButton from "./PlayButton";
 
 function Chat({
   messagesEndRef,
@@ -24,8 +25,7 @@ function Chat({
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
   messagesEndRef: React.RefObject<HTMLDListElement>;
 }) {
-  const { currentSong, playPrev, playNext, togglePlayPause, isPlaying } =
-    useAudio();
+  const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
   const { user, listener, messages } = useUserContext();
   const sendMessage = useCallback(
@@ -72,16 +72,7 @@ function Chat({
                 user?.role !== "admin" ? "text-zinc-700" : ""
               } cursor-pointer size-4`}
             />
-            <div
-              onClick={togglePlayPause}
-              className=" bg-purple cursor-pointer p-4 rounded-full"
-            >
-              {isPlaying ? (
-                <Pause className=" size-4" />
-              ) : (
-                <Play className=" size-4" />
-              )}
-            </div>
+            <PlayButton className=" size-4" />
             <SkipForward
               onClick={playNext}
               aria-label="play next"

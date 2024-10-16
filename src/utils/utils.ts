@@ -59,3 +59,21 @@ export function extractPlaylistID(url: string) {
     return null;
   }
 }
+
+export const springConfig = {
+  type: "spring",
+  stiffness: 900, // Controls the speed of the spring
+  damping: 30, // Controls the bounciness
+};
+
+export const playVariants = {
+  hidden: { y: -25 }, // Comes from top
+  visible: { y: 0, transition: springConfig }, // Spring-based movement
+  exit: { y: -20, transition: springConfig }, // Exits upwards with spring effect
+};
+
+export const pauseVariants = {
+  hidden: { y: 25 }, // Comes from bottom
+  visible: { y: 0, transition: springConfig }, // Spring-based movement
+  exit: { y: 20, transition: springConfig }, // Exits downwards with spring effect
+};

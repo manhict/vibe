@@ -1,5 +1,4 @@
 "use server";
-
 import dbConnect from "@/lib/dbConnect";
 import Room from "@/models/roomModel";
 import RoomUser from "@/models/roomUsers";
@@ -11,6 +10,8 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URL || "";
 export async function getLoggedInUser() {
   try {
+    await dbConnect();
+
     const session = cookies().get("vibeId");
     const roomId = cookies().get("room")?.value;
     if (!session || !session.value) {
@@ -24,8 +25,6 @@ export async function getLoggedInUser() {
     if (!decoded || !decoded.userId) {
       throw new Error("Invalid token");
     }
-
-    await dbConnect();
 
     const [user, room] = await Promise.all([
       User.findById(decoded.userId), // Fetch the user by ID

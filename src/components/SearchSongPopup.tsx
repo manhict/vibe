@@ -36,7 +36,7 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId } = useUserContext();
+  const { roomId, listener } = useUserContext();
   const [query, setQuery] = useState<string>("");
 
   const search = useCallback(
@@ -114,6 +114,13 @@ function SearchSongPopup({
     socket.emit("addToQueue", selectedSongs);
     setSelectedSongs([]);
   }, [setSelectedSongs, selectedSongs]);
+
+  const handleAddAll = useCallback(() => {
+    if (songs && songs?.data.results.length > 0) {
+      socket.emit("addToQueue", songs?.data.results);
+      toast.success("All songs added to queue");
+    }
+  }, [songs]);
 
   return (
     <Dialog key={"songs"}>
@@ -296,6 +303,20 @@ function SearchSongPopup({
             </DialogFooter>
           </>
         )}
+        {youtube &&
+          songs &&
+          songs?.data?.results?.length > 0 &&
+          listener?.totalUsers == 1 &&
+          selectedSongs?.length == 0 && (
+            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
+              <DialogClose
+                onClick={handleAddAll}
+                className=" py-3 w-full  rounded-xl bg-purple/80 font-semibold text-sm"
+              >
+                <p className="w-full text-center">Add All</p>
+              </DialogClose>
+            </DialogFooter>
+          )}
       </DialogContent>
     </Dialog>
   );

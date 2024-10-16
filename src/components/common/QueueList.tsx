@@ -1,7 +1,7 @@
 import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
 import { formatArtistName } from "@/utils/utils";
-import { Heart, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import React, { useCallback } from "react";
 import {
   Tooltip,
@@ -19,6 +19,7 @@ import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import useSelect from "@/Hooks/useSelect";
 import { Button } from "../ui/button";
+import VoteIcon from "./VoteIcon";
 function QueueList({
   name = "",
   isDeleting = false,
@@ -94,6 +95,7 @@ function QueueList({
     },
     [handleUpVote, setQueue, user]
   );
+
   const handlePlay = useCallback(
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
@@ -126,11 +128,11 @@ function QueueList({
       {isDeleting && queue.length > 1 && (
         <div className=" flex overflow-x-scroll  items-center gap-1">
           <Button
-            onClick={handleRemoveALL}
+            onClick={handleBulkDelete}
             size={"sm"}
             className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
-            Remove all
+            Remove Selected {selectedSongs.length}
           </Button>
 
           <Button
@@ -139,14 +141,14 @@ function QueueList({
             size={"sm"}
             className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
-            Deselect all
+            Unselect all
           </Button>
           <Button
-            onClick={handleBulkDelete}
+            onClick={handleRemoveALL}
             size={"sm"}
-            className=" w-fit bg-purple text-white hover:bg-purple/80"
+            className=" w-fit bg-red-600/85 text-white hover:bg-red-600/70"
           >
-            Remove Selected {selectedSongs.length}
+            Clear all
           </Button>
         </div>
       )}
@@ -175,7 +177,7 @@ function QueueList({
                 />
               </Avatar>
             </div>
-            <div className="flex  flex-col flex-grow text-sm w-7/12">
+            <div className="flex flex-col flex-grow text-sm w-6/12">
               <TooltipProvider key={song.id}>
                 <Tooltip>
                   <TooltipTrigger className=" w-auto text-start">
@@ -213,53 +215,8 @@ function QueueList({
                 <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
               </div>
             ) : (
-              <div className=" flex flex-col self-end items-center gap-2">
-                <Heart
-                  className={`${
-                    song?.isVoted ? "fill-yellow-500 text-yellow-500" : ""
-                  } cursor-pointer`}
-                  onClick={(e) => triggerUpVote(e, song)}
-                />
-                <div className="flex -mt-1.5 text-xs items-center">
-                  <div className=" flex items-center">
-                    {song.topVoters?.slice(0, 2).map((voter, i) => (
-                      <TooltipProvider key={voter?._id}>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div className={` ${i !== 0 && "-ml-2.5"} size-6`}>
-                              <Avatar className=" size-6 border border-white">
-                                <AvatarImage
-                                  alt={voter?.name}
-                                  height={200}
-                                  width={200}
-                                  className=" rounded-full"
-                                  src={voter?.imageUrl}
-                                />
-                                <AvatarFallback>SX</AvatarFallback>
-                              </Avatar>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent className="mr-44 bg-[#9870d3] mb-1 text-white">
-                            <p>
-                              {voter?.username} ({voter?.name})
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                    {song?.voteCount > 2 && (
-                      <div
-                        className={` -ml-4 pl-1.5 py-1 text-[9px] rounded-full`}
-                      >
-                        <Avatar className=" size-6 border-white border">
-                          <AvatarFallback>
-                            +{song?.voteCount - 2}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div className=" flex flex-col mr-1 items-center gap-2">
+                <VoteIcon song={song} triggerUpVote={triggerUpVote} />
               </div>
             )}
           </label>

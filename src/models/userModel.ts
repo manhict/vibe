@@ -19,13 +19,6 @@ const userSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
     },
-    spotifyData: {
-      type: {
-        access_token: String,
-        expires_in: Number,
-        refresh_token: String,
-      },
-    },
   },
   { timestamps: true }
 );

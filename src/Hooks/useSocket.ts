@@ -3,7 +3,7 @@
 import { socket } from "@/app/socket";
 import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
-import { listener, messages, queue, searchResults, TUser } from "@/lib/types";
+import { listener, messages, searchResults, TUser } from "@/lib/types";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
@@ -98,7 +98,7 @@ export default function useSocket() {
   // handle guest
   const handleGuest = useCallback(
     (data: {
-      queue: queue;
+      queue: searchResults[];
       listener: listener;
       progress: number;
       message: string;

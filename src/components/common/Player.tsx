@@ -3,8 +3,6 @@ import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, formatElapsedTime } from "@/utils/utils";
 import {
   MessageSquare,
-  Pause,
-  Play,
   Repeat,
   SkipBack,
   SkipForward,
@@ -32,14 +30,14 @@ import LikeButton from "./LinkeButton";
 import { socket } from "@/app/socket";
 import useDebounce from "@/Hooks/useDebounce";
 import parse from "html-react-parser";
+import PlayButton from "./PlayButton";
 function Player() {
   const { user, messages } = useUserContext();
   const {
     currentSong,
     progress,
     duration,
-    togglePlayPause,
-    isPlaying,
+
     playNext,
     playPrev,
     seek,
@@ -126,6 +124,7 @@ function Player() {
     toast.warning("Only admin can Loop");
   }, [user, isLooped, currentSong]);
   const handleLoop = useDebounce(loop, 500);
+
   return (
     <div className=" relative max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
       <AnimatePresence>
@@ -195,16 +194,9 @@ function Player() {
                     user?.role !== "admin" ? "text-zinc-700" : ""
                   } cursor-pointer size-5`}
                 />
-                <div
-                  onClick={togglePlayPause}
-                  className=" bg-purple cursor-pointer p-4 rounded-full"
-                >
-                  {isPlaying ? (
-                    <Pause className=" size-5" />
-                  ) : (
-                    <Play className=" size-5" />
-                  )}
-                </div>
+
+                <PlayButton />
+
                 <SkipForward
                   onClick={playNext}
                   aria-label="play next"

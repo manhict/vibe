@@ -70,11 +70,6 @@
   height: 0; /* Initially hide the horizontal scrollbar */
 }
 
-.hover-scroll::-webkit-scrollbar {
-  width: 2px; /* Show scrollbar width on hover */
-  height: 2px; /* Show horizontal scrollbar width on hover if needed */
-}
-
 /* Scrollbar track */
 *::-webkit-scrollbar-track {
   background: none; /* Track background */

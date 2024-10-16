@@ -56,7 +56,7 @@ function Page() {
               Built by{" "}
               <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
                 <Link href="https://tanmayo7.vercel.app/" target="_blank">
-                  Tanmay Singh
+                  Babyo7_
                 </Link>
               </span>{" "}
               &{" "}
