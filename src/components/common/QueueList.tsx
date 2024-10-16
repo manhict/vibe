@@ -2,7 +2,7 @@ import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
 import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -17,15 +17,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
-import useSelect from "@/Hooks/useSelect";
-import { Button } from "../ui/button";
 import VoteIcon from "./VoteIcon";
 function QueueList({
   name = "",
   isDeleting = false,
+  handleSelect,
+  selectedSongs,
 }: {
   name?: string;
   isDeleting?: boolean;
+  handleSelect: (song: searchResults, limit: boolean) => void;
+  selectedSongs: searchResults[];
 }) {
   const { queue, setQueue, user } = useUserContext();
   const { currentSong } = useAudio();
@@ -108,50 +110,8 @@ function QueueList({
     [isDeleting]
   );
 
-  const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
-  const handleBulkDelete = () => {
-    if (selectedSongs.length > 0) {
-      socket.emit("bulkDelete", selectedSongs);
-      setQueue((prevQueue) =>
-        prevQueue.filter((song) => !selectedSongs.includes(song))
-      );
-      setSelectedSongs([]);
-    }
-  };
-  const handleRemoveALL = () => {
-    socket.emit("deleteAll");
-    setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
-    setSelectedSongs([]);
-  };
   return (
     <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
-      {isDeleting && queue.length > 1 && (
-        <div className=" flex overflow-x-scroll  items-center gap-1">
-          <Button
-            onClick={handleBulkDelete}
-            size={"sm"}
-            className=" w-fit bg-purple text-white hover:bg-purple/80"
-          >
-            Remove Selected {selectedSongs.length}
-          </Button>
-
-          <Button
-            disabled={selectedSongs.length == 0}
-            onClick={() => setSelectedSongs([])}
-            size={"sm"}
-            className=" w-fit bg-purple text-white hover:bg-purple/80"
-          >
-            Unselect all
-          </Button>
-          <Button
-            onClick={handleRemoveALL}
-            size={"sm"}
-            className=" w-fit bg-red-600/85 text-white hover:bg-red-600/70"
-          >
-            Clear all
-          </Button>
-        </div>
-      )}
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))

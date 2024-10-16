@@ -80,3 +80,9 @@ export const pauseVariants = {
   visible: { y: 0, transition: springConfig }, // Spring-based movement
   exit: { y: 20, transition: springConfig }, // Exits downwards with spring effect
 };
+
+export const slideInVariants = {
+  hidden: { y: "-100%", opacity: 0 },
+  visible: { y: 0, opacity: 1 },
+  exit: { y: "-100%", opacity: 0 },
+};
