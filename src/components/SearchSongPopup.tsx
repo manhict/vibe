@@ -166,7 +166,11 @@ function SearchSongPopup({
           <Input
             autoFocus
             onChange={handleSearch}
-            placeholder={youtube ? "Paste youtube playlist url" : "Search Song"}
+            placeholder={
+              youtube
+                ? "Paste youtube playlist url to add songs"
+                : "Search Song"
+            }
             className="border-none focus-visible:ring-0"
           />
           <DialogClose>
