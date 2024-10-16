@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     const playlist = await ytpl(id, {
       pages: 1,
+      requestOptions: { headers: { Cookie: process.env.COOKIES || "" } },
     });
     if (!playlist.items) throw new Error("Invalid playlist");
     const tracks = playlist.items.map((s) => ({
