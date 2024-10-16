@@ -157,7 +157,7 @@ function QueueList({
         ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))
         ?.map((song, i) => (
           <label
-            htmlFor={song?.id}
+            htmlFor={song?.id + i}
             key={i}
             className=" flex gap-2 items-center justify-between"
           >
@@ -207,8 +207,8 @@ function QueueList({
                 <input
                   onChange={() => handleSelect(song, false)}
                   checked={selectedSongs.includes(song)}
-                  name={song?.id}
-                  id={song?.id}
+                  name={song?.id + i}
+                  id={song?.id + i}
                   type="checkbox"
                   className="peer cursor-pointer appearance-none w-5 h-5 border border-gray-400 rounded-sm checked:bg-purple-700 checked:border-purple checked:bg-purple"
                 />
