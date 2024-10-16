@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
     },
+    spotifyData: {
+      type: mongoose.Schema.Types.Mixed,
+    },
   },
   { timestamps: true }
 );

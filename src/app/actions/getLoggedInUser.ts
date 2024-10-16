@@ -34,7 +34,7 @@ export async function getLoggedInUser() {
     const role = await RoomUser.findOne({
       userId: decoded.userId,
       roomId: room?._id,
-    }).select("role spotifyData");
+    }).select("role");
 
     const refresh_token = await fetch(
       "https://accounts.spotify.com/api/token",
