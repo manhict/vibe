@@ -94,13 +94,15 @@
 .text-with-image {
   font-size: 4.5rem; /* Adjust to your needs */
   margin-top: -1rem;
-  background: url("/bg.webp") no-repeat;
-  background-size: 200% 100%; /* Wider size for horizontal movement */
-  background-position: 0% 50%; /* Initial position */
-  -webkit-background-clip: text;
+  background: rgb(131, 58, 180);
+  background: linear-gradient(
+    43deg,
+    rgb(167, 88, 219) 0%,
+    rgba(242, 138, 255, 1) 51%,
+    rgba(161, 3, 195, 1) 100%
+  );
   background-clip: text;
   color: transparent; /* Make the text itself transparent */
-  animation: imageMove 4s linear infinite;
 }
 
 @keyframes imageMove {
