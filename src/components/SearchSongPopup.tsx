@@ -189,7 +189,7 @@ function SearchSongPopup({
           </DialogClose>
         </div>
         {songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] px-2.5 overflow-y-scroll">
+          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll">
             {songs?.data.results.map((song, i) => (
               <label
                 htmlFor={song?.id}
@@ -197,9 +197,9 @@ function SearchSongPopup({
                 title={`${parse(song.name)} (${
                   formatArtistName(song?.artists?.primary) || "Unknown"
                 })`}
-                className={`flex gap-2 text-start cursor-pointer hover:bg-zinc-800/20 ${
+                className={`flex gap-2 px-2.5 text-start cursor-pointer hover:bg-zinc-800/20 ${
                   i != songs.data.results.length - 1 && "border-b"
-                }  border-[#1D192B] p-2.5 items-center`}
+                }  border-white/20 p-2.5 items-center`}
               >
                 <Avatar className=" h-14 w-14 rounded-none">
                   <AvatarImage
@@ -222,7 +222,7 @@ function SearchSongPopup({
                     <p className=" text-xs text-[#a176eb]">Premium ☆</p>
                   )}
                 </div>
-                <div className=" relative mr-0.5">
+                <div className=" relative ">
                   <input
                     onChange={() => handleSelect(song, true)}
                     checked={selectedSongs.includes(song)}
@@ -248,12 +248,12 @@ function SearchSongPopup({
         )}
         {selectedSongs.length > 0 && (
           <>
-            <div className=" p-2 bg-[#49454F]/70 border-t pb-2  py-4 px-4 overflow-x-scroll">
+            <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
               <div className="flex overflow-x-scroll items-center gap-2.5">
                 {selectedSongs.map((song) => (
                   <div
                     key={song?.id}
-                    className=" gap-1 bg-[#8D50F9]/20 p-1 rounded-lg border-zinc-600 border text-xs px-2 flex items-center"
+                    className=" gap-1 bg-[#8D50F9]/20 p-1 rounded-lg border-zinc-600 border text-xs px-2 py-1.5 flex items-center"
                   >
                     <Avatar className="  size-8  rounded-sm">
                       <AvatarImage
@@ -293,7 +293,7 @@ function SearchSongPopup({
                 ))}
               </div>
             </div>
-            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
+            <DialogFooter className=" p-2.5 px-4 pb-4 bg-black/80 ">
               <DialogClose
                 onClick={handlePlay}
                 className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
