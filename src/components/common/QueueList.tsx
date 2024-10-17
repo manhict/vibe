@@ -111,7 +111,7 @@ function QueueList({
   );
 
   return (
-    <div className=" py-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
+    <div className=" py-2 pr-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))
@@ -119,7 +119,7 @@ function QueueList({
           <label
             htmlFor={song?.id + i}
             key={i}
-            className=" flex gap-2 items-center justify-between"
+            className=" flex gap-2  items-center justify-between"
           >
             <div className="relative">
               <Avatar className="size-12 rounded-md relative group">
@@ -175,7 +175,7 @@ function QueueList({
                 <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
               </div>
             ) : (
-              <div className=" flex flex-col mr-1 items-center gap-2">
+              <div className=" flex flex-col  items-center gap-2">
                 <VoteIcon song={song} triggerUpVote={triggerUpVote} />
               </div>
             )}

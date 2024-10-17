@@ -75,8 +75,8 @@ function AddToQueue() {
   };
 
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4 pl-5">
-      <div className=" flex items-center gap-2.5 justify-between">
+    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4  pr-0">
+      <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div
             initial="hidden"
@@ -190,7 +190,7 @@ function AddToQueue() {
           <SearchSongPopup isAddToQueue />
         )}
       </div>
-      <div className=" flex items-center justify-between">
+      <div className=" flex items-center justify-between pr-4">
         <Listeners className=" max-md:hidden" />
         <div className=" flex items-center gap-1">
           <div
