@@ -151,7 +151,7 @@ function SearchSongPopup({
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-zinc-200 justify-center items-center">
               <p className=" font-semibold text-4xl ">Seems like</p>
               <p className=" font-medium text-2xl">your queue is empty</p>
-              <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-4 mb-2">
+              <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-4 mb-2">
                 Add Songs
               </div>
               <p className=" font-normal text-sm mt-1">
@@ -260,7 +260,7 @@ function SearchSongPopup({
                         alt={song?.name}
                         height={500}
                         width={500}
-                        className=" h-full w-full rounded-md border"
+                        className=" h-full w-full border"
                         src={
                           song?.image[song?.image?.length - 1]?.url ||
                           "/cache.jpg"
@@ -296,7 +296,7 @@ function SearchSongPopup({
             <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
               <DialogClose
                 onClick={handlePlay}
-                className=" py-3 w-full  rounded-xl bg-purple/80 font-semibold text-sm"
+                className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
               >
                 <p className="w-full text-center">Add song</p>
               </DialogClose>
