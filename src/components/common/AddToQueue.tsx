@@ -95,7 +95,7 @@ function AddToQueue() {
               autoFocus
               onChange={(e) => setName(e.target.value)}
               placeholder="Search in queue"
-              className="py-2"
+              className="py-2 border border-zinc-700"
             />
           </motion.div>
         ) : (
@@ -106,7 +106,7 @@ function AddToQueue() {
             transition={{ duration: 0.2 }} // Add a transition for the label
             className="text-lg font-semibold"
           >
-            In Queue
+            In Queue {queue.length > 0 && queue.length}
           </motion.p>
         )}
         <div className=" flex items-center gap-1">
