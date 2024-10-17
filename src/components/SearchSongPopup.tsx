@@ -260,6 +260,7 @@ function SearchSongPopup({
                         alt={song?.name}
                         height={500}
                         width={500}
+                        loading="lazy"
                         className=" h-full w-full border"
                         src={
                           song?.image[song?.image?.length - 1]?.url ||
