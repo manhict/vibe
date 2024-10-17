@@ -213,7 +213,7 @@ function SearchSongPopup({
                   />
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
-                <div className="text-sm font-medium w-10/12">
+                <div className="text-sm font-medium w-10/12 truncate">
                   <p className="font-semibold truncate w-11/12">{song.name}</p>
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {formatArtistName(song.artists.primary)}
