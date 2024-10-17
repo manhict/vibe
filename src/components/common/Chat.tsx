@@ -159,7 +159,7 @@ function Chat({
         </div>
         <X onClick={() => setIsChatOpen(false)} className=" cursor-pointer" />
       </div>
-      <div className="  h-full overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
+      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
         <div className=" flex-grow gap-4 flex flex-col py-6 overflow-y-scroll">
           {user &&
             messages.map((message) => (

@@ -65,7 +65,12 @@
   }
 }
 /* WebKit scrollbar styles (for Chrome, Safari) */
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
+  width: 3px; /* Initially hide the scrollbar */
+  height: 3px; /* Initially hide the horizontal scrollbar */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
   width: 0; /* Initially hide the scrollbar */
   height: 0; /* Initially hide the horizontal scrollbar */
 }

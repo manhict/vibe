@@ -111,7 +111,7 @@ function QueueList({
   );
 
   return (
-    <div className=" py-2 pr-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
+    <div className=" py-2 pr-2  group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))
