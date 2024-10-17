@@ -1,7 +1,7 @@
 import { searchResults } from "@/lib/types";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TopVotes from "./TopVotes";
-import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
 
 const VoteIcon = ({
   song,
@@ -10,107 +10,133 @@ const VoteIcon = ({
   song: searchResults;
   triggerUpVote: (e: React.MouseEvent, song: searchResults) => void;
 }) => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [showTopVotes, setShowTopVotes] = useState(false);
-
+  const [isVoted, setIsVoted] = useState(false);
+  const heartRef = useRef<SVGPathElement>(null);
+  const arrowRef = useRef<SVGPathElement>(null);
+  const [showVotes, setShowVotes] = useState(false);
   const handleClick = (e: React.MouseEvent, song: searchResults) => {
-    setIsClicked(true);
     triggerUpVote(e, song);
 
-    // Reset animation after vote
-    setTimeout(() => {
-      setIsClicked(false);
-    }, 600);
+    // Toggle the vote state
+    setIsVoted(!isVoted);
+
+    setShowVotes(!isVoted);
   };
 
-  const handleAnimationComplete = () => {
-    // Trigger the appearance of TopVotes after animation ends
+  useEffect(() => {
+    const heart = heartRef.current;
+    const arrow = arrowRef.current;
 
-    setShowTopVotes(true);
-  };
+    if (heart && arrow) {
+      if (isVoted) {
+        // GSAP upvote animation
+        gsap
+          .timeline()
+          .to(heart, {
+            scale: 1.2,
+            x: 5,
+            y: -9,
+            rotate: 12.3,
+            fill: "#FAC800",
+            duration: 0.3,
+            strokeWidth: 1,
+            ease: "power1.inOut",
+          })
+          .to(
+            arrow,
+            {
+              x: 0,
+              y: -5,
+              opacity: 0,
+              transformOrigin: "center center",
+              duration: 0.3,
+            },
+            "<"
+          )
+          .to(heart, {
+            scale: 1,
+            x: 0,
+            y: 0,
+            strokeWidth: 0.5,
+            rotate: 0,
+            duration: 0.3,
+            ease: "power1.inOut",
+          });
+      } else {
+        // GSAP remove upvote animation
+        gsap
+          .timeline()
+          .to(
+            heart,
+            {
+              scale: 0.9,
+              x: 3,
+              y: 11,
+              strokeWidth: 0.5,
+              rotate: -20,
+              fill: "#434343",
+              duration: 0.3,
+              ease: "power1.inOut",
+            },
+            "<"
+          )
+          .to(heart, {
+            scale: 1,
+            rotate: 0,
+            fill: "transparent",
+            x: 0,
+            y: 0,
+            duration: 0.3,
+            ease: "power1.inOut",
+          })
+          .fromTo(
+            arrow,
+            { y: -3, rotate: 180, opacity: 0 },
+            {
+              scale: 1,
+              y: 0,
+              rotate: 0,
+              opacity: 1,
+              duration: 0.3,
+              ease: "power1.out",
+            },
+            "<"
+          );
+      }
+    }
+  }, [isVoted]);
 
   return (
-    <>
-      <div className="relative" onClick={(e) => handleClick(e, song)}>
-        {/* Main Vote SVG with motion */}
-        <motion.svg
-          initial={{ scale: 1, rotate: 0, y: 0, fill: "transparent" }}
-          animate={
-            isClicked
-              ? !song?.isVoted
-                ? { scale: 0.9, rotate: -10, y: 5, fill: "transparent" } // Shrink and move down on unvote
-                : { scale: 1.2, rotate: 10, fill: "#FAC800" } // Enlarge and tilt on upvote
-              : {
-                  scale: 1,
-                  rotate: 0,
-                  y: 0,
-                  fill: !song?.isVoted ? "transparent" : "#FAC800",
-                }
-          }
-          transition={{
-            type: "spring",
-            stiffness: 80,
-            damping: 15,
-            duration: 0.6,
-            ease: "easeInOut",
-          }}
-          onAnimationComplete={handleAnimationComplete}
-          className="cursor-pointer"
-          width="23"
-          height="21"
-          viewBox="0 0 23 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11.5475 20.3081L11.689 20.4015L11.8306 20.3081C16.7978 17.0276 19.6634 13.9123 21.0598 11.1589C22.4595 8.39896 22.3836 5.99759 21.4567 4.18852C19.6574 0.676764 14.6773 -0.502955 11.689 2.3124C8.70068 -0.50296 3.72063 0.677109 1.92132 4.18901C0.994411 5.99815 0.918502 8.39955 2.31822 11.1594C3.7147 13.9128 6.58024 17.0279 11.5475 20.3081Z"
-            stroke="white"
-            strokeWidth="0.713732"
-          />
-        </motion.svg>
-
-        {/* Absolute SVG for the arrow */}
-
-        <motion.svg
-          initial={{ rotate: 0 }} // Default state for unvoted (downward arrow)
-          animate={
-            song?.isVoted
-              ? { rotate: -180, scale: 0 } // Rotate upwards when voted
-              : { scale: 1, rotate: 0 } // Rotate downwards when unvoted
-          }
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          width="9"
-          height="5"
-          viewBox="0 0 9 5"
-          fill="none"
-          className="absolute cursor-pointer bottom-0.5 size-2.5 right-0"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M1.43137 5C0.825555 5 0.522647 5 0.382383 4.8802C0.260678 4.77626 0.196091 4.62033 0.208648 4.46077C0.223121 4.27688 0.437309 4.06269 0.865685 3.63431L3.93431 0.565685C4.13232 0.367677 4.23133 0.268673 4.34549 0.231579C4.44591 0.19895 4.55409 0.19895 4.65451 0.231579C4.76867 0.268673 4.86768 0.367677 5.06569 0.565685L8.13432 3.63432C8.56269 4.06269 8.77688 4.27688 8.79135 4.46077C8.80391 4.62033 8.73932 4.77626 8.61762 4.8802C8.47735 5 8.17445 5 7.56863 5H1.43137Z"
-            fill="#FAC800"
-          />
-        </motion.svg>
-      </div>
-
-      {/* AnimatePresence for TopVotes component */}
-      <AnimatePresence>
-        {showTopVotes && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{
-              duration: 0.5,
-              ease: "easeInOut",
-            }}
-            className="flex -mt-1 text-xs items-center"
-          >
-            <TopVotes song={song} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    <div className=" relative">
+      {/* Main Vote SVG */}
+      <svg
+        onClick={(e) => handleClick(e, song)}
+        width="40"
+        height="40"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          ref={heartRef}
+          className="heart"
+          d="M21.0475 30.3081L21.189 30.4015L21.3306 30.3081C26.2978 27.0276 29.1634 23.9123 30.5598 21.1589C31.9595 18.399 31.8836 15.9976 30.9567 14.1885C29.1574 10.6768 24.1773 9.49705 21.189 12.3124C18.2007 9.49704 13.2206 10.6771 11.4213 14.189C10.4944 15.9981 10.4185 18.3996 11.8182 21.1594C13.2147 23.9128 16.0802 27.0279 21.0475 30.3081Z"
+          stroke="white"
+          stroke-width="0.513732"
+        />
+        <path
+          ref={arrowRef}
+          className="arrow"
+          d="M23.9314 27C23.3256 27 23.0226 27 22.8824 26.8802C22.7607 26.7763 22.6961 26.6203 22.7086 26.4608C22.7231 26.2769 22.9373 26.0627 23.3657 25.6343L26.4343 22.5657C26.6323 22.3677 26.7313 22.2687 26.8455 22.2316C26.9459 22.1989 27.0541 22.1989 27.1545 22.2316C27.2687 22.2687 27.3677 22.3677 27.5657 22.5657L30.6343 25.6343C31.0627 26.0627 31.2769 26.2769 31.2914 26.4608C31.3039 26.6203 31.2393 26.7763 31.1176 26.8802C30.9774 27 30.6744 27 30.0686 27H23.9314Z"
+          fill="#FAC800"
+        />
+      </svg>
+      {showVotes && (
+        <div className="-mt-[0.365rem] absolute flex items-center justify-center right-0 w-full">
+          <TopVotes song={song} />
+        </div>
+      )}
+    </div>
   );
 };
 

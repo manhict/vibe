@@ -178,7 +178,7 @@ function AddToQueue() {
           </Button>
         </motion.div>
       )}
-      <div className="h-full transition-all z-50 overflow-y-scroll">
+      <div className="h-full transition-all z-50 ">
         {queue.length > 0 ? (
           <QueueList
             name={name}
