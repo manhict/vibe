@@ -277,6 +277,7 @@ function Player() {
                         <div className={` ${i !== 0 && "-ml-2"} size-5`}>
                           <Avatar className=" size-6 border border-white">
                             <AvatarImage
+                              loading="lazy"
                               alt={voter?.name}
                               height={200}
                               width={200}

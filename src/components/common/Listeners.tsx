@@ -44,6 +44,7 @@ function Listeners({ className }: { className?: string }) {
                         <div className={` ${i !== 0 && "-ml-2"} size-6`}>
                           <Avatar className=" size-6 border border-white">
                             <AvatarImage
+                              loading="lazy"
                               alt={roomUser?.userId?.name}
                               height={200}
                               width={200}
@@ -96,7 +97,10 @@ function Listeners({ className }: { className?: string }) {
                 ?.map((user, j) => (
                   <div key={j} className=" w-full py-2 flex items-center gap-2">
                     <Avatar className=" size-10">
-                      <AvatarImage src={user?.userId?.imageUrl} />
+                      <AvatarImage
+                        loading="lazy"
+                        src={user?.userId?.imageUrl}
+                      />
                       <AvatarFallback>SX</AvatarFallback>
                     </Avatar>
                     <div className="text-sm leading-tight">

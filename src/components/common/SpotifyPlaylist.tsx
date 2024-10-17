@@ -86,6 +86,7 @@ function SpotifyPlaylist() {
               >
                 <Avatar className=" h-14 w-14 rounded-none">
                   <AvatarImage
+                    loading="lazy"
                     alt={playlist?.name}
                     height={500}
                     width={500}

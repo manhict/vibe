@@ -46,6 +46,7 @@ function Chat({
         <div className=" flex w-9/12 truncate items-center gap-1.5">
           <Avatar className=" rounded-md size-14">
             <AvatarImage
+              loading="lazy"
               alt={currentSong?.name || ""}
               height={300}
               width={300}
@@ -125,6 +126,7 @@ function Chat({
                       <div className={` ${i !== 0 && "-ml-2"} size-7`}>
                         <Avatar className=" size-7 border border-white">
                           <AvatarImage
+                            loading="lazy"
                             alt={roomUser?.userId?.name}
                             height={200}
                             width={200}
@@ -168,6 +170,7 @@ function Chat({
                   <div className=" flex gap-2">
                     <Avatar className="size-9">
                       <AvatarImage
+                        loading="lazy"
                         alt={message?.user?.name || ""}
                         height={50}
                         width={50}
@@ -222,6 +225,7 @@ function Chat({
                     </div>
                     <Avatar className="size-9">
                       <AvatarImage
+                        loading="lazy"
                         alt={message?.user?.name || ""}
                         height={50}
                         width={50}

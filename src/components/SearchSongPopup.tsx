@@ -203,6 +203,7 @@ function SearchSongPopup({
               >
                 <Avatar className=" h-14 w-14 rounded-none">
                   <AvatarImage
+                    loading="lazy"
                     alt={song?.name}
                     height={500}
                     width={500}
@@ -257,10 +258,10 @@ function SearchSongPopup({
                   >
                     <Avatar className="  size-8  rounded-sm">
                       <AvatarImage
+                        loading="lazy"
                         alt={song?.name}
                         height={500}
                         width={500}
-                        loading="lazy"
                         className=" h-full w-full border"
                         src={
                           song?.image[song?.image?.length - 1]?.url ||

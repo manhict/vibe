@@ -124,10 +124,10 @@ function QueueList({
             <div className="relative">
               <Avatar className="size-12 rounded-md relative group">
                 <AvatarImage
+                  loading="lazy"
                   alt={song.name}
                   height={500}
                   width={500}
-                  loading="lazy"
                   className="rounded-md group-hover:opacity-40 transition-all duration-500"
                   src={song.image[song.image.length - 1].url}
                 />
