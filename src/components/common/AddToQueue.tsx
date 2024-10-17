@@ -75,7 +75,7 @@ function AddToQueue() {
   };
 
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4">
+    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4 pl-5">
       <div className=" flex items-center gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div
@@ -178,7 +178,7 @@ function AddToQueue() {
           </Button>
         </motion.div>
       )}
-      <div className="h-full transition-all z-50 ">
+      <div className="h-full transition-all z-50 overflow-y-scroll">
         {queue.length > 0 ? (
           <QueueList
             name={name}

@@ -115,6 +115,7 @@ const VoteIcon = ({
         height="40"
         viewBox="0 0 40 40"
         fill="none"
+        className=" -mr-1"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
@@ -132,7 +133,7 @@ const VoteIcon = ({
         />
       </svg>
       {showVotes && (
-        <div className="-mt-[0.365rem] absolute flex items-center justify-center right-0 w-full">
+        <div className="-mt-[0.365rem] -mr-1 absolute flex items-center justify-center right-0 w-full">
           <TopVotes song={song} />
         </div>
       )}
