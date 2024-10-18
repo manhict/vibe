@@ -120,11 +120,11 @@ function Player() {
   const shuffle = useCallback(() => {
     if (user?.role === "admin") {
       if (!currentSong) return;
-      socket.emit("shuffle", !isLooped);
+      socket.emit("shuffle", !shuffled);
       return;
     }
     toast.warning("Only admin can Loop");
-  }, [user, isLooped, currentSong]);
+  }, [user, shuffled, currentSong]);
   const handleShuffle = useDebounce(shuffle, 500);
 
   return (
@@ -268,7 +268,7 @@ function Player() {
               />
 
               <svg
-                onClick={() => (setShuffled(!shuffle), handleShuffle())}
+                onClick={() => (setShuffled(!shuffled), handleShuffle())}
                 width="25"
                 height="25"
                 viewBox="0 0 25 25"
