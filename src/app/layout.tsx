@@ -6,6 +6,7 @@ import { UserProvider } from "./store/userStore";
 import { AudioProvider } from "./store/AudioContext";
 import { Suspense } from "react";
 import { GoogleTagManager } from "@next/third-parties/google";
+import Head from "next/head";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -16,13 +17,14 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
 export const metadata: Metadata = {
   title: "Vibe - Let Your Votes Choose the Beat",
   description:
     "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
-  icons: ["/favicon.png"],
   keywords: "music, voting, playlist, beats, trending, collaborative music",
+  icons: { icon: "/favicon.png" },
+
+  // OpenGraph Meta Tags
   openGraph: {
     title: "Vibe - Let Your Votes Choose the Beat",
     description:
@@ -37,6 +39,18 @@ export const metadata: Metadata = {
         alt: "Vibe - Let Your Votes Choose the Beat",
       },
     ],
+  },
+
+  // Twitter Meta Tags
+  twitter: {
+    card: "summary_large_image",
+    site: "@tanmay11117", // Replace with your Twitter handle
+    title: "Vibe - Let Your Votes Choose the Beat",
+    description:
+      "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
+    images: {
+      url: "https://getvibe.in/logo.svg", // Add Twitter card image
+    },
   },
 };
 
@@ -55,6 +69,24 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <GoogleTagManager gtmId="GTM-KS6FPVS3" />
+      <Head>
+        {/* JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "MusicGroup",
+              name: "Vibe",
+              url: "https://getvibe.in",
+              description:
+                "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
+              image: "https://getvibe.in/logo.svg",
+              sameAs: ["https://twitter.com/tanmay11117"],
+            }),
+          }}
+        />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
