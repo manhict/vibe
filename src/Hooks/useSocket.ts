@@ -12,7 +12,7 @@ export default function useSocket() {
   const [transport, setTransport] = useState("N/A");
   const { setListener, setUser, setQueue, user, setMessages } =
     useUserContext();
-  const { play, seek, setLoop } = useAudio();
+  const { play, seek, setLoop, setShuffled } = useAudio();
   const socketRef = useRef(socket);
 
   // Memoized connect and disconnect functions
@@ -141,7 +141,7 @@ export default function useSocket() {
     currentSocket.on("getVotes", () => socket.emit("upVote"));
     currentSocket.on("message", handleMessage);
     currentSocket.on("updateProgress", seek);
-    currentSocket.on("shuffle", () => socket.emit("getSongQueue", true));
+    currentSocket.on("shuffle", setShuffled);
     currentSocket.on("loop", setLoop);
     currentSocket.on("heart", (data) => {
       if (data?.imageUrl) {
@@ -206,6 +206,7 @@ export default function useSocket() {
     seek,
     handleGuest,
     setLoop,
+    setShuffled,
   ]);
 
   return {

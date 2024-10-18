@@ -36,6 +36,8 @@ interface AudioContextType {
   setProgress: React.Dispatch<SetStateAction<number>>;
   isLooped: boolean;
   setLoop: React.Dispatch<SetStateAction<boolean>>;
+  shuffled: boolean;
+  setShuffled: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -63,6 +65,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentDuration, setDuration] = useState<number>(0);
   const [currentVolume, setVolume] = useState<number>(1);
   const [isLooped, setLoop] = useState<boolean>(false);
+  const [shuffled, setShuffled] = useState<boolean>(false);
   const { queue, isConnected } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
@@ -308,6 +311,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       duration,
       isLooped,
       setLoop,
+      shuffled,
+      setShuffled,
     }),
     [
       play,
@@ -326,6 +331,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       seek,
       duration,
       isLooped,
+      shuffled,
     ]
   );
   return (

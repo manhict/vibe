@@ -14,12 +14,19 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
+import { useAudio } from "@/app/store/AudioContext";
 function Profile({ user }: { user: TUser }) {
   const { setUser } = useUserContext();
-
+  const { setLoop, setShuffled } = useAudio();
   useEffect(() => {
     setUser(user);
-  }, [user, setUser]);
+    if (user.looped) {
+      setLoop(user.looped);
+    }
+    if (user.shuffled) {
+      setShuffled(user.shuffled);
+    }
+  }, [user, setUser, setLoop, setShuffled]);
 
   if (!user) {
     return <Login />;

@@ -51,6 +51,8 @@ export interface TUser {
   token?: string;
   roomId?: string;
   spotifyData: spotifyToken;
+  shuffled?: boolean;
+  looped?: boolean;
 }
 
 export interface listener {

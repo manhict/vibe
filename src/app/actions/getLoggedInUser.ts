@@ -67,6 +67,8 @@ export async function getLoggedInUser() {
         roomId: roomId,
         role: role?.toObject()?.role || "guest",
         spotify: refresh_token.status === 200,
+        shuffled: room?.shuffled || false,
+        looped: room?.looped || false,
       })
     );
   } catch (error: any) {
