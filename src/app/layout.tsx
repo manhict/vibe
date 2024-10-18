@@ -48,9 +48,24 @@ export const metadata: Metadata = {
     title: "Vibe - Let Your Votes Choose the Beat",
     description:
       "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
-    images: {
-      url: "https://getvibe.in/logo.svg", // Add Twitter card image
-    },
+    images: [
+      {
+        url: "https://getvibe.in/logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "Vibe - Collaborative Music Platform",
+      },
+      {
+        url: "https://getvibe.in/og-image.jpg", // Add more image options for OpenGraph
+        width: 800,
+        height: 600,
+        alt: "Vibe Music Collaboration",
+      },
+    ],
+  },
+
+  alternates: {
+    canonical: "https://getvibe.in",
   },
 };
 
