@@ -151,6 +151,7 @@ export default function useSocket() {
       toast.error(message, { style: { background: "#e94625" } });
     });
     currentSocket.on("connect_error", (error: any) => {
+      toast.dismiss("joining");
       try {
         const parsedMessage = error?.message && JSON.parse(error.message);
 
