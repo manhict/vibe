@@ -28,7 +28,11 @@ export async function GET(req: NextRequest) {
             }
           )
         : null,
-      page == 0 ? ytmusic.searchSongs(search) : null,
+      page == 0
+        ? !search.startsWith("https")
+          ? ytmusic.searchSongs(search)
+          : null
+        : null,
       page == 0 ? yt.search(search) : null,
     ]);
 
