@@ -122,10 +122,10 @@ export async function GET(req: NextRequest) {
         data: {
           ...result.data,
           results: [
-            ...result.data.results.slice(0, 2),
+            ...result.data.results.slice(0, 4),
             ...songs2,
             ...songs,
-            ...result.data.results.slice(2),
+            ...result.data.results.slice(4),
           ],
         },
       },
