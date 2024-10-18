@@ -26,7 +26,7 @@ function Footer() {
         <p>
           Designed by{" "}
           <a
-            href="https://www.instagram.com/justcrazzyxd/"
+            href="https://www.instagram.com/fixing_x/"
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
