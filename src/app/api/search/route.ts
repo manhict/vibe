@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
             }
           )
         : null,
-      page <= 1 ? ytmusic.searchSongs(search) : null,
-      page <= 1 ? yt.search(search) : null,
+      page == 0 ? ytmusic.searchSongs(search) : null,
+      page == 0 ? yt.search(search) : null,
     ]);
 
     const result = data
