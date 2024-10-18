@@ -141,7 +141,7 @@ export default function useSocket() {
     currentSocket.on("getVotes", () => socket.emit("upVote"));
     currentSocket.on("message", handleMessage);
     currentSocket.on("updateProgress", seek);
-    currentSocket.on("shuffle", setQueue);
+    currentSocket.on("shuffle", () => socket.emit("getSongQueue", true));
     currentSocket.on("loop", setLoop);
     currentSocket.on("heart", (data) => {
       if (data?.imageUrl) {
@@ -179,6 +179,7 @@ export default function useSocket() {
       currentSocket.off("songEnded", handleSongEnded);
       currentSocket.off("seek", handleSeek);
       currentSocket.off("loop", setLoop);
+      currentSocket.off("shuffle");
       currentSocket.off("songQueue");
       currentSocket.off("updateProgress");
       currentSocket.off("queueList");
