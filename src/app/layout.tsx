@@ -6,7 +6,6 @@ import { UserProvider } from "./store/userStore";
 import { AudioProvider } from "./store/AudioContext";
 import { Suspense } from "react";
 import { GoogleTagManager } from "@next/third-parties/google";
-import Head from "next/head";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -94,24 +93,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <GoogleTagManager gtmId="GTM-KS6FPVS3" />
-      <Head>
-        {/* JSON-LD Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "MusicGroup",
-              name: "Vibe",
-              url: "https://getvibe.in",
-              description:
-                "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
-              image: "https://getvibe.in/logo.svg",
-              sameAs: ["https://twitter.com/tanmay11117"],
-            }),
-          }}
-        />
-      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

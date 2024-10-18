@@ -8,9 +8,12 @@ import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
+import { useState } from "react";
 function Login() {
   const { setUser } = useUserContext();
+  const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = () => {
+    setLoader(true);
     signInWithPopup(auth, provider).then(async (result) => {
       const user = result.user;
       if (user) {
@@ -21,6 +24,7 @@ function Login() {
         }
       }
     });
+    setLoader(false);
   };
   return (
     <Dialog key={"user Login"}>
@@ -37,11 +41,12 @@ function Login() {
             </p>
           </div>
           <Button
+            disabled={loader}
             onClick={handleLogin}
             className=" gap-1.5 items-center shadow-none px-7 py-5"
           >
             <FcGoogle className=" size-5" />
-            Sign up with Google
+            {loader ? "Signing in..." : "Sign up with Google"}
           </Button>
         </div>
       </DialogContent>
