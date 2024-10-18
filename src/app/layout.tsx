@@ -20,8 +20,18 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Vibe - Let Your Votes Choose the Beat",
   description:
-    "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
-  keywords: "music, voting, playlist, beats, trending, collaborative music",
+    "Vibe is a collaborative music platform where your votes influence the playlist. Discover trending beats, vote for your favorite tracks, and enjoy a custom listening experience.",
+  keywords: [
+    "music",
+    "collaborative playlists",
+    "music voting platform",
+    "trending music",
+    "interactive music",
+    "custom playlists",
+    "community-driven playlists",
+    "discover music",
+    "vibe music",
+  ],
   icons: { icon: "/favicon.png" },
 
   // OpenGraph Meta Tags
