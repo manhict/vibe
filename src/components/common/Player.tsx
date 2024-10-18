@@ -114,8 +114,9 @@ function Player() {
       socket.emit("loop", !isLooped);
       return;
     }
+    setLoop((prev) => !prev);
     toast.warning("Only admin can Loop");
-  }, [user, isLooped, currentSong]);
+  }, [user, isLooped, currentSong, setLoop]);
   const handleLoop = useDebounce(loop, 500);
   const shuffle = useCallback(() => {
     if (user?.role === "admin") {
@@ -123,8 +124,9 @@ function Player() {
       socket.emit("shuffle", !shuffled);
       return;
     }
+    setShuffled((prev) => !prev);
     toast.warning("Only admin can Loop");
-  }, [user, shuffled, currentSong]);
+  }, [user, shuffled, currentSong, setShuffled]);
   const handleShuffle = useDebounce(shuffle, 500);
 
   return (
