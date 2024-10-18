@@ -129,6 +129,9 @@ export default function useSocket() {
     currentSocket.on("connect", onConnect);
     currentSocket.on("disconnect", onDisconnect);
     currentSocket.on("nextSong", play);
+    currentSocket.on("reconnect", () => {
+      toast.success("Reconnected successfully");
+    });
     currentSocket.on("prevSong", play);
     currentSocket.on("joinedRoom", handleJoinedRoom);
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
