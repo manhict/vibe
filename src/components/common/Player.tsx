@@ -38,6 +38,7 @@ function Player() {
     setProgress,
     isLooped,
     setLoop,
+    setShuffled,
   } = useAudio();
 
   const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
@@ -116,6 +117,15 @@ function Player() {
     toast.warning("Only admin can Loop");
   }, [user, isLooped, currentSong]);
   const handleLoop = useDebounce(loop, 500);
+  const shuffle = useCallback(() => {
+    if (user?.role === "admin") {
+      if (!currentSong) return;
+      socket.emit("shuffle", !isLooped);
+      return;
+    }
+    toast.warning("Only admin can Loop");
+  }, [user, isLooped, currentSong]);
+  const handleShuffle = useDebounce(shuffle, 500);
 
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
@@ -258,11 +268,14 @@ function Player() {
               />
 
               <svg
-                onClick={() => socket.emit("shuffle")}
+                onClick={() => (setShuffled(!shuffle), handleShuffle())}
                 width="25"
                 height="25"
                 viewBox="0 0 25 25"
                 fill="none"
+                className={`${
+                  shuffled ? "text-zinc-100" : "text-zinc-600"
+                } size-5 cursor-pointer transition-all duration-300`}
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
