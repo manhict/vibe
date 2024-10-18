@@ -18,9 +18,26 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Vibe",
-  description: "Let Your Votes Choose the Beat",
+  title: "Vibe - Let Your Votes Choose the Beat",
+  description:
+    "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
   icons: ["/favicon.png"],
+  keywords: "music, voting, playlist, beats, trending, collaborative music",
+  openGraph: {
+    title: "Vibe - Let Your Votes Choose the Beat",
+    description:
+      "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
+    url: "https://getvibe.in", // Replace with your website URL
+    type: "website",
+    images: [
+      {
+        url: "https://getvibe.in/logo.svg", // Add Open Graph image
+        width: 1200,
+        height: 630,
+        alt: "Vibe - Let Your Votes Choose the Beat",
+      },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
