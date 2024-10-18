@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
               ...result.data.results.slice(0, 2),
               ...songs2,
               ...songs,
-              ...result.data.results.slice(2, result.data.results.length - 1),
+              ...result.data.results.slice(2),
             ],
           },
         },
