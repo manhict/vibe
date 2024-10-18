@@ -110,10 +110,14 @@ function SearchSongPopup({
 
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
   const handlePlay = useCallback(async () => {
+    if (!user)
+      return toast.error("Login required to add songs", {
+        style: { background: "#e94625" },
+      });
     if (selectedSongs.length == 0) return toast.error("No song selected");
     socket.emit("addToQueue", selectedSongs);
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs]);
+  }, [setSelectedSongs, selectedSongs, user]);
 
   const handleAddAll = useCallback(() => {
     if (songs && songs?.data.results.length > 0) {
