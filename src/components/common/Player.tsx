@@ -1,7 +1,7 @@
 "use client";
 import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, formatElapsedTime } from "@/utils/utils";
-import { MessageSquare, Repeat, Volume1, Volume2, VolumeX } from "lucide-react";
+import { MessageSquare, Volume1, Volume2, VolumeX } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VolumeControl from "./VolumeControl";
 import { useUserContext } from "@/app/store/userStore";
@@ -19,8 +19,8 @@ import Chat from "./Chat";
 import Listeners from "./Listeners";
 import { Slider } from "../ui/slider";
 import LikeButton from "./LinkeButton";
-import { socket } from "@/app/socket";
-import useDebounce from "@/Hooks/useDebounce";
+// import { socket } from "@/app/socket";
+// import useDebounce from "@/Hooks/useDebounce";
 import parse from "html-react-parser";
 import PlayButton from "./PlayButton";
 function Player() {
@@ -29,16 +29,16 @@ function Player() {
     currentSong,
     progress,
     duration,
-    shuffled,
+    // shuffled,
     playNext,
     playPrev,
     seek,
     volume,
     setVolume,
     setProgress,
-    isLooped,
-    setLoop,
-    setShuffled,
+    // isLooped,
+    // setLoop,
+    // setShuffled,
   } = useAudio();
 
   const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
@@ -108,26 +108,26 @@ function Player() {
     },
     [duration, seek, setProgress, user]
   );
-  const loop = useCallback(() => {
-    if (user?.role === "admin") {
-      if (!currentSong) return;
-      socket.emit("loop", !isLooped);
-      return;
-    }
-    setLoop((prev) => !prev);
-    toast.warning("Only admin can Loop");
-  }, [user, isLooped, currentSong, setLoop]);
-  const handleLoop = useDebounce(loop, 500);
-  const shuffle = useCallback(() => {
-    if (user?.role === "admin") {
-      if (!currentSong) return;
-      socket.emit("shuffle", !shuffled);
-      return;
-    }
-    setShuffled((prev) => !prev);
-    toast.warning("Only admin can shuffle");
-  }, [user, shuffled, currentSong, setShuffled]);
-  const handleShuffle = useDebounce(shuffle, 500);
+  // const loop = useCallback(() => {
+  //   if (user?.role === "admin") {
+  //     if (!currentSong) return;
+  //     socket.emit("loop", !isLooped);
+  //     return;
+  //   }
+  //   setLoop((prev) => !prev);
+  //   toast.warning("Only admin can Loop");
+  // }, [user, isLooped, currentSong, setLoop]);
+  // const handleLoop = useDebounce(loop, 500);
+  // const shuffle = useCallback(() => {
+  //   if (user?.role === "admin") {
+  //     if (!currentSong) return;
+  //     socket.emit("shuffle", !shuffled);
+  //     return;
+  //   }
+  //   setShuffled((prev) => !prev);
+  //   toast.warning("Only admin can shuffle");
+  // }, [user, shuffled, currentSong, setShuffled]);
+  // const handleShuffle = useDebounce(shuffle, 500);
 
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
@@ -262,7 +262,7 @@ function Player() {
               <p>{formattedDuration}</p>
             </div>
             <div className=" flex text-zinc-600 gap-3 items-center">
-              <Repeat
+              {/* <Repeat
                 onClick={() => (setLoop(!isLooped), handleLoop())}
                 className={`${
                   isLooped ? "text-zinc-100" : "text-zinc-600"
@@ -283,7 +283,7 @@ function Player() {
                     shuffled ? "fill-zinc-100" : "fill-zinc-600"
                   } size-5 cursor-pointer transition-all duration-300`}
                 />
-              </svg>
+              </svg> */}
 
               <MessageSquare
                 onClick={() => setIsChatOpen(true)}

@@ -50,7 +50,7 @@ function Page() {
             </div>
           </div>
         </div>
-        <footer className="  absolute bottom-7 w-full flex justify-center items-center">
+        <footer className="  absolute bottom-7 max-md:bottom-2 w-full flex justify-center items-center">
           <div className=" w-9/12  max-md:w-full max-md:px-5 border-t py-4 px-7 text-sm flex justify-between items-center border-white/20">
             <p className=" text-white/70">
               Built by{" "}

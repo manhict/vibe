@@ -29,7 +29,7 @@ function Profile({ user }: { user: TUser }) {
   }, [user, setUser, setLoop, setShuffled]);
 
   if (!user) {
-    return <Login />;
+    return <Login isOpen={user ? false : true} />;
   }
   return (
     <Dialog key={"user profile"}>

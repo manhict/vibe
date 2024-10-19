@@ -9,7 +9,7 @@ import { useUserContext } from "@/app/store/userStore";
 import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
-function Login() {
+function Login({ isOpen = false }: { isOpen: boolean }) {
   const { setUser } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = () => {
@@ -27,7 +27,7 @@ function Login() {
     setLoader(false);
   };
   return (
-    <Dialog key={"user Login"}>
+    <Dialog key={"user Login"} defaultOpen={isOpen}>
       <DialogTrigger className=" border max-md:px-0 max-md:border-none border-[#79747E] h-full flex justify-center items-center px-5 rounded-xl text-base">
         <p className=" max-md:hidden">Login / SignUp</p>
         <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
