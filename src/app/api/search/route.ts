@@ -10,15 +10,18 @@ export async function GET(req: NextRequest) {
       cookies: process.env.COOKIES,
     });
 
-    const yt = await Innertube.create({
-      cookie: process.env.COOKIES,
-    });
-
     const page = Number(req.nextUrl.searchParams.get("page")) || 0;
     const search = encodeURIComponent(
       req.nextUrl.searchParams.get("name") || ""
     );
     if (!search) throw new Error("Search not found");
+
+    let yt = null;
+    if (page == 0 && search.startsWith("https")) {
+      yt = await Innertube.create({
+        cookie: process.env.COOKIES,
+      });
+    }
 
     // Fetch data concurrently
     const [data, ytSongs, yt2Songs] = await Promise.all([
@@ -35,7 +38,7 @@ export async function GET(req: NextRequest) {
           ? ytmusic.searchSongs(search)
           : null
         : null,
-      page == 0 && search.startsWith("https") ? yt.search(search) : null,
+      page == 0 && search.startsWith("https") && yt ? yt.search(search) : null,
     ]);
 
     const result = data
