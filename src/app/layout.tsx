@@ -6,6 +6,7 @@ import { UserProvider } from "./store/userStore";
 import { AudioProvider } from "./store/AudioContext";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
+import Script from "next/script";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -19,7 +20,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Vibe - Let Your Votes Choose the Beat",
   description:
-    "Vibe is a collaborative music platform where your votes influence the playlist. Discover trending beats, vote for your favorite tracks, and enjoy a custom listening experience.",
+    "Join Vibe, the collaborative music platform where your votes shape the playlist! Discover trending tracks, engage with a vibrant community, and enjoy a personalized listening experience. Start voting now to influence the beats you love",
   keywords: [
     "music",
     "collaborative playlists",
@@ -124,6 +125,16 @@ export default function RootLayout({
           </UserProvider>
         </Suspense>
       </body>
+      <Script id="seo" async type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Vibe",
+          url: "https://getvibe.in",
+          description:
+            "A collaborative music platform where votes shape playlists.",
+        })}
+      </Script>
     </html>
   );
 }
