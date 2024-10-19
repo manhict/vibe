@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { UserProvider } from "./store/userStore";
 import { AudioProvider } from "./store/AudioContext";
-import { Suspense } from "react";
 import { GoogleTagManager } from "@next/third-parties/google";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -108,21 +107,20 @@ export default function RootLayout({
             `,
           }}
         />
-        <Suspense>
-          <UserProvider>
-            <AudioProvider>
-              <Toaster
-                position="bottom-left"
-                visibleToasts={2}
-                toastOptions={{
-                  style: { background: "#6750A4" },
-                  className: "rounded-xl w-fit text-white border-none",
-                }}
-              />
-              {children}
-            </AudioProvider>
-          </UserProvider>
-        </Suspense>
+
+        <UserProvider>
+          <AudioProvider>
+            <Toaster
+              position="bottom-left"
+              visibleToasts={2}
+              toastOptions={{
+                style: { background: "#6750A4" },
+                className: "rounded-xl w-fit text-white border-none",
+              }}
+            />
+            {children}
+          </AudioProvider>
+        </UserProvider>
       </body>
     </html>
   );

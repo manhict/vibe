@@ -20,10 +20,10 @@ function Profile({ user }: { user: TUser }) {
   const { setLoop, setShuffled } = useAudio();
   useEffect(() => {
     setUser(user);
-    if (user.looped) {
+    if (user?.looped) {
       setLoop(user.looped);
     }
-    if (user.shuffled) {
+    if (user?.shuffled) {
       setShuffled(user.shuffled);
     }
   }, [user, setUser, setLoop, setShuffled]);
