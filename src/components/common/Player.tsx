@@ -125,7 +125,7 @@ function Player() {
       return;
     }
     setShuffled((prev) => !prev);
-    toast.warning("Only admin can Loop");
+    toast.warning("Only admin can shuffle");
   }, [user, shuffled, currentSong, setShuffled]);
   const handleShuffle = useDebounce(shuffle, 500);
 
