@@ -15,16 +15,18 @@ export async function GET(req: NextRequest) {
     });
 
     const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-    const search = req.nextUrl.searchParams.get("name");
+    const search = encodeURIComponent(
+      req.nextUrl.searchParams.get("name") || ""
+    );
     if (!search) throw new Error("Search not found");
 
     // Fetch data concurrently
     const [data, ytSongs, yt2Songs] = await Promise.all([
       !search.startsWith("https")
         ? fetch(
-            `${process.env.BACKEND_URI}/api/search/songs?query=${search}&page=${page}`,
+            `${process.env.BACKEND_URI}/api/search/songs?query=${search}&page=${page}&limit=5`,
             {
-              next: { revalidate: Infinity },
+              cache: "force-cache",
             }
           )
         : null,
@@ -33,7 +35,7 @@ export async function GET(req: NextRequest) {
           ? ytmusic.searchSongs(search)
           : null
         : null,
-      page == 0 ? yt.search(search) : null,
+      page == 0 && search.startsWith("https") ? yt.search(search) : null,
     ]);
 
     const result = data

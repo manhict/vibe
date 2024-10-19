@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
@@ -38,9 +38,13 @@ function SearchSongPopup({
   const { ref, inView } = useInView();
   const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const search = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
       const value = e.target.value.trim();
       setQuery(value);
       if (value.length <= 0) {
@@ -49,13 +53,15 @@ function SearchSongPopup({
         return;
       }
 
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
       const url = youtube
         ? `/api/youtube?id=${extractPlaylistID(value)}&room=${roomId}`
         : `/api/search/?name=${value}&page=0`;
 
       setPage(0); // Reset page on a new search
       setLoading(true);
-      const res = await api.get(url);
+      const res = await api.get(url, { signal: controller.signal });
       if (res.success) {
         if (youtube) {
           const tracks = res.data as searchResults[];
@@ -76,7 +82,7 @@ function SearchSongPopup({
     [youtube, roomId]
   );
 
-  const handleSearch = useDebounce(search, 400);
+  const handleSearch = useDebounce(search);
 
   const searchMoreSongs = useCallback(async () => {
     if (!query || !songs || songs.data.results.length >= songs.data.total)
@@ -87,16 +93,16 @@ function SearchSongPopup({
 
     const res = await api.get(url);
     if (res.success) {
-      setSongs((prevSongs) => ({
-        ...prevSongs!,
+      setSongs({
+        ...songs,
         data: {
-          ...prevSongs!.data,
+          ...songs?.data,
           results: [
-            ...prevSongs!.data.results,
+            ...songs?.data.results,
             ...(res.data as searchSongResult).data.results,
           ],
         },
-      }));
+      });
       setPage((prevPage) => prevPage + 1);
     }
     setLoading(false);
