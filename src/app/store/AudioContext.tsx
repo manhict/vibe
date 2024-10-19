@@ -70,7 +70,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
-
+  const { user } = useUserContext();
   // play
   const play = useCallback((song: searchResults) => {
     setCurrentSong(song);
@@ -146,12 +146,16 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   };
 
   // seek
-  const seek = useCallback((value: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = value;
-      socket.emit("seek", value);
-    }
-  }, []);
+  const seek = useCallback(
+    (value: number) => {
+      if (audioRef.current) {
+        if (user?.role !== "admin") return;
+        audioRef.current.currentTime = value;
+        socket.emit("seek", value);
+      }
+    },
+    [user]
+  );
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
