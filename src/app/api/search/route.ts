@@ -11,9 +11,8 @@ export async function GET(req: NextRequest) {
     });
 
     const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-    const search = encodeURIComponent(
-      req.nextUrl.searchParams.get("name") || ""
-    );
+    const search = req.nextUrl.searchParams.get("name") || "";
+
     if (!search) throw new Error("Search not found");
 
     let yt = null;
@@ -27,7 +26,11 @@ export async function GET(req: NextRequest) {
     const [data, ytSongs, yt2Songs] = await Promise.all([
       !search.startsWith("https")
         ? fetch(
-            `${process.env.BACKEND_URI}/api/search/songs?query=${search}&page=${page}&limit=5`,
+            `${
+              process.env.BACKEND_URI
+            }/api/search/songs?query=${encodeURIComponent(
+              search
+            )}&page=${page}&limit=5`,
             {
               cache: "force-cache",
             }
