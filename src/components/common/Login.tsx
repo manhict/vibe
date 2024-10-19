@@ -9,12 +9,14 @@ import { useUserContext } from "@/app/store/userStore";
 import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 function Login({ isOpen = false }: { isOpen: boolean }) {
   const { setUser } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
-  const handleLogin = () => {
-    setLoader(true);
-    signInWithPopup(auth, provider).then(async (result) => {
+  const handleLogin = async () => {
+    try {
+      setLoader(true);
+      const result = await signInWithPopup(auth, provider);
       const user = result.user;
       if (user) {
         const res = await api.post("/api/login", user);
@@ -23,8 +25,10 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
           window.location.reload();
         }
       }
-    });
-    setLoader(false);
+      setLoader(false);
+    } catch (error: any) {
+      toast.error(error?.message);
+    }
   };
   return (
     <Dialog key={"user Login"} defaultOpen={isOpen}>
