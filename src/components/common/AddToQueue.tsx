@@ -52,6 +52,7 @@ function AddToQueue() {
     if (isSearchedOpened) {
       // Close the search, but wait for the animation to finish before setting the state
       setOpenSearch(false);
+      setName("");
     } else {
       // Open the search immediately
       setOpenSearch(true);
