@@ -7,6 +7,7 @@ import { AudioProvider } from "./store/AudioContext";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
 import Script from "next/script";
+import GoogleAnalytics from "@/components/common/GoogleAnalytics";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -94,6 +95,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <GoogleTagManager gtmId="GTM-KS6FPVS3" />
+      <GoogleAnalytics />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
