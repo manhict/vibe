@@ -76,6 +76,7 @@ export interface queue {
 export interface messages {
   user: TUser;
   message: string;
+  time: string;
 }
 
 export interface spotifyToken {

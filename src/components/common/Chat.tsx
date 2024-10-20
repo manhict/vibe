@@ -162,9 +162,10 @@ function Chat({
           {user &&
             messages.map((message) => (
               <div
+                title={message?.time}
                 //@ts-expect-error:ex
                 ref={messagesEndRef}
-                key={message.message}
+                key={message?.message}
               >
                 {message.user._id !== user?._id ? (
                   <div className=" flex gap-2">
