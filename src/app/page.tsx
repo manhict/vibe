@@ -56,13 +56,13 @@ function Page() {
               Built by{" "}
               <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
                 <Link href="https://tanmayo7.vercel.app/" target="_blank">
-                  babyo7_
+                  Tanmay singh
                 </Link>
               </span>{" "}
               &{" "}
               <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
                 <Link
-                  href="https://www.instagram.com/justcrazzyxd/"
+                  href="https://www.instagram.com/fixing_x/"
                   target="_blank"
                 >
                   Ajay Sharma

@@ -20,7 +20,7 @@ function Footer() {
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            babyo7_
+            Tanmay singh
           </a>
         </p>
         <p>
