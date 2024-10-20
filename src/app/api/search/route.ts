@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     if (!search) throw new Error("Search not found");
 
     let yt = null;
-    if (page == 0 && search.startsWith("https")) {
+    if (search.startsWith("http")) {
       yt = await Innertube.create({
         cookie: process.env.COOKIES,
       });
@@ -37,11 +37,11 @@ export async function GET(req: NextRequest) {
           )
         : null,
       page == 0
-        ? !search.startsWith("https")
+        ? !search.startsWith("http")
           ? ytmusic.searchSongs(search)
           : null
         : null,
-      page == 0 && search.startsWith("https") && yt ? yt.search(search) : null,
+      yt ? yt.search(search) : null,
     ]);
 
     const result = data
