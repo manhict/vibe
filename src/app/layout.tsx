@@ -19,16 +19,15 @@ const geistMono = localFont({
   weight: "100 900",
 });
 export const metadata: Metadata = {
-  title: "Vibe - Let Your Votes Choose the Beat",
+  title: "Vibe - Shape the Playlist with Your Votes",
   description:
-    "Join Vibe, the collaborative music platform where your votes shape the playlist! Discover trending tracks, engage with a vibrant community, and enjoy a personalized listening experience. Start voting now to influence the beats you love",
+    "Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!",
   keywords: [
     "music",
     "collaborative playlists",
     "music voting platform",
     "trending music",
     "interactive music",
-    "custom playlists",
     "community-driven playlists",
     "discover music",
     "vibe music",
@@ -37,17 +36,17 @@ export const metadata: Metadata = {
 
   // OpenGraph Meta Tags
   openGraph: {
-    title: "Vibe - Let Your Votes Choose the Beat",
+    title: "Vibe - Shape the Playlist with Your Votes",
     description:
-      "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
-    url: "https://getvibe.in", // Replace with your website URL
+      "Explore, vote, and enjoy a community-driven music experience where your votes decide the beats.",
+    url: "https://getvibe.in",
     type: "website",
     images: [
       {
-        url: "https://getvibe.in/logo.svg", // Add Open Graph image
+        url: "https://getvibe.in/logo.svg",
         width: 1200,
         height: 630,
-        alt: "Vibe - Let Your Votes Choose the Beat",
+        alt: "Vibe - Shape the Playlist with Your Votes",
       },
     ],
   },
@@ -55,10 +54,10 @@ export const metadata: Metadata = {
   // Twitter Meta Tags
   twitter: {
     card: "summary_large_image",
-    site: "@tanmay11117", // Replace with your Twitter handle
-    title: "Vibe - Let Your Votes Choose the Beat",
+    site: "@tanmay11117",
+    title: "Vibe - Shape the Playlist with Your Votes",
     description:
-      "Discover music collaboratively by letting your votes shape the playlist. Explore trending beats, vote, and experience a unique listening journey.",
+      "Discover, vote, and influence the playlist in real-time on Vibe, the collaborative music platform.",
     images: [
       {
         url: "https://getvibe.in/logo.svg",
@@ -67,7 +66,7 @@ export const metadata: Metadata = {
         alt: "Vibe - Collaborative Music Platform",
       },
       {
-        url: "https://getvibe.in/og-image.jpg", // Add more image options for OpenGraph
+        url: "https://getvibe.in/logo.svg",
         width: 800,
         height: 600,
         alt: "Vibe Music Collaboration",
