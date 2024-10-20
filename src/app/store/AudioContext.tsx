@@ -266,9 +266,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (!currentSong && queue.length > 0) {
-      play(queue[0]);
+      setCurrentSong(queue[0]);
     }
-  }, [queue, play, currentSong]);
+  }, [queue, currentSong]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
