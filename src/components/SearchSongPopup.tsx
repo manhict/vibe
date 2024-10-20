@@ -135,7 +135,7 @@ function SearchSongPopup({
   return (
     <Dialog key={"songs"}>
       {youtube ? (
-        <DialogTrigger>
+        <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
           <FaYoutube className="size-4" />
         </DialogTrigger>
       ) : (
