@@ -152,7 +152,7 @@ function AddToQueue() {
             damping: 20, // tweak this for smoother exit
             duration: 0.4, // Adjust duration for a slower effect
           }}
-          className=" flex overflow-x-scroll py-1 -mb-1 mt-2 items-center gap-1"
+          className=" flex hide-scrollbar overflow-x-scroll py-1 -mb-1 mt-2 items-center gap-1"
         >
           <Button
             onClick={handleBulkDelete}

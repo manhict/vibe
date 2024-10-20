@@ -293,7 +293,7 @@ function Player() {
               />
               <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
             </div>
-            <div className=" w-full flex gap-2 min-h-5 items-center justify-center">
+            <div className=" select-none w-full flex gap-2 min-h-5 items-center justify-center">
               {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
                 <p>Requested by</p>
               )}

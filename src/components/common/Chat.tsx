@@ -42,7 +42,7 @@ function Chat({
 
   return (
     <>
-      <div className=" flex  p-5 justify-between items-center">
+      <div className=" flex no-scrollbar  p-5 justify-between items-center">
         <div className=" flex w-9/12 truncate items-center gap-1.5">
           <Avatar className=" rounded-md size-14">
             <AvatarImage

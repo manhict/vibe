@@ -119,10 +119,12 @@ function QueueList({
           <label
             htmlFor={song?.id + i}
             key={i}
-            className=" flex gap-2  items-center justify-between"
+            className={`flex gap-2 ${
+              i !== queue.length && "border-b"
+            } pb-3 items-center justify-between`}
           >
             <div className="relative">
-              <Avatar className="size-12 rounded-md relative group">
+              <Avatar className="size-[3.2rem] rounded-md relative group">
                 <AvatarImage
                   loading="lazy"
                   alt={song.name}
@@ -144,7 +146,7 @@ function QueueList({
                   <TooltipTrigger className=" w-auto text-start">
                     <p
                       onClick={(e) => handlePlay(e, song)}
-                      className="  cursor-pointer font-semibold truncate"
+                      className="cursor-pointer font-semibold truncate"
                     >
                       {parse(song.name)}
                     </p>

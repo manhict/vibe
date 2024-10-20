@@ -146,16 +146,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   };
 
   // seek
-  const seek = useCallback(
-    (value: number) => {
-      if (audioRef.current) {
-        if (user?.role !== "admin") return;
-        audioRef.current.currentTime = value;
-        socket.emit("seek", value);
-      }
-    },
-    [user]
-  );
+  const seek = useCallback((value: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = value;
+      socket.emit("seek", value);
+    }
+  }, []);
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
@@ -190,14 +186,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       navigator.mediaSession.setActionHandler("previoustrack", playPrev);
       navigator.mediaSession.setActionHandler("nexttrack", playNext);
       navigator.mediaSession.setActionHandler("seekto", (e) => {
-        if (e.seekTime) {
+        if (e.seekTime && user?.role == "admin") {
           seek(e.seekTime);
         }
       });
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
       navigator.mediaSession.setActionHandler("seekforward", handleBlock);
     }
-  }, [currentSong, playNext, playPrev, pause, resume, seek]);
+  }, [currentSong, playNext, playPrev, pause, resume, seek, user]);
 
   // Debounced function to emit progress
 
