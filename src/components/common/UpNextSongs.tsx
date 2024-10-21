@@ -13,6 +13,7 @@ function UpNextSongs() {
     visible: { opacity: 1, y: 0 },
   };
 
+  return;
   return (
     <div className="hide-scrollbar select-none w-full flex gap-2 min-h-5 items-center justify-center">
       <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
