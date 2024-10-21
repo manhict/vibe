@@ -101,7 +101,7 @@ const VoteIcon = ({
               duration: 0.5,
               ease: "easeInOut",
             }}
-            className="flex absolute justify-center items-center w-full -mt-2 text-xs"
+            className="flex justify-center items-center w-full -mt-2 text-xs"
           >
             <TopVotes song={song} />
           </motion.div>

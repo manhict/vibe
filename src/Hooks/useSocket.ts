@@ -139,18 +139,20 @@ export default function useSocket() {
     currentSocket.on("userLeftRoom", handleUserLeftRoom);
     currentSocket.on("songEnded", handleSongEnded);
     currentSocket.on("seek", handleSeek);
-    currentSocket.on("songQueue", () => socket.emit("getSongQueue"));
-    currentSocket.on("updateUpNextSongs", () => socket.emit("getUpNextSongs"));
+    currentSocket.on("songQueue", () => currentSocket.emit("getSongQueue"));
+    currentSocket.on("updateUpNextSongs", () =>
+      currentSocket.emit("getUpNextSongs")
+    );
     currentSocket.on("queueList", setQueue);
     currentSocket.on("upNextSongs", setUpNextSongs);
-    currentSocket.on("votes", (data) => data?.queue && setQueue(data.queue));
-    currentSocket.on("getVotes", () => socket.emit("upVote"));
+    currentSocket.on("votes", setQueue);
+    currentSocket.on("getVotes", () => currentSocket.emit("upVote"));
     currentSocket.on("message", handleMessage);
     currentSocket.on("updateProgress", seek);
     currentSocket.on("shuffle", (shu: boolean) => {
       if (shu) {
         setShuffled(shu);
-        socket.emit("getSongQueue");
+        currentSocket.emit("getSongQueue");
       }
     });
     currentSocket.on("loop", setLoop);
@@ -195,6 +197,7 @@ export default function useSocket() {
       currentSocket.off("updateProgress");
       currentSocket.off("queueList");
       currentSocket.off("upNextSongs");
+      currentSocket.off("updateUpNextSongs");
       currentSocket.off("votes");
       currentSocket.off("getVotes");
       currentSocket.off("message");
