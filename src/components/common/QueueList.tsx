@@ -120,7 +120,7 @@ function QueueList({
             htmlFor={song?.id + i}
             key={i}
             className={`flex gap-2 ${
-              i !== queue.length && "border-b"
+              i !== queue.length && "border-b border-white/5"
             } pb-3 items-center justify-between`}
           >
             <div className="relative">

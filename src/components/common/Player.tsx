@@ -1,18 +1,11 @@
 "use client";
 import { useAudio } from "@/app/store/AudioContext";
 import { formatArtistName, formatElapsedTime } from "@/utils/utils";
-import { MessageSquare, Volume1, Volume2, VolumeX } from "lucide-react";
+import { Volume1, Volume2, VolumeX } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VolumeControl from "./VolumeControl";
 import { useUserContext } from "@/app/store/userStore";
 import Image from "next/image";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import Chat from "./Chat";
@@ -23,6 +16,8 @@ import LikeButton from "./LinkeButton";
 // import useDebounce from "@/Hooks/useDebounce";
 import parse from "html-react-parser";
 import PlayButton from "./PlayButton";
+import UpvotedBy from "./UpvotedBy";
+import UpNextSongs from "./UpNextSongs";
 function Player() {
   const { user, messages } = useUserContext();
   const {
@@ -173,6 +168,7 @@ function Player() {
                   "/cache.jpg"
                 }
               />
+              <UpvotedBy />
               {currentSong?.source == "youtube" && (
                 <p className=" absolute bottom-2 right-2 text-xl mt-1 text-[#a176eb]">
                   ☆
@@ -284,58 +280,26 @@ function Player() {
                   } size-5 cursor-pointer transition-all duration-300`}
                 />
               </svg> */}
-
-              <MessageSquare
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
                 onClick={() => setIsChatOpen(true)}
-                className={`${
-                  seen ? "" : "text-red-500"
-                } size-5 cursor-pointer hover:text-zinc-200 transition-all duration-500`}
-              />
+                className=" cursor-pointer"
+              >
+                <path
+                  d="M21.75 9.34415C21.75 8.94633 21.592 8.5648 21.3107 8.28349C21.0294 8.00219 20.6478 7.84415 20.25 7.84415H17.25V4.84415C17.25 4.44633 17.092 4.0648 16.8107 3.78349C16.5294 3.50219 16.1478 3.34415 15.75 3.34415H3.75C3.35218 3.34415 2.97064 3.50219 2.68934 3.78349C2.40804 4.0648 2.25 4.44633 2.25 4.84415V16.8442C2.25044 16.9853 2.29068 17.1234 2.36608 17.2426C2.44149 17.3619 2.54901 17.4575 2.67629 17.5184C2.80358 17.5793 2.94546 17.603 3.08564 17.5869C3.22581 17.5708 3.3586 17.5155 3.46875 17.4273L6.75 14.7817V17.5942C6.75 17.992 6.90804 18.3735 7.18934 18.6548C7.47064 18.9361 7.85218 19.0942 8.25 19.0942H17.0241L20.5312 21.9273C20.664 22.0346 20.8293 22.0935 21 22.0942C21.1989 22.0942 21.3897 22.0151 21.5303 21.8745C21.671 21.7338 21.75 21.5431 21.75 21.3442V9.34415ZM17.7609 17.761C17.6282 17.6537 17.4629 17.5948 17.2922 17.5942H8.25V14.5942H15.75C16.1478 14.5942 16.5294 14.4361 16.8107 14.1548C17.092 13.8735 17.25 13.492 17.25 13.0942V9.34415H20.25V19.7738L17.7609 17.761Z"
+                  className={`${
+                    seen ? "fill-zinc-500" : "fill-red-500"
+                  } size-5 cursor-pointer hover:fill-zinc-200 transition-all duration-500`}
+                />
+              </svg>
+
               <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
             </div>
-            <div className=" select-none w-full flex gap-2 min-h-5 items-center justify-center">
-              {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
-                <p>Requested by</p>
-              )}
-              <div className=" flex items-center justify-center">
-                {currentSong?.topVoters?.map((voter, i) => (
-                  <TooltipProvider key={voter._id}>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <div className={` ${i !== 0 && "-ml-2"} size-5`}>
-                          <Avatar className=" size-6 border border-white">
-                            <AvatarImage
-                              loading="lazy"
-                              alt={voter?.name}
-                              height={200}
-                              width={200}
-                              className=" rounded-full"
-                              src={voter?.imageUrl}
-                            />
-                            <AvatarFallback>SX</AvatarFallback>
-                          </Avatar>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="mr-20 bg-[#9870d3] mb-1 text-white">
-                        <p>
-                          {voter?.username} ({voter?.name})
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-
-                {currentSong && currentSong.voteCount > 4 && (
-                  <div className={` -ml-4 px-2 py-1 text-[9px] rounded-full`}>
-                    <Avatar className=" size-6 border-white border">
-                      <AvatarFallback>
-                        +{currentSong?.voteCount - 4}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                )}
-              </div>
-            </div>
+            <UpNextSongs />
             <Listeners className=" max-md:flex hidden mt-10 -mb-10" />
           </motion.div>
         )}

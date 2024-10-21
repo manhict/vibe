@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export default function useSocket() {
   const { isConnected, setIsConnected, setLikEffectUser } = useUserContext();
   const [transport, setTransport] = useState("N/A");
-  const { setListener, setUser, setQueue, user, setMessages } =
+  const { setListener, setUser, setQueue, setUpNextSongs, user, setMessages } =
     useUserContext();
   const { play, seek, setLoop, setShuffled } = useAudio();
   const socketRef = useRef(socket);
@@ -36,6 +36,7 @@ export default function useSocket() {
       if (user) {
         socket.emit("getProgress");
         socket.emit("getSongQueue");
+        socket.emit("getUpNextSongs");
       }
       if (user) setUser((prev) => ({ ...prev, ...user }));
       if (listeners) setListener(listeners);
@@ -139,7 +140,9 @@ export default function useSocket() {
     currentSocket.on("songEnded", handleSongEnded);
     currentSocket.on("seek", handleSeek);
     currentSocket.on("songQueue", () => socket.emit("getSongQueue"));
+    currentSocket.on("updateUpNextSongs", () => socket.emit("getUpNextSongs"));
     currentSocket.on("queueList", setQueue);
+    currentSocket.on("upNextSongs", setUpNextSongs);
     currentSocket.on("votes", (data) => data?.queue && setQueue(data.queue));
     currentSocket.on("getVotes", () => socket.emit("upVote"));
     currentSocket.on("message", handleMessage);
@@ -191,6 +194,7 @@ export default function useSocket() {
       currentSocket.off("songQueue");
       currentSocket.off("updateProgress");
       currentSocket.off("queueList");
+      currentSocket.off("upNextSongs");
       currentSocket.off("votes");
       currentSocket.off("getVotes");
       currentSocket.off("message");
@@ -215,6 +219,7 @@ export default function useSocket() {
     handleGuest,
     setLoop,
     setShuffled,
+    setUpNextSongs,
   ]);
 
   return {

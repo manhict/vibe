@@ -37,6 +37,8 @@ interface UserContextType {
   setSpotifyPlaylists: React.Dispatch<SetStateAction<spotifyPlaylist[] | null>>;
   likEffectUser: { imageUrl: string }[] | [];
   setLikEffectUser: React.Dispatch<SetStateAction<{ imageUrl: string }[] | []>>;
+  setUpNextSongs: React.Dispatch<SetStateAction<searchResults[]>>;
+  upNextSongs: searchResults[];
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -47,6 +49,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
   const [queue, setQueue] = React.useState<searchResults[]>([]);
+  const [upNextSongs, setUpNextSongs] = React.useState<searchResults[]>([]);
   const [messages, setMessages] = React.useState<messages[]>([]);
   const [user, setUser] = React.useState<TUser | null>(null);
   const [likEffectUser, setLikEffectUser] = React.useState<
@@ -98,6 +101,8 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setLikEffectUser,
       spotifyPlaylists,
       setSpotifyPlaylists,
+      setUpNextSongs,
+      upNextSongs,
     }),
     [
       isConnected,
@@ -108,6 +113,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       spotifyPlaylists,
       user,
       likEffectUser,
+      upNextSongs,
     ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

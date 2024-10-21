@@ -42,7 +42,7 @@ function Chat({
 
   return (
     <>
-      <div className=" flex no-scrollbar  p-5 justify-between items-center">
+      <div className=" flex hide-scrollbar p-5 justify-between items-center">
         <div className=" flex w-9/12 truncate items-center gap-1.5">
           <Avatar className=" rounded-md size-14">
             <AvatarImage
@@ -157,8 +157,8 @@ function Chat({
         </div>
         <X onClick={() => setIsChatOpen(false)} className=" cursor-pointer" />
       </div>
-      <div className="  h-full hide-scrollbar no-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
-        <div className=" flex-grow gap-4 flex no-scrollbar flex-col py-6 overflow-y-scroll">
+      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
+        <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
           {user &&
             messages.map((message) => (
               <div
