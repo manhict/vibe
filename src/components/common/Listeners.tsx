@@ -41,7 +41,7 @@ function Listeners({ className }: { className?: string }) {
                   <TooltipProvider key={roomUser?._id}>
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className={` ${i !== 0 && "-ml-1"} size-6`}>
+                        <div className={` ${i !== 0 && "-ml-1.5"} size-6`}>
                           <Avatar className=" size-6 border border-white">
                             <AvatarImage
                               loading="lazy"
