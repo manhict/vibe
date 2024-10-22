@@ -70,10 +70,7 @@ function Page() {
               </span>
             </p>
             <div className="flex text-xl items-center text-white/70 gap-2">
-              <Link
-                href="https://www.instagram.com/justcrazzyxd/"
-                target="_blank"
-              >
+              <Link href="https://www.instagram.com/fixing_x/" target="_blank">
                 <InstagramLogo
                   // size={24}
                   className=" hover:text-white transition-all duration-500"
