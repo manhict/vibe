@@ -297,7 +297,7 @@ function SearchSongPopup({
         {selectedSongs.length > 0 && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
-              <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
+              <div className="flex overflow-x-scroll items-center gap-2.5">
                 {selectedSongs.map((song) => (
                   <div
                     key={song?.id}
