@@ -173,11 +173,12 @@ function getQueuePipeline(
         songData: 1, // Include only the songData field
         isPlaying: 1, // Include isPlaying for sorting
         createdAt: 1,
+        order: 1,
       },
     },
     {
       $sort: {
-        createdAt: -1,
+        order: -1,
       },
     },
     {
