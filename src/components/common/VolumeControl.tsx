@@ -9,7 +9,7 @@ export const VolumeControl: React.FC = () => {
       aria-label="volume"
       min={0}
       max={1}
-      step={0.05}
+      step={0.02}
       value={[volume]}
       onValueChange={(e) => setVolume(e[0])}
     />
