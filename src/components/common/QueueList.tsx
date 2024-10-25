@@ -30,7 +30,9 @@ function QueueList({
 }) {
   const { queue, setQueue, user } = useUserContext();
   const { currentSong } = useAudio();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    rootMargin: "500px",
+  });
   const { loading, handleUpdateQueue } = useSocket();
   const upVote = useCallback((song: searchResults) => {
     emitMessage("upvote", { queueId: song?.queueId });
@@ -131,7 +133,7 @@ function QueueList({
               key={i}
               className={`flex gap-2 ${
                 i !== queue.length && " border-white/5"
-              } py-2 hover:pl-2  hover:bg-white/10  transition-all duration-300 cursor-pointer hover:rounded-xl items-center justify-between`}
+              } py-2 hover:pl-2  hover:bg-white/10  transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
             >
               <div className="relative">
                 <Avatar className="size-[3.2rem] rounded-md relative group">
