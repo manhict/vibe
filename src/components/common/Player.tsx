@@ -18,8 +18,11 @@ import parse from "html-react-parser";
 import PlayButton from "./PlayButton";
 import UpvotedBy from "./UpvotedBy";
 import UpNextSongs from "./UpNextSongs";
+import { useSocket } from "@/Hooks/useSocket";
+import { socket } from "@/app/socket";
 function Player() {
-  const { user, messages } = useUserContext();
+  const { user } = useUserContext();
+  const { messages } = useSocket();
   const {
     currentSong,
     progress,
@@ -49,6 +52,7 @@ function Player() {
       if (user && user.role !== "admin") {
         return toast.error("Only admin is allowed to seek");
       }
+      socket.emit("seek", e[0]);
       seek(e[0]);
     }
   };
@@ -99,6 +103,7 @@ function Player() {
       const clickPosition = e.clientX - rect.left;
       const newProgress = (clickPosition / rect.width) * duration;
       setProgress(newProgress);
+      socket.emit("seek", newProgress);
       seek(newProgress);
     },
     [duration, seek, setProgress, user]
@@ -134,9 +139,9 @@ function Player() {
             exit="hidden"
             variants={chatVariants}
             transition={{
-              type: "spring",
+              type: "tween",
               stiffness: 100,
-              damping: 20,
+              damping: 25,
             }}
             className=" h-full flex flex-col py-2 w-full absolute  backdrop-blur-xl bg-black/10 inset-0"
           >
@@ -154,10 +159,10 @@ function Player() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
             className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
           >
-            <div className=" relative h-auto min-h-40  overflow-hidden rounded-xl">
+            <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
               <Image
                 alt={currentSong?.name || ""}
                 height={300}
@@ -169,7 +174,7 @@ function Player() {
                 }
               />
               <UpvotedBy />
-              {currentSong?.source == "youtube" && (
+              {currentSong?.source !== "youtube" && (
                 <p className=" absolute bottom-2 right-2 text-xl mt-1 text-[#a176eb]">
                   ☆
                 </p>

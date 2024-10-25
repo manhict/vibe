@@ -18,13 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { socket } from "@/app/socket";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
 import { FaYoutube } from "react-icons/fa";
 import { useUserContext } from "@/app/store/userStore";
+import { emitMessage } from "@/lib/customEmits";
 function SearchSongPopup({
   isAddToQueue = false,
   youtube = false,
@@ -36,7 +36,7 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId, user } = useUserContext();
+  const { roomId, user, setQueue } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -121,16 +121,53 @@ function SearchSongPopup({
         style: { background: "#e94625" },
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
-    socket.emit("addToQueue", selectedSongs);
-    setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user]);
 
-  const handleAddAll = useCallback(() => {
+    setQueue((prev) => {
+      // Create a Set to track the unique IDs of songs already in the queue
+      const existingIds = new Set(prev.map((song) => song.id));
+
+      // Filter out duplicate songs from selectedSongs based on their ID
+      const filteredSongs = selectedSongs.filter(
+        (song) => !existingIds.has(song.id)
+      );
+
+      // Return the new state, adding only the filtered songs
+      return [...filteredSongs, ...prev];
+    });
+    const added = await api.post("/api/add", selectedSongs, {
+      credentials: "include",
+    });
+    if (added.success) {
+      emitMessage("update", "update");
+      toast.success("Songs added to queue");
+    }
+    setSelectedSongs([]);
+  }, [setSelectedSongs, selectedSongs, user, setQueue]);
+
+  const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
-      socket.emit("addToQueue", songs?.data.results);
+      setQueue((prev) => {
+        // Create a Set to track the unique IDs of songs already in the queue
+        const existingIds = new Set(prev.map((song) => song.id));
+
+        // Filter out duplicate songs from selectedSongs based on their ID
+        const filteredSongs = songs?.data.results.filter(
+          (song) => !existingIds.has(song.id)
+        );
+
+        // Return the new state, adding only the filtered songs
+        return [...filteredSongs, ...prev];
+      });
+
+      const added = await api.post("/api/add", songs?.data.results, {
+        credentials: "include",
+      });
+      if (added.success) {
+        emitMessage("update", "update");
+      }
       toast.success("All songs added to queue");
     }
-  }, [songs]);
+  }, [songs, setQueue]);
 
   return (
     <Dialog key={"songs"}>
@@ -159,9 +196,9 @@ function SearchSongPopup({
             </DialogTrigger>
           ) : (
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-zinc-200 justify-center items-center">
-              <p className=" font-semibold text-4xl ">Seems like</p>
-              <p className=" font-medium text-2xl">your queue is empty</p>
-              <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-4 mb-2">
+              <p className=" font-semibold text-3xl ">Seems like</p>
+              <p className=" font-medium text-xl">your queue is empty</p>
+              <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2 mt-4 mb-2">
                 Add Songs
               </div>
               <p className=" font-normal text-sm mt-1">
@@ -229,8 +266,8 @@ function SearchSongPopup({
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {formatArtistName(song.artists.primary)}
                   </p>
-                  {song?.source == "youtube" && (
-                    <p className=" text-xs text-[#a176eb]">Premium ☆</p>
+                  {song?.source !== "youtube" && (
+                    <p className=" text-xs text-[#a176eb]">☆</p>
                   )}
                 </div>
                 <div className=" relative ">
@@ -240,7 +277,7 @@ function SearchSongPopup({
                     name={song?.id}
                     id={song?.id}
                     type="checkbox"
-                    className="peer appearance-none w-5 h-5 border border-gray-400 rounded-sm checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                    className="peer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
                   />
                   <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
                 </div>
@@ -260,7 +297,7 @@ function SearchSongPopup({
         {selectedSongs.length > 0 && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
-              <div className="flex overflow-x-scroll items-center gap-2.5">
+              <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
                 {selectedSongs.map((song) => (
                   <div
                     key={song?.id}

@@ -57,7 +57,9 @@ const handleResponse = async <T>(
 
 const handleError = (error: any): ApiResponse<never> => {
   const errorMessage = error.message || "An error occurred";
-  toast.error(errorMessage);
+  if (error.name !== "AbortError") {
+    toast.error(errorMessage);
+  }
   console.error("API call failed:", errorMessage);
 
   return {

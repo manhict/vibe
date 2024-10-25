@@ -3,7 +3,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/app/store/userStore";
 import { X } from "lucide-react";
-import { socket } from "@/app/socket";
 import React, { SetStateAction, useCallback, useState } from "react";
 import {
   Tooltip,
@@ -18,6 +17,8 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
+import { emitMessage } from "@/lib/customEmits";
+import { useSocket } from "@/Hooks/useSocket";
 
 function Chat({
   messagesEndRef,
@@ -28,13 +29,14 @@ function Chat({
 }) {
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
-  const { user, listener, messages } = useUserContext();
+  const { user, listener } = useUserContext();
+  const { messages } = useSocket();
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (message.length > 500) return toast.error("Message size exceeded");
       if (String(message).trim().length == 0) return;
-      socket.emit("message", message);
+      emitMessage("message", message);
       setMessage("");
     },
     [message]
@@ -116,34 +118,33 @@ function Chat({
       <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/10 w-full justify-between items-center">
         <p>Chat</p>
         <div className=" flex items-center">
-          {user &&
-            listener?.roomUsers
-              ?.filter((r) => r.userId?._id !== user?._id)
-              ?.map((roomUser, i) => (
-                <TooltipProvider key={roomUser?._id}>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div className={` ${i !== 0 && "-ml-2"} size-7`}>
-                        <Avatar className=" size-7 border border-white">
-                          <AvatarImage
-                            loading="lazy"
-                            alt={roomUser?.userId?.name}
-                            height={200}
-                            width={200}
-                            className=" rounded-full"
-                            src={roomUser?.userId?.imageUrl}
-                          />
-                        </Avatar>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                      <p>
-                        {roomUser?.userId?.username} ({roomUser?.userId?.name})
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
+          {listener?.roomUsers
+            ?.filter((r) => r.userId?._id !== user?._id)
+            ?.map((roomUser, i) => (
+              <TooltipProvider key={roomUser?._id}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className={` ${i !== 0 && "-ml-2"} size-7`}>
+                      <Avatar className=" size-7 border border-white">
+                        <AvatarImage
+                          loading="lazy"
+                          alt={roomUser?.userId?.name}
+                          height={200}
+                          width={200}
+                          className=" rounded-full"
+                          src={roomUser?.userId?.imageUrl}
+                        />
+                      </Avatar>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                    <p>
+                      {roomUser?.userId?.username} ({roomUser?.userId?.name})
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
           {listener && listener?.totalUsers > 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
@@ -159,86 +160,85 @@ function Chat({
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
         <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
-          {user &&
-            messages.map((message) => (
-              <div
-                title={message?.time}
-                //@ts-expect-error:ex
-                ref={messagesEndRef}
-                key={message?.message}
-              >
-                {message.user._id !== user?._id ? (
-                  <div className=" flex gap-2">
-                    <Avatar className="size-9">
-                      <AvatarImage
-                        loading="lazy"
-                        alt={message?.user?.name || ""}
-                        height={50}
-                        width={50}
-                        className=" h-full object-cover  w-full"
-                        src={message?.user.imageUrl || "/bg.webp"}
-                      />
-                      <AvatarFallback>SX</AvatarFallback>
-                    </Avatar>
-                    <div className="w-full">
-                      <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
-                        {message?.user?.name}
-                      </p>
+          {messages.map((message) => (
+            <div
+              title={message?.time}
+              //@ts-expect-error:ex
+              ref={messagesEndRef}
+              key={message?.message}
+            >
+              {message.user._id !== user?._id ? (
+                <div className=" flex gap-2">
+                  <Avatar className="size-9">
+                    <AvatarImage
+                      loading="lazy"
+                      alt={message?.user?.name || ""}
+                      height={50}
+                      width={50}
+                      className=" h-full object-cover  w-full"
+                      src={message?.user.imageUrl || "/bg.webp"}
+                    />
+                    <AvatarFallback>SX</AvatarFallback>
+                  </Avatar>
+                  <div className="w-full">
+                    <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
+                      {message?.user?.name}
+                    </p>
 
-                      {isImageUrl(message?.message) ? (
-                        <Link href={message?.message} target="_blank">
-                          <img
-                            src={message?.message}
-                            alt="User sent image"
-                            className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
-                          />
-                        </Link>
-                      ) : (
-                        <Linkify as="p" options={linkifyOptions}>
-                          <p className="w-fit  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
-                            {message?.message}
-                          </p>
-                        </Linkify>
-                      )}
-                    </div>
+                    {isImageUrl(message?.message) ? (
+                      <Link href={message?.message} target="_blank">
+                        <img
+                          src={message?.message}
+                          alt="User sent image"
+                          className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                        />
+                      </Link>
+                    ) : (
+                      <Linkify as="p" options={linkifyOptions}>
+                        <p className="w-fit  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
+                          {message?.message}
+                        </p>
+                      </Linkify>
+                    )}
                   </div>
-                ) : (
-                  <div className=" flex w-full self-end gap-2">
-                    <div className=" w-full flex flex-col justify-end items-end">
-                      <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
-                        {message.user?.name}
-                      </p>
-                      {isImageUrl(message?.message) ? (
-                        <Link href={message?.message} target="_blank">
-                          <img
-                            src={message?.message}
-                            alt="User sent image"
-                            className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
-                          />
-                        </Link>
-                      ) : (
-                        <Linkify as="p" options={linkifyOptions}>
-                          <p className=" w-fit  text-end  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
-                            {message?.message}
-                          </p>
-                        </Linkify>
-                      )}
-                    </div>
-                    <Avatar className="size-9">
-                      <AvatarImage
-                        loading="lazy"
-                        alt={message?.user?.name || ""}
-                        height={50}
-                        width={50}
-                        className=" h-full object-cover  w-full"
-                        src={message?.user?.imageUrl || "/bg.webp"}
-                      />
-                      <AvatarFallback>SX</AvatarFallback>
-                    </Avatar>
+                </div>
+              ) : (
+                <div className=" flex w-full self-end gap-2">
+                  <div className=" w-full flex flex-col justify-end items-end">
+                    <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
+                      {message.user?.name}
+                    </p>
+                    {isImageUrl(message?.message) ? (
+                      <Link href={message?.message} target="_blank">
+                        <img
+                          src={message?.message}
+                          alt="User sent image"
+                          className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
+                        />
+                      </Link>
+                    ) : (
+                      <Linkify as="p" options={linkifyOptions}>
+                        <p className=" w-fit  text-end  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
+                          {message?.message}
+                        </p>
+                      </Linkify>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                  <Avatar className="size-9">
+                    <AvatarImage
+                      loading="lazy"
+                      alt={message?.user?.name || ""}
+                      height={50}
+                      width={50}
+                      className=" h-full object-cover  w-full"
+                      src={message?.user?.imageUrl || "/bg.webp"}
+                    />
+                    <AvatarFallback>SX</AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         <form onSubmit={sendMessage} className=" relative">
           <Input

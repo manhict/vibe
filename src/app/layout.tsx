@@ -8,6 +8,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
 import Script from "next/script";
 import GoogleAnalytics from "@/components/common/GoogleAnalytics";
+import { SocketProvider } from "@/Hooks/useSocket";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -122,15 +123,17 @@ export default function RootLayout({
         <Suspense>
           <UserProvider>
             <AudioProvider>
-              <Toaster
-                position="bottom-left"
-                visibleToasts={2}
-                toastOptions={{
-                  style: { background: "#6750A4" },
-                  className: "rounded-xl w-fit text-white border-none",
-                }}
-              />
-              {children}
+              <SocketProvider>
+                <Toaster
+                  position="bottom-left"
+                  visibleToasts={2}
+                  toastOptions={{
+                    style: { background: "#6750A4" },
+                    className: "rounded-xl w-fit text-white border-none",
+                  }}
+                />
+                {children}
+              </SocketProvider>
             </AudioProvider>
           </UserProvider>
         </Suspense>

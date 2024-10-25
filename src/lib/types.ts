@@ -14,6 +14,7 @@ export interface searchResults {
   name: string;
   artists: { primary: artists[] };
   image: downloadUrl[];
+  addedBy: string;
   source?: "youtube";
   downloadUrl: downloadUrl[];
   addedByUser?: TUser;
@@ -21,6 +22,7 @@ export interface searchResults {
   voteCount: number;
   topVoters?: TUser[];
   isVoted?: boolean;
+  order?: number;
 }
 export interface downloadUrl {
   quality: string;
@@ -46,13 +48,8 @@ export interface TUser {
   name: string;
   username: string;
   imageUrl: string;
-  spotify: boolean;
   role?: "admin" | "listener" | string;
   token?: string;
-  roomId?: string;
-  spotifyData: spotifyToken;
-  shuffled?: boolean;
-  looped?: boolean;
 }
 
 export interface listener {

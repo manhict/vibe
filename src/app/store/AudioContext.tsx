@@ -15,6 +15,7 @@ import React, {
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
 import useDebounce from "@/Hooks/useDebounce";
+import { emitMessage } from "@/lib/customEmits";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -66,7 +67,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentVolume, setVolume] = useState<number>(1);
   const [isLooped, setLoop] = useState<boolean>(false);
   const [shuffled, setShuffled] = useState<boolean>(false);
-  const { queue, isConnected } = useUserContext();
+  const { queue } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
@@ -149,23 +150,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const seek = useCallback((value: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = value;
-      socket.emit("seek", value);
     }
   }, []);
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
-    if (isConnected) {
-      socket.emit("nextSong", { nextSong: currentSong });
+    if (socket.connected) {
+      emitMessage("playNext", "playNext");
     }
-  }, [currentSong, isConnected]);
+  }, []);
 
   // Play the previous song in the queue
   const playPrev = useCallback(() => {
-    if (isConnected) {
-      socket.emit("prevSong", { prevSong: currentSong });
+    if (socket.connected) {
+      emitMessage("playPrev", "playPrev");
     }
-  }, [currentSong, isConnected]);
+  }, []);
 
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {
@@ -215,11 +215,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
 
     const handleEnd = () => {
-      if (isLooped) {
-        socket.emit("nextSong", { nextSong: currentSong });
-      } else {
-        socket.emit("songEnded", currentSong);
-      }
+      emitMessage("songEnded", "songEnded");
     };
     const updateProgress = () => {
       if (audioRef.current) {

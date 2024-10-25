@@ -2,15 +2,13 @@ import { useAudio } from "@/app/store/AudioContext";
 import { useUserContext } from "@/app/store/userStore";
 import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-
-import { socket } from "@/app/socket";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -18,34 +16,39 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import VoteIcon from "./VoteIcon";
+import { emitMessage } from "@/lib/customEmits";
+import { useInView } from "react-intersection-observer";
+import { useSocket } from "@/Hooks/useSocket";
 function QueueList({
-  name = "",
   isDeleting = false,
   handleSelect,
   selectedSongs,
 }: {
-  name?: string;
   isDeleting?: boolean;
   handleSelect: (song: searchResults, limit: boolean) => void;
   selectedSongs: searchResults[];
 }) {
   const { queue, setQueue, user } = useUserContext();
   const { currentSong } = useAudio();
-
+  const { ref, inView } = useInView();
+  const { loading, handleUpdateQueue } = useSocket();
   const upVote = useCallback((song: searchResults) => {
-    socket.emit("upVote", song);
+    emitMessage("upvote", { queueId: song?.queueId });
   }, []);
   const handleDelete = useCallback(
     (song: searchResults) => {
       if (isDeleting) return;
-      socket.emit("deleteSong", song);
-      if (user?.role == "admin") {
+      emitMessage("deleteSong", {
+        queueId: song?.queueId,
+        addedBy: song?.addedBy,
+      });
+      if (user?.role == "admin" || song.addedBy == user?._id) {
         setQueue((prev) => prev.filter((s) => s.id !== song.id));
       }
     },
     [setQueue, user, isDeleting]
   );
-  const handleUpVote = useDebounce(upVote, 300);
+  const handleUpVote = useDebounce(upVote);
 
   const triggerUpVote = useCallback(
     (e: React.MouseEvent, song: searchResults) => {
@@ -102,88 +105,98 @@ function QueueList({
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
       e.stopPropagation();
-      socket.emit("nextSong", {
-        nextSong: song,
-        callback: true,
-      });
+      if (user?.role !== "admin") return toast.error("Only admin can play");
+      emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
-    [isDeleting]
+    [isDeleting, user, currentSong]
   );
 
+  useEffect(() => {
+    if (inView && !loading) {
+      handleUpdateQueue();
+    }
+  }, [inView, loading, handleUpdateQueue]);
+
   return (
-    <div className=" py-2 pr-2  group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-4">
+    <div className=" py-2 pr-2  group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-1.5">
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
-        ?.filter((s) => s.name.toLowerCase().startsWith(name.toLowerCase()))
         ?.map((song, i) => (
-          <label
-            htmlFor={song?.id + i}
-            key={i}
-            className={`flex gap-2 ${
-              i !== queue.length && "border-b border-white/5"
-            } pb-3 items-center justify-between`}
-          >
-            <div className="relative">
-              <Avatar className="size-[3.2rem] rounded-md relative group">
-                <AvatarImage
-                  loading="lazy"
-                  alt={song.name}
-                  height={500}
-                  width={500}
-                  className="rounded-md group-hover:opacity-40 transition-all duration-500"
-                  src={song.image[song.image.length - 1].url}
-                />
-                <AvatarFallback>SX</AvatarFallback>
-                <Trash
-                  onClick={() => handleDelete(song)}
-                  className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                />
-              </Avatar>
-            </div>
-            <div className="flex flex-col flex-grow text-sm w-6/12">
-              <TooltipProvider key={song.id}>
-                <Tooltip>
-                  <TooltipTrigger className=" w-auto text-start">
-                    <p
-                      onClick={(e) => handlePlay(e, song)}
-                      className="cursor-pointer font-semibold truncate"
-                    >
-                      {parse(song.name)}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-[#9870d3] mb-2 text-white">
-                    {song.addedByUser && (
-                      <p>
-                        Added by {song?.addedByUser?.name} (
-                        {song?.addedByUser?.username})
-                      </p>
-                    )}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <p className="text-[#D0BCFF] truncate text-[12px]">
-                {formatArtistName(song.artists.primary)}
-              </p>
-            </div>
-            {isDeleting ? (
-              <div className=" relative mr-0.5">
-                <input
-                  onChange={() => handleSelect(song, false)}
-                  checked={selectedSongs.includes(song)}
-                  name={song?.id + i}
-                  id={song?.id + i}
-                  type="checkbox"
-                  className="peer cursor-pointer appearance-none w-5 h-5 border border-gray-400 rounded-sm checked:bg-purple-700 checked:border-purple checked:bg-purple"
-                />
-                <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
-              </div>
-            ) : (
-              <div className=" flex flex-col  items-center gap-2">
-                <VoteIcon song={song} triggerUpVote={triggerUpVote} />
-              </div>
+          <>
+            {i !== 0 && (
+              <div key={song?.id + i} className=" h-0.5 bg-zinc-400/5"></div>
             )}
-          </label>
+            <label
+              htmlFor={song?.id + i}
+              key={i}
+              className={`flex gap-2 ${
+                i !== queue.length && " border-white/5"
+              } py-2 hover:pl-2  hover:bg-white/10  transition-all duration-300 cursor-pointer hover:rounded-xl items-center justify-between`}
+            >
+              <div className="relative">
+                <Avatar className="size-[3.2rem] rounded-md relative group">
+                  <AvatarImage
+                    loading="lazy"
+                    alt={song.name}
+                    height={500}
+                    width={500}
+                    className="rounded-md group-hover:opacity-40 transition-all duration-500"
+                    src={song.image[song.image.length - 1].url}
+                  />
+                  <AvatarFallback>SX</AvatarFallback>
+                  <Trash
+                    onClick={() => handleDelete(song)}
+                    className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  />
+                </Avatar>
+              </div>
+              <div
+                onClick={(e) => handlePlay(e, song)}
+                className="flex flex-col flex-grow text-sm w-6/12"
+              >
+                <TooltipProvider key={song.id}>
+                  <Tooltip>
+                    <TooltipTrigger className=" w-auto text-start">
+                      <p className="cursor-pointer font-semibold truncate">
+                        {parse(song.name)}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#9870d3] mb-2 text-white">
+                      {song.addedByUser && (
+                        <p>
+                          Added by {song?.addedByUser?.name} (
+                          {song?.addedByUser?.username})
+                        </p>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <p className="text-[#D0BCFF] truncate text-[12px]">
+                  {formatArtistName(song.artists.primary)}
+                </p>
+              </div>
+              {isDeleting ? (
+                <div className=" relative mr-0.5 pr-1.5">
+                  <input
+                    onChange={() => handleSelect(song, false)}
+                    checked={selectedSongs.includes(song)}
+                    name={song?.id + i}
+                    id={song?.id + i}
+                    type="checkbox"
+                    className="peer cursor-pointer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  />
+                  <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
+                </div>
+              ) : (
+                <div className=" flex flex-col  items-center gap-2">
+                  <VoteIcon song={song} triggerUpVote={triggerUpVote} />
+                </div>
+              )}
+            </label>
+          </>
         ))}
+      <div ref={ref} />
+      {/* {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>} */}
     </div>
   );
 }

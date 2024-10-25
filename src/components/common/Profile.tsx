@@ -14,19 +14,20 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
-import { useAudio } from "@/app/store/AudioContext";
-function Profile({ user }: { user: TUser }) {
+import { socket } from "@/app/socket";
+import { toast } from "sonner";
+function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser } = useUserContext();
-  const { setLoop, setShuffled } = useAudio();
+
   useEffect(() => {
     setUser(user);
-    if (user?.looped) {
-      setLoop(user.looped);
-    }
-    if (user?.shuffled) {
-      setShuffled(user.shuffled);
-    }
-  }, [user, setUser, setLoop, setShuffled]);
+    if (!roomId) toast.error("Room ID is required");
+    socket.io.opts.extraHeaders = {
+      Authorization: user?.token || "",
+      Room: roomId || "",
+    };
+    socket.connect();
+  }, [user, setUser, roomId]);
 
   if (!user) {
     return <Login isOpen={user ? false : true} />;

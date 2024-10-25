@@ -11,13 +11,19 @@ import { Input } from "../ui/input";
 import Youtube from "./Youtube";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
-import { socket } from "@/app/socket";
 import { useAudio } from "@/app/store/AudioContext";
 import useSelect from "@/Hooks/useSelect";
+import { useSocket } from "@/Hooks/useSocket";
+import useDebounce from "@/Hooks/useDebounce";
+import api from "@/lib/api";
+import { data } from "@/lib/types";
+import SmoothScrollingDiv from "./SmoothScroll";
+import { emitMessage } from "@/lib/customEmits";
 
 function AddToQueue() {
   const { queue, roomId, user, setQueue } = useUserContext();
   const { currentSong } = useAudio();
+  const { total, setPage } = useSocket();
   const handleShare = useCallback(async () => {
     if (!user) return;
     try {
@@ -38,7 +44,6 @@ function AddToQueue() {
     }
   }, [roomId, user]);
 
-  const [name, setName] = useState<string>("");
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
@@ -48,11 +53,22 @@ function AddToQueue() {
     }
   }, [queue]);
 
+  const search = async (e?: React.ChangeEvent<HTMLInputElement>) => {
+    setPage(null);
+    const data = await api.get(
+      `/api/queue?page=1&name=${e?.target?.value || ""}`
+    );
+    if (data.success) {
+      setQueue((data.data as data).results);
+    }
+  };
+
   const handleToggleSearch = () => {
     if (isSearchedOpened) {
       // Close the search, but wait for the animation to finish before setting the state
       setOpenSearch(false);
-      setName("");
+      search();
+      setPage(1);
     } else {
       // Open the search immediately
       setOpenSearch(true);
@@ -62,7 +78,13 @@ function AddToQueue() {
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
   const handleBulkDelete = () => {
     if (selectedSongs.length > 0) {
-      socket.emit("bulkDelete", selectedSongs);
+      emitMessage(
+        "bulkDelete",
+        selectedSongs.map((song) => ({
+          id: song.id,
+          queueId: song.queueId,
+        }))
+      );
       setQueue((prevQueue) =>
         prevQueue.filter((song) => !selectedSongs.includes(song))
       );
@@ -70,11 +92,12 @@ function AddToQueue() {
     }
   };
   const handleRemoveALL = () => {
-    socket.emit("deleteAll");
+    emitMessage("deleteAll", "remove");
     setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
     setSelectedSongs([]);
   };
 
+  const handleSearch = useDebounce(search);
   return (
     <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4  pr-0">
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
@@ -94,7 +117,7 @@ function AddToQueue() {
           >
             <Input
               autoFocus
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleSearch}
               placeholder="Search in queue"
               className="py-2 border border-zinc-700"
             />
@@ -107,7 +130,7 @@ function AddToQueue() {
             transition={{ duration: 0.2 }} // Add a transition for the label
             className="text-lg font-semibold"
           >
-            In Queue ({queue.length > 0 && queue.length - 1})
+            In Queue {total > 0 && `(${total - 1})`}
           </motion.p>
         )}
         <div className=" flex items-center gap-1">
@@ -179,10 +202,9 @@ function AddToQueue() {
           </Button>
         </motion.div>
       )}
-      <div className="h-full transition-all z-50 overflow-y-scroll">
+      <SmoothScrollingDiv>
         {queue.length > 0 ? (
           <QueueList
-            name={name}
             handleSelect={handleSelect}
             selectedSongs={selectedSongs}
             isDeleting={isDeleting}
@@ -190,7 +212,8 @@ function AddToQueue() {
         ) : (
           <SearchSongPopup isAddToQueue />
         )}
-      </div>
+      </SmoothScrollingDiv>
+
       <div className=" flex items-center justify-between pr-4">
         <Listeners className=" max-md:hidden" />
         <div className=" flex items-center gap-1">

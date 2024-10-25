@@ -8,8 +8,8 @@ const jwt_secret = process.env.JWT_SECRET || "";
 
 export async function POST(req: NextRequest) {
   try {
-    const data: userType = await req.json();
     await dbConnect();
+    const data: userType = await req.json();
     const isAlready = await User.findOne({ email: data.email });
     if (isAlready) {
       const user = await User.findOneAndUpdate(
