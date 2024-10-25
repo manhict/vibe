@@ -172,7 +172,6 @@ function getQueuePipeline(
         _id: 0, // Exclude the _id field from the result
         songData: 1, // Include only the songData field
         isPlaying: 1, // Include isPlaying for sorting
-        createdAt: 1,
         order: 1,
       },
     },
