@@ -14,7 +14,9 @@ const handleResponse = async <T>(
     .get("content-type")
     ?.includes("application/json");
   if (response.status === 404) {
-    toast.error("Not Found");
+    toast.error("Not Found", {
+      style: { background: "#e94625" },
+    });
     return {
       success: false,
       status: response.status,
@@ -36,7 +38,9 @@ const handleResponse = async <T>(
         ? error.msg
         : "Something went wrong";
 
-    toast.error(errorMessage);
+    toast.error(errorMessage, {
+      style: { background: "#e94625" },
+    });
     console.error("API call failed:", errorMessage);
 
     return {
@@ -58,7 +62,9 @@ const handleResponse = async <T>(
 const handleError = (error: any): ApiResponse<never> => {
   const errorMessage = error.message || "An error occurred";
   if (error.name !== "AbortError") {
-    toast.error(errorMessage);
+    toast.error(errorMessage, {
+      style: { background: "#e94625" },
+    });
   }
   console.error("API call failed:", errorMessage);
 

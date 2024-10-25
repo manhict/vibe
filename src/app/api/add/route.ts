@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       // No new songs to add, commit transaction and return
       await session.commitTransaction();
       return NextResponse.json(
-        { message: "No new songs to add." },
+        { message: "Song already exist in queue." },
         { status: 400 }
       );
     }

@@ -146,7 +146,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const handleUpdateQueue = useCallback(async () => {
-    if (queue.length >= total || !page) return;
+    if (queue.length >= total) return;
     setLoading(true);
     const data = await api.get(`/api/queue?page=${page}&name`);
     if (data.success) {
