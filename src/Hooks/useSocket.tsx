@@ -67,7 +67,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
-  const [total, setTotal] = useState<number>(50);
+  const [total, setTotal] = useState<number>(100);
   const socketRef = useRef(socket);
 
   // Memoized connect and disconnect functions
