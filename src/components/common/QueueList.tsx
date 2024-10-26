@@ -30,7 +30,10 @@ function QueueList({
 }) {
   const { queue, setQueue, user } = useUserContext();
   const { currentSong } = useAudio();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    rootMargin: "0px 0px 100px 0px", // Trigger when 50px from the bottom
+    threshold: 1, // Trigger only when the element is fully in view
+  });
   const { loading, handleUpdateQueue } = useSocket();
   const upVote = useCallback((song: searchResults) => {
     emitMessage("upvote", { queueId: song?.queueId });

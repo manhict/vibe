@@ -224,12 +224,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 1) {
+        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.05) {
           setProgress(currentTime);
           lastEmittedTime.current = currentTime;
         }
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 10) {
+        if (Math.abs(currentTime - lastEmittedTime.current) >= 15) {
           // 10 second threshold
           emitProgress(currentTime);
           lastEmittedTime.current = currentTime;
