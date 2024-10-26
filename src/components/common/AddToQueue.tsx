@@ -141,7 +141,7 @@ function AddToQueue() {
             transition={{ duration: 0.2 }} // Add a transition for the label
             className="text-lg font-semibold"
           >
-            In Queue {total > 0 && `(${total - 1})`}
+            In Queue {total && total > 0 && `(${total - 1})`}
           </motion.p>
         )}
         <div className=" flex items-center gap-1">
