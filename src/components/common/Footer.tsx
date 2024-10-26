@@ -7,8 +7,13 @@ function Footer() {
       <div className=" flex -ml-1 text-2xl font-semibold gap-2">
         <p className=" mt-2">Just</p>{" "}
         <span>
-          {" "}
-          <Image src={"/logo.svg"} alt="logo" height={45} width={45} />
+          <Image
+            src={"/logo.svg"}
+            alt="logo"
+            height={45}
+            className=" size-10"
+            width={45}
+          />
         </span>
         <p className=" mt-2">together.</p>
       </div>

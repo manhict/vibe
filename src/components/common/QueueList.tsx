@@ -175,7 +175,7 @@ function QueueList({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <p className="text-[#D0BCFF] truncate text-[12px]">
+                <p className="text-[#D0BCFF] truncate text-xs">
                   {formatArtistName(song.artists.primary)}
                 </p>
               </div>
