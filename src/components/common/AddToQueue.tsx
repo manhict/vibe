@@ -5,7 +5,7 @@ import Listeners from "./Listeners";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/app/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import Youtube from "./Youtube";
@@ -16,14 +16,14 @@ import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
 import api from "@/lib/api";
-import { data } from "@/lib/types";
-import SmoothScrollingDiv from "./SmoothScroll";
+import { data, searchResults } from "@/lib/types";
 import { emitMessage } from "@/lib/customEmits";
+import SearchQueueList from "./SearchQueueList";
 
 function AddToQueue() {
   const { queue, roomId, user, setQueue } = useUserContext();
   const { currentSong } = useAudio();
-  const { total, setPage } = useSocket();
+  const { total } = useSocket();
   const handleShare = useCallback(async () => {
     if (!user) return;
     try {
@@ -52,14 +52,22 @@ function AddToQueue() {
       setIsDeleting(false);
     }
   }, [queue]);
-
+  const queueControllerRef = useRef<AbortController | null>(null);
+  const [searchQu, setSearchQu] = useState<searchResults[]>([]);
   const search = async (e?: React.ChangeEvent<HTMLInputElement>) => {
-    setPage(null);
+    if (queueControllerRef.current) {
+      queueControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    queueControllerRef.current = controller;
     const data = await api.get(
-      `/api/queue?page=1&name=${e?.target?.value || ""}`
+      `/api/queue?page=1&name=${e?.target?.value || ""}`,
+      {
+        signal: controller.signal,
+      }
     );
     if (data.success) {
-      setQueue((data.data as data).results);
+      setSearchQu((data.data as data).results);
     }
   };
 
@@ -68,8 +76,7 @@ function AddToQueue() {
     if (isSearchedOpened) {
       // Close the search, but wait for the animation to finish before setting the state
       setOpenSearch(false);
-      handleSearch();
-      setPage(1);
+      setSearchQu([]);
     } else {
       // Open the search immediately
       setOpenSearch(true);
@@ -89,12 +96,16 @@ function AddToQueue() {
       setQueue((prevQueue) =>
         prevQueue.filter((song) => !selectedSongs.includes(song))
       );
+      setSearchQu((prevQueue) =>
+        prevQueue.filter((song) => !selectedSongs.includes(song))
+      );
       setSelectedSongs([]);
     }
   };
   const handleRemoveALL = () => {
     emitMessage("deleteAll", "remove");
     setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
+    setSearchQu((prev) => prev.filter((r) => r.id == currentSong?.id));
     setSelectedSongs([]);
   };
 
@@ -202,17 +213,28 @@ function AddToQueue() {
           </Button>
         </motion.div>
       )}
-      <SmoothScrollingDiv>
+      <div className="h-full transition-all z-50 overflow-y-scroll">
         {queue.length > 0 ? (
-          <QueueList
-            handleSelect={handleSelect}
-            selectedSongs={selectedSongs}
-            isDeleting={isDeleting}
-          />
+          <>
+            {isSearchedOpened ? (
+              <SearchQueueList
+                searchQu={searchQu}
+                handleSelect={handleSelect}
+                selectedSongs={selectedSongs}
+                isDeleting={isDeleting}
+              />
+            ) : (
+              <QueueList
+                handleSelect={handleSelect}
+                selectedSongs={selectedSongs}
+                isDeleting={isDeleting}
+              />
+            )}
+          </>
         ) : (
           <SearchSongPopup isAddToQueue />
         )}
-      </SmoothScrollingDiv>
+      </div>
 
       <div className=" flex items-center justify-between pr-4">
         <Listeners className=" max-md:hidden" />
