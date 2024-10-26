@@ -58,7 +58,7 @@ interface SocketProviderProps {
   children: ReactNode;
 }
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-  const { setQueue, queue, setListener } = useUserContext();
+  const { setQueue, queue, setListener, user: loggedInUser } = useUserContext();
   const { seek, play } = useAudio();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
@@ -72,7 +72,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const socketRef = useRef(socket);
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
-
   // Memoized connect and disconnect functions
   const onConnect = useCallback((): void => {
     setIsConnected(true);
@@ -148,10 +147,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserJoinedRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
+      if (user.username == loggedInUser?.username) return;
       updateListeners();
       toast.info(`${user?.username} has Joined`);
     },
-    [updateListeners]
+    [updateListeners, loggedInUser]
   );
 
   const updateQueue = useCallback(async () => {

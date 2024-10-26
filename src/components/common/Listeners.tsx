@@ -37,10 +37,10 @@ function Listeners({ className }: { className?: string }) {
               ?.filter((r) => r.userId?._id !== user?._id)
               ?.slice(0, 5)
               ?.map((roomUser, i) => (
-                <TooltipProvider key={roomUser?._id}>
+                <TooltipProvider key={i}>
                   <Tooltip>
-                    <TooltipTrigger>
-                      <div className={` ${i !== 0 && "-ml-1.5"} size-6`}>
+                    <TooltipTrigger asChild>
+                      <div className={` ${i !== 0 && "-ml-2"} size-6`}>
                         <Avatar className=" size-6 border border-white">
                           <AvatarImage
                             loading="lazy"
