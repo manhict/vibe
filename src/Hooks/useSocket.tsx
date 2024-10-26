@@ -155,7 +155,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (queue.length >= total) return;
+    if (queue.length >= total || loading) return;
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -168,19 +168,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (data.success) {
       const value = data.data as data;
 
-      setQueue((prev) => {
-        const existingIds = new Set(prev.map((song) => song.id));
-        // Filter and add only unique songs
-        const filteredSongs = value.results.filter(
-          (song) => !existingIds.has(song.id)
-        );
-        return [...prev, ...filteredSongs];
-      });
+      setQueue((prev) => [...prev, ...value.results]);
       setTotal(value?.total);
       setPage(value?.start + 1);
     }
     setLoading(false);
-  }, [setQueue, page, queue, total]);
+  }, [setQueue, page, queue, total, loading]);
   const handleUpdateQueue = useDebounce(updateQueue);
   const UpdateQueue = useCallback(async () => {
     setLoading(true);
