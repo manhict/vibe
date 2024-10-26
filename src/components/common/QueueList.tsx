@@ -125,7 +125,7 @@ function QueueList({
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         ?.map((song, i) => (
-          <>
+          <div key={song?.id}>
             {i !== 0 && (
               <div key={song?.id + i} className=" h-0.5 bg-zinc-400/5"></div>
             )}
@@ -196,7 +196,7 @@ function QueueList({
                 </div>
               )}
             </label>
-          </>
+          </div>
         ))}
       <div ref={ref} />
       {/* {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>} */}
