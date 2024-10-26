@@ -16,7 +16,7 @@ import { decrypt } from "@/utils/lock";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { useAudio } from "@/app/store/AudioContext";
-// import useDebounce from "./useDebounce";
+import useDebounce from "./useDebounce";
 
 // Define the shape of a message
 export interface Message {
@@ -154,7 +154,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     [updateListeners, loggedInUser]
   );
 
-  const handleUpdateQueue = useCallback(async () => {
+  const updateQueue = useCallback(async () => {
     if (queue.length >= total) return;
     setLoading(true);
     if (queueControllerRef.current) {
@@ -181,8 +181,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     setLoading(false);
   }, [setQueue, page, queue, total]);
-
-  const forceUpdateQueue = useCallback(async () => {
+  const handleUpdateQueue = useDebounce(updateQueue);
+  const UpdateQueue = useCallback(async () => {
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -202,6 +202,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, queue]);
 
+  const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(
     async (data: any) => {
       const value = decrypt(data) as {
