@@ -16,6 +16,7 @@ import { decrypt } from "@/utils/lock";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { useAudio } from "@/app/store/AudioContext";
+import useDebounce from "./useDebounce";
 
 // Define the shape of a message
 export interface Message {
@@ -153,7 +154,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     [updateListeners]
   );
 
-  const handleUpdateQueue = useCallback(async () => {
+  const updateQueue = useCallback(async () => {
     if (queue.length >= total) return;
     setLoading(true);
     if (queueControllerRef.current) {
@@ -166,16 +167,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     });
     if (data.success) {
       const value = data.data as data;
-      setQueue((prev) => {
-        // Create a Set to track the unique IDs of songs already in the queue
-        const existingIds = new Set(prev.map((song) => song.id));
 
-        // Filter out duplicate songs from selectedSongs based on their ID
+      setQueue((prev) => {
+        const existingIds = new Set(prev.map((song) => song.id));
+        // Filter and add only unique songs
         const filteredSongs = value.results.filter(
           (song) => !existingIds.has(song.id)
         );
-
-        // Return the new state, adding only the filtered songs
         return [...prev, ...filteredSongs];
       });
       setTotal(value?.total);
@@ -184,7 +182,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, page, queue, total]);
 
-  const forceUpdateQueue = useCallback(async () => {
+  const handleUpdateQueue = useDebounce(updateQueue);
+  const UpdateQueue = useCallback(async () => {
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -196,12 +195,15 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     });
     if (data.success) {
       const value = data.data as data;
-      setQueue(value?.results);
+
+      setQueue(value.results); // Replace the queue with the full result
       setTotal(value?.total);
       setPage(1);
     }
     setLoading(false);
   }, [setQueue, queue]);
+
+  const forceUpdateQueue = useDebounce(UpdateQueue);
 
   const handleJoined = useCallback(
     async (data: any) => {
