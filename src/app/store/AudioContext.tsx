@@ -212,6 +212,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const handlePause = () => setIsPlaying(false);
     const handleCanPlay = () => {
       setMediaSession();
+      if (audioRef.current) {
+        setDuration(audioRef.current.duration);
+      }
     };
 
     const handleEnd = () => {
@@ -220,8 +223,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const updateProgress = () => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
-        setProgress(currentTime);
-        setDuration(audioRef.current.duration);
+
+        if (Math.abs(currentTime - lastEmittedTime) >= 1.1) {
+          setProgress(currentTime);
+          setLastEmittedTime(currentTime);
+        }
+
         if (Math.abs(currentTime - lastEmittedTime) >= 15) {
           // 10 second threshold
           emitProgress(currentTime);
