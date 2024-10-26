@@ -17,7 +17,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { useAudio } from "@/app/store/AudioContext";
 import useDebounce from "./useDebounce";
-import equal from "fast-deep-equal";
+import equal from "fast-deep-equal/es6/react";
 // Define the shape of a message
 export interface Message {
   id: string;
