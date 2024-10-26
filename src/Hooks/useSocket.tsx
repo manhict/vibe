@@ -29,7 +29,7 @@ export interface Message {
 interface SocketContextType {
   isConnected: boolean;
   loading: boolean;
-  total: number;
+  total: number | null;
   transport: string;
   messages: messages[];
   handleUpdateQueue: () => void;
@@ -68,7 +68,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
-  const [total, setTotal] = useState<number>(70);
+  const [total, setTotal] = useState<number | null>(null);
   const socketRef = useRef(socket);
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
@@ -155,7 +155,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (queue.length >= total) return;
+    if (total && queue.length >= total) return;
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
