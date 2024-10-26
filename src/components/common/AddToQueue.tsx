@@ -63,11 +63,12 @@ function AddToQueue() {
     }
   };
 
+  const handleSearch = useDebounce(search);
   const handleToggleSearch = () => {
     if (isSearchedOpened) {
       // Close the search, but wait for the animation to finish before setting the state
       setOpenSearch(false);
-      search();
+      handleSearch();
       setPage(1);
     } else {
       // Open the search immediately
@@ -97,7 +98,6 @@ function AddToQueue() {
     setSelectedSongs([]);
   };
 
-  const handleSearch = useDebounce(search);
   return (
     <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4  pr-0">
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
