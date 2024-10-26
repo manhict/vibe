@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     await dbConnect();
     let userId = null;
     const page = Number(req.nextUrl.searchParams.get("page")) || 1;
-    const limit = Number(req.nextUrl.searchParams.get("limit")) || 100;
+    const limit = Number(req.nextUrl.searchParams.get("limit")) || 70;
     const name = req.nextUrl.searchParams.get("name") || "";
     const roomId = cookies().get("room")?.value;
     const room = await Room.findOne({ roomId }).select("_id");
@@ -46,7 +46,7 @@ function getQueuePipeline(
   roomId: string,
   userId?: string,
   page: number = 1, // Default to page 1 if not provided
-  limit: number = 100, // Default to 100 items per page if not provided
+  limit: number = 70, // Default to 100 items per page if not provided
   search: string = "" // Default to empty search (return all songs if no search query)
 ) {
   const pipeline: any[] = [
