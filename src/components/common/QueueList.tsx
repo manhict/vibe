@@ -104,7 +104,7 @@ function QueueList({
     [handleUpVote, setQueue, user]
   );
 
-  const handlePlay = useCallback(
+  const Play = useCallback(
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
       e.stopPropagation();
@@ -113,6 +113,7 @@ function QueueList({
     },
     [isDeleting, user, currentSong]
   );
+  const handlePlay = useDebounce(Play);
 
   useEffect(() => {
     if (inView && !loading) {
