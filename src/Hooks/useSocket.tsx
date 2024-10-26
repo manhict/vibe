@@ -105,9 +105,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (listenerControllerRef.current) {
       listenerControllerRef.current.abort();
     }
-    const data = await api.get("/api/listeners");
     const controller = new AbortController();
     listenerControllerRef.current = controller;
+    const data = await api.get("/api/listeners", { signal: controller.signal });
+
     if (data.success) {
       setListener(data.data as listener);
     }
@@ -160,7 +161,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     const controller = new AbortController();
     queueControllerRef.current = controller;
-    const data = await api.get(`/api/queue?page=${page}&name`);
+    const data = await api.get(`/api/queue?page=${page}&name`, {
+      signal: controller.signal,
+    });
     if (data.success) {
       const value = data.data as data;
       setQueue((prev) => {
@@ -188,7 +191,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     const controller = new AbortController();
     queueControllerRef.current = controller;
-    const data = await api.get(`/api/queue?page=1&limit=${queue.length}&name`);
+    const data = await api.get(`/api/queue?page=1&limit=${queue.length}&name`, {
+      signal: controller.signal,
+    });
     if (data.success) {
       const value = data.data as data;
       setQueue(value?.results);
