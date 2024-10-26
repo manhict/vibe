@@ -155,7 +155,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (queue.length >= total || loading) return;
+    if (queue.length >= total) return;
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -173,7 +173,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setPage(value?.start + 1);
     }
     setLoading(false);
-  }, [setQueue, page, queue, total, loading]);
+  }, [setQueue, page, queue, total]);
   const handleUpdateQueue = useDebounce(updateQueue);
   const UpdateQueue = useCallback(async () => {
     setLoading(true);
