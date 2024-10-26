@@ -35,7 +35,7 @@ function UpvotedBy() {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="mr-20 font-normal bg-[#9870d3] max-w-52 truncate mb-1 text-white">
-                    <p>
+                    <p className=" truncate">
                       {voter?.username} ({voter?.name})
                     </p>
                   </TooltipContent>
