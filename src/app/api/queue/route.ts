@@ -27,10 +27,10 @@ export async function GET(req: NextRequest) {
       );
       userId = decoded.userId;
     }
-    const total = await Queue.countDocuments({ roomId: room._id });
-    const results = await Queue.aggregate(
-      getQueuePipeline(room._id, userId, page, limit, name)
-    );
+    const [total, results] = await Promise.all([
+      Queue.countDocuments({ roomId: room._id }),
+      Queue.aggregate(getQueuePipeline(room._id, userId, page, limit, name)),
+    ]);
     const payload: data = {
       total,
       start: page,
