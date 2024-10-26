@@ -167,7 +167,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (data.success) {
       const value = data.data as data;
 
-      setQueue((prev) => [...prev, ...value.results]);
+      setQueue((prev) => {
+        const existingIds = new Set(prev.map((song) => song.id));
+        // Filter and add only unique songs
+        const filteredSongs = value.results.filter(
+          (song) => !existingIds.has(song.id)
+        );
+        return [...prev, ...filteredSongs];
+      });
       setTotal(value?.total);
       setPage(value?.start + 1);
     }
