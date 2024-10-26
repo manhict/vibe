@@ -197,7 +197,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Debounced function to emit progress
 
-  const lastEmittedTime = useRef(0);
+  const [lastEmittedTime, setLastEmittedTime] = useState(0);
 
   const emitProgress = useDebounce((currentTime: number) => {
     if (socket && socket.connected) {
@@ -224,14 +224,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.05) {
+        if (Math.abs(currentTime - lastEmittedTime) >= 1.05) {
           setProgress(currentTime);
-          lastEmittedTime.current = currentTime;
+          setLastEmittedTime(currentTime);
         }
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 15) {
+        if (Math.abs(currentTime - lastEmittedTime) >= 15) {
           emitProgress(currentTime);
-          lastEmittedTime.current = currentTime;
+          setLastEmittedTime(currentTime);
         }
       }
     };
