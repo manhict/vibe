@@ -17,7 +17,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
 import { useAudio } from "@/app/store/AudioContext";
 import useDebounce from "./useDebounce";
-
+import equal from "fast-deep-equal";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -187,8 +187,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     });
     if (data.success) {
       const value = data.data as data;
-
-      setQueue(value.results); // Replace the queue with the full result
+      if (!equal(queue, value.results)) {
+        setQueue(value.results); // Replace the queue with the full result
+      }
       setTotal(value?.total);
       setPage(1);
     }
