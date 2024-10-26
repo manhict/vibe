@@ -156,7 +156,7 @@ function QueueList({
               </div>
               <div
                 onClick={(e) => handlePlay(e, song)}
-                className="flex flex-col flex-grow text-sm w-6/12"
+                className="flex flex-col gap-1 flex-grow text-sm w-6/12"
               >
                 <TooltipProvider key={song.id}>
                   <Tooltip>
