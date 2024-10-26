@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
         downloadUrl: [
           {
             quality: "320kbps",
-            url: `https://sstream.onrender.com/stream/${s.videoId}`,
+            url: `${process.env.STREAM_URL}/${s.videoId}`,
           },
         ],
       })) || [];
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
           downloadUrl: [
             {
               quality: "320kbps",
-              url: `https://sstream.onrender.com/stream/${s.id}`,
+              url: `${process.env.STREAM_URL}/${s.id}`,
             },
           ],
         })) || [];
