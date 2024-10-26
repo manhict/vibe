@@ -69,6 +69,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [page, setPage] = useState<number | null>(1);
   const [total, setTotal] = useState<number>(100);
   const socketRef = useRef(socket);
+  const listenerControllerRef = useRef<AbortController | null>(null);
+  const queueControllerRef = useRef<AbortController | null>(null);
 
   // Memoized connect and disconnect functions
   const onConnect = useCallback((): void => {
@@ -100,7 +102,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, []);
 
   const updateListeners = useCallback(async () => {
+    if (listenerControllerRef.current) {
+      listenerControllerRef.current.abort();
+    }
     const data = await api.get("/api/listeners");
+    const controller = new AbortController();
+    listenerControllerRef.current = controller;
     if (data.success) {
       setListener(data.data as listener);
     }
@@ -148,6 +155,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUpdateQueue = useCallback(async () => {
     if (queue.length >= total) return;
     setLoading(true);
+    if (queueControllerRef.current) {
+      queueControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    queueControllerRef.current = controller;
     const data = await api.get(`/api/queue?page=${page}&name`);
     if (data.success) {
       const value = data.data as data;
@@ -171,6 +183,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const forceUpdateQueue = useCallback(async () => {
     setLoading(true);
+    if (queueControllerRef.current) {
+      queueControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    queueControllerRef.current = controller;
     const data = await api.get(`/api/queue?page=1&limit=${queue.length}&name`);
     if (data.success) {
       const value = data.data as data;
