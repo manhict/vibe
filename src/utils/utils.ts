@@ -8,7 +8,7 @@ export const formatArtistName = (artists: artists[]) => {
       }
       return `${data.name}, ${data.name}`;
     })
-    .join("");
+    .join("")[0];
 };
 export function formatElapsedTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
