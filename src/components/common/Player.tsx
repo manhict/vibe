@@ -167,7 +167,7 @@ function Player() {
                 alt={currentSong?.name || ""}
                 height={300}
                 width={300}
-                className=" h-full object-cover  w-full"
+                className="cover h-full object-cover  w-full"
                 src={
                   currentSong?.image[currentSong.image.length - 1].url ||
                   "/cache.jpg"
