@@ -252,6 +252,7 @@ function Player() {
               <p>{formattedProgress}</p>
 
               <Slider
+                className="progress"
                 max={duration || 0}
                 value={[progress]}
                 disabled={user?.role !== "admin"}
