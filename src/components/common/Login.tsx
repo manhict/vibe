@@ -27,6 +27,7 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
       const user = result.user;
       if (user) {
         const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, user);
+        await api.post(`/api/login`, user);
         if (res.success) {
           setUser((res.data as any).data as TUser);
           window.location.reload();
