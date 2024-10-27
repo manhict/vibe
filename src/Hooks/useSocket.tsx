@@ -11,7 +11,7 @@ import React, {
 } from "react";
 import { socket } from "@/app/socket";
 import { toast } from "sonner";
-import { data, listener, messages, TUser } from "@/lib/types";
+import { data, listener, messages, searchResults, TUser } from "@/lib/types";
 import { decrypt } from "@/utils/lock";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
@@ -65,6 +65,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     roomId,
   } = useUserContext();
   const { seek, play } = useAudio();
+  const { setUpNextSongs } = useUserContext();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
   const [messages, setMessages] = useState<messages[]>([]);
@@ -77,6 +78,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const socketRef = useRef(socket);
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
+  const upNextSongControllerRef = useRef<AbortController | null>(null);
   // Memoized connect and disconnect functions
   const onConnect = useCallback((): void => {
     setIsConnected(true);
@@ -193,6 +195,27 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, page, queue, total, roomId]);
   const handleUpdateQueue = useDebounce(updateQueue);
+
+  const upNextSong = useCallback(async () => {
+    if (upNextSongControllerRef.current) {
+      upNextSongControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    upNextSongControllerRef.current = controller;
+
+    const data = await api.get(
+      `${process.env.SOCKET_URI}/api/upNextSong?room=${roomId}`,
+      {
+        signal: controller.signal,
+      }
+    );
+    if (data.success) {
+      setUpNextSongs(data.data as searchResults[]);
+    }
+  }, [roomId, setUpNextSongs]);
+
+  const getUpNextSong = useDebounce(upNextSong);
+
   const UpdateQueue = useCallback(async () => {
     setLoading(true);
     if (queueControllerRef.current) {
@@ -212,10 +235,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
       setTotal(value?.total);
       setPage(1);
-      return value.results;
+      getUpNextSong();
     }
     setLoading(false);
-  }, [setQueue, queue, roomId]);
+  }, [setQueue, queue, roomId, getUpNextSong]);
 
   const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(
@@ -230,8 +253,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       toast.info("Joined successfully");
       updateListeners();
       handleUpdateQueue();
+      upNextSong();
     },
-    [handleUpdateQueue, seek, updateListeners]
+    [handleUpdateQueue, seek, updateListeners, upNextSong]
   );
 
   // Centralized event listeners setup and cleanup
