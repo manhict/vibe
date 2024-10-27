@@ -213,6 +213,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
 
     const handleEnd = () => {
+      socket.emit("progress", 0);
       emitMessage("songEnded", "songEnded");
     };
     const updateProgress = () => {
