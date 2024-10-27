@@ -208,11 +208,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     );
     if (data.success) {
       const value = data.data as data;
-
       setQueue(value.results); // Replace the queue with the full result
 
       setTotal(value?.total);
       setPage(1);
+      return value.results;
     }
     setLoading(false);
   }, [setQueue, queue, roomId]);
@@ -248,8 +248,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
     currentSocket.on("update", forceUpdateQueue);
-    currentSocket.on("isplaying", (d) => play(decrypt(d)));
-    currentSocket.on("play", (d) => play(decrypt(d)));
+    currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
+    currentSocket.on("play", (d) => d && play(decrypt(d)));
     currentSocket.on("seek", seek);
     return () => {
       currentSocket.off("connect", onConnect);

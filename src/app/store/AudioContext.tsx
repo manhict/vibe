@@ -76,7 +76,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const play = useCallback((song: searchResults) => {
     setCurrentSong(song);
     if (audioRef.current) {
-      audioRef.current.src = song.downloadUrl[song.downloadUrl.length - 1].url;
+      audioRef.current.src =
+        song?.downloadUrl[song?.downloadUrl?.length - 1]?.url;
       audioRef.current
         .play()
         .then(async () => {
@@ -157,6 +158,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const playNext = useCallback(() => {
     if (socket.connected) {
       emitMessage("playNext", "playNext");
+      socket.emit("progress", 0);
     }
   }, []);
 
@@ -164,6 +166,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const playPrev = useCallback(() => {
     if (socket.connected) {
       emitMessage("playPrev", "playPrev");
+      socket.emit("progress", 0);
     }
   }, []);
 
