@@ -11,8 +11,8 @@ function Connect({ data }: { data: spotifyUser }) {
   useEffect(() => {
     const handleLogin = async () => {
       const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, data);
-      await api.post(`/api/login`, data);
       if (res.success) {
+        await api.post(`/api/login`, data);
         router.back();
       }
       if (res.error) {
