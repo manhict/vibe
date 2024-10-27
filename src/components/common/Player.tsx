@@ -249,10 +249,9 @@ function Player() {
               </div>
             </div>
             <div className=" select-none flex items-center gap-4 px-4 w-full text-xs">
-              <p>{formattedProgress}</p>
+              <p className=" progress">{formattedProgress}</p>
 
               <Slider
-                className="progress"
                 max={duration || 0}
                 value={[progress]}
                 disabled={user?.role !== "admin"}
@@ -261,7 +260,7 @@ function Player() {
                 onValueChange={handleProgress}
               />
 
-              <p>{formattedDuration}</p>
+              <p className=" duration">{formattedDuration}</p>
             </div>
             <div className=" flex text-zinc-600 gap-3 items-center">
               {/* <Repeat
