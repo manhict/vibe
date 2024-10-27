@@ -93,6 +93,7 @@ const api = {
       const response = await fetch(url, {
         method,
         ...options,
+        credentials: "include",
         next: { revalidate: Infinity },
         headers,
       });

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateRoomId } from "./utils/utils";
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const url = new URL(req.url);
 
   const room = url.searchParams.get("room");

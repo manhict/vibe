@@ -224,7 +224,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime) >= 1.1) {
+        if (Math.abs(currentTime - lastEmittedTime) >= 1.07) {
           setProgress(currentTime);
           setLastEmittedTime(currentTime);
         }

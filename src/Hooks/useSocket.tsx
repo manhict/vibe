@@ -57,7 +57,13 @@ interface SocketProviderProps {
   children: ReactNode;
 }
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-  const { setQueue, queue, setListener, user: loggedInUser } = useUserContext();
+  const {
+    setQueue,
+    queue,
+    setListener,
+    user: loggedInUser,
+    roomId,
+  } = useUserContext();
   const { seek, play } = useAudio();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
@@ -106,12 +112,15 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     const controller = new AbortController();
     listenerControllerRef.current = controller;
-    const data = await api.get("/api/listeners", { signal: controller.signal });
+    const data = await api.get(
+      `${process.env.SOCKET_URI}/api/listeners?room=${roomId}`,
+      { signal: controller.signal }
+    );
 
     if (data.success) {
       setListener(data.data as listener);
     }
-  }, [setListener]);
+  }, [setListener, roomId]);
 
   const handleHeart = useCallback((data: any) => {
     const value = decrypt(data) as { imageUrl: string };
@@ -161,9 +170,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     const controller = new AbortController();
     queueControllerRef.current = controller;
-    const data = await api.get(`/api/queue?page=${page}&name`, {
-      signal: controller.signal,
-    });
+    const data = await api.get(
+      `${process.env.SOCKET_URI}/api/queue?page=${page}&room=${roomId}&name`,
+      {
+        signal: controller.signal,
+      }
+    );
     if (data.success) {
       const value = data.data as data;
 
@@ -179,7 +191,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setPage(value?.start + 1);
     }
     setLoading(false);
-  }, [setQueue, page, queue, total]);
+  }, [setQueue, page, queue, total, roomId]);
   const handleUpdateQueue = useDebounce(updateQueue);
   const UpdateQueue = useCallback(async () => {
     setLoading(true);
@@ -188,9 +200,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     const controller = new AbortController();
     queueControllerRef.current = controller;
-    const data = await api.get(`/api/queue?page=1&limit=${queue.length}&name`, {
-      signal: controller.signal,
-    });
+    const data = await api.get(
+      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${queue.length}&name`,
+      {
+        signal: controller.signal,
+      }
+    );
     if (data.success) {
       const value = data.data as data;
 
@@ -200,7 +215,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setPage(1);
     }
     setLoading(false);
-  }, [setQueue, queue]);
+  }, [setQueue, queue, roomId]);
 
   const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(

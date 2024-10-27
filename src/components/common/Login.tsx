@@ -26,7 +26,7 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       if (user) {
-        const res = await api.post("/api/login", user);
+        const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, user);
         if (res.success) {
           setUser((res.data as any).data as TUser);
           window.location.reload();

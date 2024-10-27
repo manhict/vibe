@@ -61,7 +61,9 @@ function AddToQueue() {
     const controller = new AbortController();
     queueControllerRef.current = controller;
     const data = await api.get(
-      `/api/queue?page=1&name=${e?.target?.value || ""}`,
+      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&name=${
+        e?.target?.value || ""
+      }`,
       {
         signal: controller.signal,
       }
@@ -216,20 +218,19 @@ function AddToQueue() {
       <div className="h-full transition-all z-50 overflow-y-scroll">
         {queue.length > 0 ? (
           <>
-            {isSearchedOpened ? (
+            {isSearchedOpened && (
               <SearchQueueList
                 searchQu={searchQu}
                 handleSelect={handleSelect}
                 selectedSongs={selectedSongs}
                 isDeleting={isDeleting}
               />
-            ) : (
-              <QueueList
-                handleSelect={handleSelect}
-                selectedSongs={selectedSongs}
-                isDeleting={isDeleting}
-              />
             )}
+            <QueueList
+              handleSelect={handleSelect}
+              selectedSongs={selectedSongs}
+              isDeleting={isDeleting}
+            />
           </>
         ) : (
           <SearchSongPopup isAddToQueue />

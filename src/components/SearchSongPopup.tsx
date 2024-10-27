@@ -57,7 +57,7 @@ function SearchSongPopup({
       abortControllerRef.current = controller;
       const url = youtube
         ? `/api/youtube?id=${extractPlaylistID(value)}&room=${roomId}`
-        : `/api/search/?name=${value}&page=0`;
+        : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
       setPage(0); // Reset page on a new search
       setLoading(true);
@@ -89,7 +89,9 @@ function SearchSongPopup({
       return;
 
     setLoading(true);
-    const url = `/api/search/?name=${query}&page=${page + 1}`;
+    const url = `${process.env.SOCKET_URI}/api/search/?name=${query}&page=${
+      page + 1
+    }`;
 
     const res = await api.get(url);
     if (res.success) {
@@ -134,15 +136,16 @@ function SearchSongPopup({
       // Return the new state, adding only the filtered songs
       return [...filteredSongs, ...prev];
     });
-    const added = await api.post("/api/add", selectedSongs, {
-      credentials: "include",
-    });
+    const added = await api.post(
+      `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
+      selectedSongs
+    );
     if (added.success) {
       emitMessage("update", "update");
       toast.success("Songs added to queue");
     }
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user, setQueue]);
+  }, [setSelectedSongs, selectedSongs, user, setQueue, roomId]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
@@ -159,15 +162,16 @@ function SearchSongPopup({
         return [...filteredSongs, ...prev];
       });
 
-      const added = await api.post("/api/add", songs?.data.results, {
-        credentials: "include",
-      });
+      const added = await api.post(
+        `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
+        songs?.data.results
+      );
       if (added.success) {
         emitMessage("update", "update");
       }
       toast.success("All songs added to queue");
     }
-  }, [songs, setQueue]);
+  }, [songs, setQueue, roomId]);
 
   return (
     <Dialog key={"songs"}>
