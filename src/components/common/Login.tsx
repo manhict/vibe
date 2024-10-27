@@ -13,10 +13,12 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/app/store/userStore";
-import { TUser } from "@/lib/types";
+import { spotifyUser, TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { FaSpotify } from "react-icons/fa";
 function Login({ isOpen = false }: { isOpen: boolean }) {
   const { setUser } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
@@ -25,13 +27,24 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
       setLoader(true);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      if (user) {
-        const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, user);
-        await api.post(`/api/login`, user);
+
+      if (user && user.displayName && user.email && user.photoURL) {
+        const payload: spotifyUser = {
+          display_name: user.displayName,
+          email: user.email,
+          images: [{ url: user.photoURL }],
+        };
+        const res = await api.post(
+          `${process.env.SOCKET_URI}/api/auth`,
+          payload
+        );
+        await api.post(`/api/login`, payload);
         if (res.success) {
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }
+      } else {
+        toast.error("Missing Name, Email and Photo URL");
       }
       setLoader(false);
     } catch (error: any) {
@@ -56,14 +69,24 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
               lets get to know <br /> each other.
             </p>
           </div>
-          <Button
-            disabled={loader}
-            onClick={handleLogin}
-            className=" gap-1.5 items-center shadow-none px-7 py-5"
-          >
-            <FcGoogle className=" size-5" />
-            {loader ? "Signing in..." : "Sign up with Google"}
-          </Button>
+          <div className=" flex flex-col items-center gap-2 justify-center">
+            <Button
+              disabled={loader}
+              onClick={handleLogin}
+              className=" gap-1.5 items-center shadow-none px-7 py-5"
+            >
+              <FcGoogle className=" size-5" />
+              {loader ? "Signing in..." : "Continue with Google"}
+            </Button>
+            <Link
+              href={`https://accounts.spotify.com/en/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&scope=user-read-private user-read-email&response_type=code&redirect_uri=${process.env.SPOTIFY_REDIRECT_URL}`}
+            >
+              <Button className=" gap-1.5 items-center shadow-none px-7 py-5">
+                <FaSpotify className=" size-5" />
+                Continue with Spotify
+              </Button>
+            </Link>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

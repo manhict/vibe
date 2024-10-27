@@ -1,10 +1,6 @@
 "use server";
 
 import { spotifyToken } from "@/lib/types";
-import User from "@/models/userModel";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import dbConnect from "@/lib/dbConnect";
 
 const client_id = process.env.SPOTIFY_CLIENT_ID || "";
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
@@ -28,31 +24,14 @@ export async function connectSpotify(code: string) {
 
     if (response.ok) {
       const spotifyData = (await response.json()) as spotifyToken;
-
-      // Get session cookie (vibeId)
-      const session = cookies().get("vibeId");
-      if (!session || !session.value) {
-        throw new Error("No session found");
-      }
-
-      // Verify and decode the session token
-      const decoded: any = jwt.verify(
-        session.value,
-        process.env.JWT_SECRET || ""
-      );
-      if (!decoded || !decoded.userId) {
-        throw new Error("Invalid token");
-      }
-
-      // Connect to the database
-      await dbConnect();
-
-      // Update user's Spotify data
-      await User.findByIdAndUpdate(decoded.userId, {
-        spotifyData,
+      const userResponse = await fetch("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${spotifyData.access_token}`,
+        },
       });
 
-      return "Successfully Connected. Now you can close this window.";
+      const userDetails = await userResponse.json();
+      return userDetails;
     }
 
     return null;

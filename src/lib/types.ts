@@ -102,3 +102,13 @@ export interface spotifyTrack {
     }
   ];
 }
+
+export interface spotifyUser {
+  display_name: string;
+  email: string;
+  images: [
+    {
+      url: string;
+    }
+  ];
+}
