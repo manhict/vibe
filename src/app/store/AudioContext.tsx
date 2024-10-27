@@ -14,7 +14,6 @@ import React, {
 } from "react";
 import { useUserContext } from "./userStore";
 import { socket } from "../socket";
-import useDebounce from "@/Hooks/useDebounce";
 import { emitMessage } from "@/lib/customEmits";
 
 interface AudioContextType {
@@ -201,14 +200,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // Debounced function to emit progress
 
   const [lastEmittedTime, setLastEmittedTime] = useState(0);
-
-  const emitProgress = useDebounce((currentTime: number) => {
-    if (socket && socket.connected) {
-      socket.emit("progress", currentTime);
-    } else {
-      console.warn("Socket not connected. Unable to emit progress.");
-    }
-  }, 1000);
+  const [lastEmitted, setLastEmitted] = useState(0);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
@@ -227,14 +219,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime) >= 1.07) {
+        if (Math.abs(currentTime - lastEmittedTime) >= 1) {
           setProgress(currentTime);
           setLastEmittedTime(currentTime);
         }
 
-        if (Math.abs(currentTime - lastEmittedTime) >= 15) {
-          emitProgress(currentTime);
-          setLastEmittedTime(currentTime);
+        if (Math.abs(currentTime - lastEmitted) >= 10) {
+          socket.emit("progress", currentTime);
+          setLastEmitted(currentTime);
         }
       }
     };
@@ -261,7 +253,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     queue,
     playNext,
     isLooped,
-    emitProgress,
+    lastEmitted,
     lastEmittedTime,
   ]);
 

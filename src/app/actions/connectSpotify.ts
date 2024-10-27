@@ -24,19 +24,23 @@ export async function connectSpotify(code: string) {
 
     if (response.ok) {
       const spotifyData = (await response.json()) as spotifyToken;
+
       const userResponse = await fetch("https://api.spotify.com/v1/me", {
         headers: {
           Authorization: `Bearer ${spotifyData.access_token}`,
         },
       });
 
-      const userDetails = await userResponse.json();
-      return userDetails;
+      if (userResponse.ok) {
+        const userDetails = await userResponse.json();
+        return userDetails;
+      }
+      return null;
     }
 
     return null;
-  } catch (error) {
-    console.error("SPOTIFY ERROR", error);
+  } catch (error: any) {
+    console.error("SPOTIFY ERROR", error.message);
     return null;
   }
 }

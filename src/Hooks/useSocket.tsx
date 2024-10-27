@@ -225,7 +225,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         _id: string;
         progress: number;
       };
-
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");

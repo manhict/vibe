@@ -79,7 +79,11 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
               {loader ? "Signing in..." : "Continue with Google"}
             </Button>
             <Link
-              href={`https://accounts.spotify.com/en/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&scope=user-read-private user-read-email&response_type=code&redirect_uri=${process.env.SPOTIFY_REDIRECT_URL}`}
+              href={`https://accounts.spotify.com/en/authorize?client_id=${
+                process.env.SPOTIFY_CLIENT_ID
+              }&scope=user-read-private%20user-read-email&response_type=token&redirect_uri=${encodeURIComponent(
+                process.env.SPOTIFY_REDIRECT_URL || ""
+              )}&show_dialog=true`}
             >
               <Button className=" gap-1.5 items-center shadow-none px-7 py-5">
                 <FaSpotify className=" size-5" />

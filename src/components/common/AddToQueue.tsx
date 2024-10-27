@@ -26,21 +26,26 @@ function AddToQueue() {
   const { total } = useSocket();
   const handleShare = useCallback(async () => {
     if (!user) return;
+    const shareUrl = `${window.location.origin}/v/?room=${roomId}&ref=${user.username}`;
+
     try {
-      await navigator
-        .share({
-          url:
-            window.location.origin +
-            "/v/?room=" +
-            roomId +
-            "&ref=" +
-            user.username,
-        })
-        .then(() => {
-          toast.success("Shared the link successfully!");
-        });
+      //@ts-expect-error:ex
+      if (window.process && window.process?.type === "renderer") {
+        // In Electron: Copy link to clipboard
+        //@ts-expect-error:ex
+        clipboard?.writeText(shareUrl);
+        toast.success("Link copied to clipboard for sharing!");
+      } else if (navigator.share) {
+        // In Browser: Use Web Share API
+        await navigator.share({ url: shareUrl });
+        toast.success("Shared the link successfully!");
+      } else {
+        // Fallback: Copy to clipboard in unsupported browsers
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Link copied to clipboard!");
+      }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || "An error occurred while sharing.");
     }
   }, [roomId, user]);
 
