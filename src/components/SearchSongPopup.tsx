@@ -23,7 +23,7 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
 import { FaYoutube } from "react-icons/fa";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
 function SearchSongPopup({
   isAddToQueue = false,

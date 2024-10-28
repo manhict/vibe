@@ -13,7 +13,7 @@ import React, {
   SetStateAction,
 } from "react";
 import { useUserContext } from "./userStore";
-import { socket } from "../socket";
+import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
 
 interface AudioContextType {

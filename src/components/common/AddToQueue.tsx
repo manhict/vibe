@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Trash2, X } from "lucide-react";
 import Listeners from "./Listeners";
 import QueueList from "./QueueList";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ import { Input } from "../ui/input";
 import Youtube from "./Youtube";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
@@ -220,7 +220,7 @@ function AddToQueue() {
           </Button>
         </motion.div>
       )}
-      <div className="h-full transition-all z-50 overflow-y-scroll">
+      <div className="h-full hide-scrollbar transition-all z-50 overflow-y-scroll">
         {queue.length > 0 ? (
           <>
             {isSearchedOpened && (

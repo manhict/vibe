@@ -1,5 +1,5 @@
 "use client";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 
 import {
   Tooltip,

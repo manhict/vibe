@@ -1,4 +1,4 @@
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 import { Slider } from "../ui/slider";
 
 export const VolumeControl: React.FC = () => {

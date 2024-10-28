@@ -1,9 +1,9 @@
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import parse from "html-react-parser";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatArtistName } from "@/utils/utils";
 import { motion } from "framer-motion";
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 
 function UpNextSongs() {
   const { upNextSongs } = useUserContext();

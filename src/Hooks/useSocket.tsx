@@ -14,8 +14,8 @@ import { toast } from "sonner";
 import { data, listener, messages, searchResults, TUser } from "@/lib/types";
 import { decrypt } from "@/utils/lock";
 import api from "@/lib/api";
-import { useUserContext } from "@/app/store/userStore";
-import { useAudio } from "@/app/store/AudioContext";
+import { useUserContext } from "@/store/userStore";
+import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
 // Define the shape of a message
 export interface Message {

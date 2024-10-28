@@ -1,10 +1,10 @@
 "use client";
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 import { formatArtistName, formatElapsedTime } from "@/utils/utils";
 import { Volume1, Volume2, VolumeX } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VolumeControl from "./VolumeControl";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import Image from "next/image";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";

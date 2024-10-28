@@ -8,7 +8,7 @@
 //   DialogTrigger,
 // } from "../ui/dialog";
 // import { FaSpotify } from "react-icons/fa";
-// import { useUserContext } from "@/app/store/userStore";
+// import { useUserContext } from "@/store/userStore";
 // import { useCallback } from "react";
 // // import { spotifyPlaylist } from "@/lib/types";
 

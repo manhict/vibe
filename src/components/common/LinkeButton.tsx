@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import useDebounce from "@/Hooks/useDebounce";
 import { useSocket } from "@/Hooks/useSocket";
 import { emitMessage } from "@/lib/customEmits";

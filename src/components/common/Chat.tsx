@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
 import React, { SetStateAction, useCallback, useState } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 import { formatArtistName, isImageUrl, linkifyOptions } from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";

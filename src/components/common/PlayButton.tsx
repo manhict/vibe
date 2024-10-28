@@ -1,4 +1,4 @@
-import { useAudio } from "@/app/store/AudioContext";
+import { useAudio } from "@/store/AudioContext";
 import { cn } from "@/lib/utils";
 import { pauseVariants, playVariants } from "@/utils/utils";
 import { AnimatePresence, motion } from "framer-motion";

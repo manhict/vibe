@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import { spotifyUser, TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";

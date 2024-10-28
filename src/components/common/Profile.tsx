@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUserContext } from "@/app/store/userStore";
+import { useUserContext } from "@/store/userStore";
 import { TUser } from "@/lib/types";
 import { useEffect } from "react";
 import { Button } from "../ui/button";

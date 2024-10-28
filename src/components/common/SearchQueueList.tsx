@@ -1,5 +1,5 @@
-import { useAudio } from "@/app/store/AudioContext";
-import { useUserContext } from "@/app/store/userStore";
+import { useAudio } from "@/store/AudioContext";
+import { useUserContext } from "@/store/userStore";
 import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -120,7 +120,7 @@ function SearchQueueList({
   return (
     <>
       {queue?.length > 0 ? (
-        <div className=" py-2 pr-2  group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-1.5">
+        <div className=" py-2 pr-2 hide-scrollbar border-b group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1.5">
           <p>Search Result</p>
           {queue
             ?.filter((r) => r.id !== currentSong?.id)
