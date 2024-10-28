@@ -157,7 +157,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const playNext = useCallback(() => {
     if (socket.connected) {
       emitMessage("playNext", "playNext");
-      socket.emit("progress", 0);
     }
   }, []);
 
@@ -165,7 +164,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const playPrev = useCallback(() => {
     if (socket.connected) {
       emitMessage("playPrev", "playPrev");
-      socket.emit("progress", 0);
     }
   }, []);
 
@@ -213,7 +211,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
 
     const handleEnd = () => {
-      socket.emit("progress", 0);
       emitMessage("songEnded", "songEnded");
     };
     const updateProgress = () => {
