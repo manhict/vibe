@@ -1,12 +1,18 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { InstagramLogo } from "@phosphor-icons/react/dist/icons/InstagramLogo";
 import { XLogo } from "@phosphor-icons/react/dist/icons/XLogo";
 import Link from "next/link";
 import React from "react";
 
-function HomeFooter() {
+function HomeFooter({ className }: { className?: string }) {
   return (
-    <footer className="  absolute bottom-7 max-md:bottom-2 w-full flex justify-center items-center">
+    <footer
+      className={cn(
+        `absolute bottom-7 max-md:bottom-2 w-full flex justify-center items-center`,
+        className
+      )}
+    >
       <div className=" w-9/12  max-md:w-full max-md:px-5 border-t py-4 px-7 text-sm flex justify-between items-center border-white/20">
         <p className=" text-white/70">
           Built by{" "}

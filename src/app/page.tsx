@@ -1,13 +1,26 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import Blur from "@/components/Blur";
 import HomeFooter from "@/components/common/HomeFooter";
+import { motion } from "framer-motion";
 function Page() {
   return (
     <>
       <Blur className=" blur-2xl bg-transparent" />
-      <div className=" h-dvh w-dvw bg-[url('/background.webp')] bg-cover">
+      <motion.div
+        initial={{
+          opacity: 0,
+          filter: "blur(10px)",
+        }}
+        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+        transition={{
+          duration: 0.5,
+        }}
+        exit={{ opacity: 0 }}
+        className=" h-dvh w-dvw bg-[url('/background.webp')] bg-cover"
+      >
         <div className=" z-50 absolute w-full h-[87dvh] flex justify-center items-center">
           <div className=" w-8/12 max-md:w-full max-md:px-5">
             <div className=" w-1/2 max-md:text-center  max-md:w-full flex font-semibold gap-4 flex-col max-md:justify-center max-md:items-center">
@@ -38,7 +51,7 @@ function Page() {
           </div>
         </div>
         <HomeFooter />
-      </div>
+      </motion.div>
     </>
   );
 }
