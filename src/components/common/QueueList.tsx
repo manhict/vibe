@@ -143,7 +143,7 @@ function QueueList({
   return (
     <div
       ref={containerRef}
-      className="py-2 pr-2 max-h-full group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-1.5"
+      className="py-2 pr-2 group-hover:opacity-100 flex flex-col hover-scroll overflow-y-scroll gap-1.5"
     >
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
