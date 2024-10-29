@@ -62,10 +62,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     queue,
     setListener,
     user: loggedInUser,
+    setUpNextSongs,
+    setUser,
     roomId,
   } = useUserContext();
   const { seek, play } = useAudio();
-  const { setUpNextSongs } = useUserContext();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
   const [messages, setMessages] = useState<messages[]>([]);
@@ -248,8 +249,15 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         roomId: string;
         _id: string;
         progress: number;
+        role: string;
       };
-
+      if (value?.role && loggedInUser) {
+        setUser(() => {
+          const user = { ...loggedInUser };
+          user.role = value.role;
+          return user;
+        });
+      }
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
@@ -257,7 +265,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       handleUpdateQueue();
       upNextSong();
     },
-    [handleUpdateQueue, seek, updateListeners, upNextSong]
+    [
+      handleUpdateQueue,
+      seek,
+      updateListeners,
+      upNextSong,
+      loggedInUser,
+      setUser,
+    ]
   );
 
   // Centralized event listeners setup and cleanup
