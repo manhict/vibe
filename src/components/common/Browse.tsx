@@ -64,9 +64,9 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               style={{
                 backgroundImage: `url('${room.background || "/bg.webp"}' ) `,
               }}
-              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] max-h-[200px] w-[12vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px] p-4"
+              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] max-h-[200px] w-[12vw] rounded-md max-w-[200px] min-h-[84px] min-w-[84px] p-4"
             ></motion.div>
-            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[12vw] mt-2">
+            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize  text-[#D0BCFF] font-medium  tracking-tight truncate w-[12vw] mt-2">
               {room.name[0]}
             </p>
           </motion.a>
@@ -89,7 +89,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         >
           <a
             href="/v"
-            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-h-[200px] max-md:-mt-2 w-[12vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
+            className=" hover:bg-zinc-800 transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-h-[200px] max-md:-mt-2 w-[12vw] rounded-md max-w-[200px] min-h-[84px] min-w-[84px] group"
           >
             <motion.svg
               initial={{
@@ -104,18 +104,18 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
                 type: "spring",
                 stiffness: 45,
               }}
-              className=" h-[5vw] w-[5vw] rounded-sm "
+              className=" h-[5vw] w-[5vw] rounded-md "
               viewBox="0 0 68 68"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M29.5787 43.8314C29.5787 41.0462 27.3208 38.7883 24.5356 38.7883H5.63733C2.99284 38.7883 0.84906 36.6445 0.84906 34C0.84906 31.3556 2.99284 29.2118 5.63733 29.2118H24.5356C27.3208 29.2118 29.5787 26.9539 29.5787 24.1687V5.27045C29.5787 2.62596 31.7224 0.482178 34.3669 0.482178C37.0114 0.482178 39.1552 2.62596 39.1552 5.27045V24.1687C39.1552 26.9539 41.4131 29.2118 44.1983 29.2118H63.0965C65.741 29.2118 67.8848 31.3556 67.8848 34C67.8848 36.6445 65.741 38.7883 63.0965 38.7883H44.1983C41.4131 38.7883 39.1552 41.0462 39.1552 43.8314V62.7297C39.1552 65.3741 37.0114 67.5179 34.3669 67.5179C31.7224 67.5179 29.5787 65.3741 29.5787 62.7297V43.8314Z"
-                className=" fill-zinc-400 transition-all duration-150  "
+                className=" fill-zinc-400 group-hover:fill-[#8D50F9] transition-all duration-150  "
               />
             </motion.svg>
           </a>
-          <p className=" text-center mt-1.5 text-[1.3vw] font-medium text-zinc-400 max-md:text-sm tracking-tight transition-all duration-150 ">
+          <p className=" text-center mt-1.5 text-[1.3vw] font-medium   text-[#D0BCFF] max-md:text-sm tracking-tight transition-all duration-150 ">
             Create Room
           </p>
         </motion.div>
@@ -135,7 +135,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         }}
         className=" my-5 max-md:text-xl max-md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/20"
       >
-        Tough Choice, isn&apos;t it
+        Tough Choice, isn&apos;t it?
       </motion.p>
     </motion.div>
   );
