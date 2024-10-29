@@ -133,7 +133,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           type: "spring",
           stiffness: 45,
         }}
-        className=" my-5 max-md:text-xl max-md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/80"
+        className=" my-5 max-md:text-xl max-md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/20"
       >
         Tough Choice, isn&apos;t it
       </motion.p>

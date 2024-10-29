@@ -19,7 +19,7 @@ function Page() {
           duration: 0.5,
         }}
         exit={{ opacity: 0 }}
-        className=" h-dvh w-dvw bg-[url('/background.webp')] bg-cover"
+        className=" h-dvh w-dvw bg-[url('/background.webp')] bg-no-repeat bg-cover"
       >
         <div className=" z-50 absolute w-full h-[87dvh] flex justify-center items-center">
           <div className=" w-8/12 max-md:w-full max-md:px-5">
