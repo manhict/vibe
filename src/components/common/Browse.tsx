@@ -19,7 +19,24 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       }}
       className=" flex items-center flex-col bg-[#141414] justify-center h-dvh"
     >
-      <div className=" flex items-start relative justify-center w-full gap-6">
+      <motion.p
+        initial={{
+          y: isDesktop ? "5dvh" : 0,
+          opacity: 0,
+          filter: "blur(10px)",
+        }}
+        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+        transition={{
+          duration: 0.5,
+          delay: Number(`${Math.floor(1 / 10) + 1}.${1 % 10}`),
+          type: "spring",
+          stiffness: 45,
+        }}
+        className=" my-5 max-md:text-xl md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/80"
+      >
+        Tough Choice, isn&apos;t it
+      </motion.p>
+      <div className=" flex items-start flex-wrap relative justify-center w-full gap-6">
         {data.map((room, index) => (
           <motion.a
             title={room.name[0]}
@@ -45,7 +62,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               }}
               className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px] p-4"
             ></motion.div>
-            <p className="  text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[10vw] mt-2">
+            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[10vw] mt-2">
               {room.name[0]}
             </p>
           </motion.a>
@@ -68,7 +85,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         >
           <a
             href="/v"
-            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
+            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[10vw] max-h-[200px] max-md:-mt-2 w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
           >
             <motion.svg
               initial={{
@@ -94,7 +111,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               />
             </motion.svg>
           </a>
-          <p className=" text-center mt-1.5 text-[1.3vw] font-medium text-zinc-400 tracking-tight transition-all duration-150 ">
+          <p className=" text-center mt-1.5 text-[1.3vw] font-medium text-zinc-400 max-md:text-sm tracking-tight transition-all duration-150 ">
             Create Room
           </p>
         </motion.div>
@@ -112,7 +129,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           type: "spring",
           stiffness: 45,
         }}
-        className=" my-5 text-[3.5vw] tracking-normal font-medium text-zinc-100/80"
+        className=" my-5 max-md:text-xl max-md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/80"
       >
         Tough Choice, isn&apos;t it
       </motion.p>
