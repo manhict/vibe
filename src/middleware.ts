@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
   if (url.pathname == "/") {
     const isLoggedIn = await fetch(`${process.env.SOCKET_URI}/api/@me`, {
       headers: {
-        cookie: `vibeId=${vibeId}`,
+        cookie: `vibeIdR=${vibeId}`,
       },
     });
     if (isLoggedIn.ok) {
