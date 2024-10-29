@@ -45,7 +45,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               }}
               className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px] p-4"
             ></motion.div>
-            <p className="  text-center text-lg capitalize font-medium text-zinc-400 tracking-tight truncate w-[10vw] mt-2">
+            <p className="  text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[10vw] mt-2">
               {room.name[0]}
             </p>
           </motion.a>
@@ -68,7 +68,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         >
           <a
             href="/v"
-            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-around group cursor-pointer h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
+            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
           >
             <motion.svg
               initial={{
@@ -83,8 +83,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
                 type: "spring",
                 stiffness: 45,
               }}
-              width="60"
-              height="60"
+              className=" h-[5vw] w-[5vw] rounded-sm "
               viewBox="0 0 68 68"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +94,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               />
             </motion.svg>
           </a>
-          <p className=" text-center mt-1.5 text-lg font-medium text-zinc-400 tracking-tight transition-all duration-150 ">
+          <p className=" text-center mt-1.5 text-[1.3vw] font-medium text-zinc-400 tracking-tight transition-all duration-150 ">
             Create Room
           </p>
         </motion.div>
@@ -113,7 +112,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           type: "spring",
           stiffness: 45,
         }}
-        className=" my-8 text-4xl tracking-normal font-semibold text-zinc-500/70"
+        className=" my-8 text-[3.5vw] tracking-normal font-medium text-zinc-500/70"
       >
         Tough Choice, isn&apos;t it
       </motion.p>
