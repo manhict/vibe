@@ -65,7 +65,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     roomId,
   } = useUserContext();
   const { seek, play } = useAudio();
-  const { setUpNextSongs } = useUserContext();
+  const { setUpNextSongs, setUser } = useUserContext();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
   const [messages, setMessages] = useState<messages[]>([]);
@@ -146,12 +146,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserLeftRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
+      if (user.username == loggedInUser?.username) return;
       updateListeners();
       toast.info(`${user?.username} has left`, {
         style: { background: "#e94625" },
       });
     },
-    [updateListeners]
+    [updateListeners, loggedInUser]
   );
 
   const handleUserJoinedRoom = useCallback(
@@ -247,7 +248,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         roomId: string;
         _id: string;
         progress: number;
+        role: string;
       };
+      if (loggedInUser) {
+        setUser({ ...loggedInUser, role: value?.role });
+      }
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
@@ -255,7 +260,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       handleUpdateQueue();
       upNextSong();
     },
-    [handleUpdateQueue, seek, updateListeners, upNextSong]
+    [
+      handleUpdateQueue,
+      seek,
+      updateListeners,
+      upNextSong,
+      setUser,
+      loggedInUser,
+    ]
   );
 
   // Centralized event listeners setup and cleanup
