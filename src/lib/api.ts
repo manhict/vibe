@@ -7,6 +7,12 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+let authToken: string | null = null; // Variable to store the auth token
+
+const setAuthToken = (token: string | null) => {
+  authToken = token;
+};
+
 const handleResponse = async <T>(
   response: Response
 ): Promise<ApiResponse<T>> => {
@@ -76,6 +82,8 @@ const handleError = (error: any): ApiResponse<never> => {
 };
 
 const api = {
+  setAuthToken, // Add setAuthToken method to the api object
+
   request: async <T>(
     url: string,
     method: string,
@@ -88,6 +96,11 @@ const api = {
       if (options.body && !(options.body instanceof FormData)) {
         headers.set("Content-Type", "application/json");
         options.body = JSON.stringify(options.body);
+      }
+
+      // Set Authorization header if authToken is available
+      if (authToken) {
+        headers.set("Authorization", `Bearer ${authToken}`);
       }
 
       const response = await fetch(url, {

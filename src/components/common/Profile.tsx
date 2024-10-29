@@ -26,6 +26,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
       Authorization: user?.token || "",
       Room: roomId || "",
     };
+    api.setAuthToken(user?.token || null);
     socket.connect();
   }, [user, setUser, roomId]);
 
