@@ -9,7 +9,7 @@ export async function getLoggedInUser() {
     if (!vibeId) return null;
     const res = await fetch(`${process.env.SOCKET_URI}/api/vibe`, {
       headers: {
-        cookie: `vibeId=${vibeId};room=${room} `,
+        cookie: `vibeIdR=${vibeId};room=${room} `,
       },
     });
     if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
