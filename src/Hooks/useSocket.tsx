@@ -194,7 +194,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     setLoading(false);
   }, [setQueue, page, queue, total, roomId]);
-  const handleUpdateQueue = useDebounce(updateQueue);
+  const handleUpdateQueue = useDebounce(updateQueue, 0);
 
   const upNextSong = useCallback(async () => {
     if (upNextSongControllerRef.current) {
@@ -240,7 +240,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, queue, roomId, getUpNextSong]);
 
-  const forceUpdateQueue = useDebounce(UpdateQueue);
+  const forceUpdateQueue = useDebounce(UpdateQueue, 0);
   const handleJoined = useCallback(
     async (data: any) => {
       const value = decrypt(data) as {

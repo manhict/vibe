@@ -94,7 +94,7 @@ const api = {
         method,
         ...options,
         credentials: "include",
-        next: { revalidate: Infinity },
+        next: { revalidate: 10 },
         headers,
       });
 

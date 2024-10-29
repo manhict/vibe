@@ -11,29 +11,25 @@ const VoteIcon = ({
   triggerUpVote: (e: React.MouseEvent, song: searchResults) => void;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [showTopVotes, setShowTopVotes] = useState(false);
 
   const handleClick = (e: React.MouseEvent, song: searchResults) => {
     setIsClicked(true);
     triggerUpVote(e, song);
 
     // Reset animation after vote
-    setTimeout(() => {
+    const t = setTimeout(() => {
       setIsClicked(false);
     }, 600);
-  };
-
-  const handleAnimationComplete = () => {
-    // Trigger the appearance of TopVotes after animation ends
-    const t = setTimeout(() => {
-      setShowTopVotes(true);
-    }, 650);
     return () => clearTimeout(t);
   };
 
   return (
     <>
-      <div className="relative" onClick={(e) => handleClick(e, song)}>
+      <div
+        key={song.id}
+        className="relative"
+        onClick={(e) => handleClick(e, song)}
+      >
         <svg
           width="45"
           height="45"
@@ -44,6 +40,7 @@ const VoteIcon = ({
         >
           {/* heart  */}
           <motion.path
+            key={song.id}
             initial={{ scale: 1, rotate: 0, y: 0, fill: "transparent" }}
             animate={
               isClicked
@@ -67,7 +64,6 @@ const VoteIcon = ({
               duration: 0.3,
               ease: "easeInOut",
             }}
-            onAnimationComplete={handleAnimationComplete}
             className="heart"
             d="M21.0475 30.3081L21.189 30.4015L21.3306 30.3081C26.2978 27.0276 29.1634 23.9123 30.5598 21.1589C31.9595 18.399 31.8836 15.9976 30.9567 14.1885C29.1574 10.6768 24.1773 9.49705 21.189 12.3124C18.2007 9.49704 13.2206 10.6771 11.4213 14.189C10.4944 15.9981 10.4185 18.3996 11.8182 21.1594C13.2147 23.9128 16.0802 27.0279 21.0475 30.3081Z"
             stroke="white"
@@ -75,6 +71,7 @@ const VoteIcon = ({
           />
           {/* arrow */}
           <motion.path
+            key={song.id}
             initial={{ rotate: 0, scale: 1, x: 0, y: 0, opacity: 1 }} // Initial position
             animate={
               isClicked && !song?.isVoted
@@ -92,20 +89,19 @@ const VoteIcon = ({
             fill="#FAC800"
           />
         </svg>
-        {showTopVotes && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{
-              duration: 0.5,
-              ease: "easeInOut",
-            }}
-            className="flex justify-center items-center w-full -mt-2 text-xs"
-          >
-            <TopVotes song={song} />
-          </motion.div>
-        )}
+        <motion.div
+          key={song.id}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{
+            duration: 0.5,
+            ease: "easeInOut",
+          }}
+          className="flex justify-center items-center w-full -mt-2 text-xs"
+        >
+          <TopVotes song={song} />
+        </motion.div>
       </div>
     </>
   );

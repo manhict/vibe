@@ -59,33 +59,32 @@ function QueueList({
     (e: React.MouseEvent, song: searchResults) => {
       if (!user) return toast.error("Login required");
       e.stopPropagation();
-      handleUpVote(song);
 
       try {
-        setQueue((prev) => {
-          const songExists = prev.find((item) => item.id === song.id);
+        setQueue((prevQueue) => {
+          const songIndex = prevQueue.findIndex((item) => item.id === song.id);
+          const songExists = songIndex !== -1;
 
           if (songExists) {
-            return prev.map((item) =>
-              item.id === song.id
+            // Toggle isVoted status and update topVoters list
+            return prevQueue.map((item, index) =>
+              index === songIndex
                 ? {
                     ...item,
                     isVoted: !item.isVoted,
-                    topVoters:
-                      item.isVoted &&
-                      item.topVoters &&
-                      item.topVoters.length > 0
-                        ? item.topVoters.filter(
-                            (voter) => voter?._id !== user?._id
-                          )
-                        : [...(item.topVoters || []), user],
+                    topVoters: item.isVoted
+                      ? item?.topVoters?.filter(
+                          (voter) => voter._id !== user._id
+                        )
+                      : [...(item.topVoters || []), user],
                     addedByUser: user,
                   }
                 : item
             );
           } else {
+            // Add new song to the queue with the user as the initial voter
             return [
-              ...prev,
+              ...prevQueue,
               {
                 ...song,
                 isVoted: true,
@@ -95,6 +94,7 @@ function QueueList({
             ];
           }
         });
+        handleUpVote(song);
       } catch (error) {
         console.log(error);
       }

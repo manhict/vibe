@@ -1,46 +1,21 @@
 "use server";
-import dbConnect from "@/lib/dbConnect";
-import Room from "@/models/roomModel";
-import RoomUser from "@/models/roomUsers";
-import User from "@/models/userModel";
-import jwt from "jsonwebtoken";
+
 import { cookies } from "next/headers";
+
 export async function getLoggedInUser() {
   try {
-    await dbConnect();
+    const vibeId = cookies().get("vibeId")?.value;
+    const room = cookies().get("room")?.value;
+    if (!vibeId) return null;
+    const res = await fetch(`${process.env.SOCKET_URI}/api/vibe`, {
+      headers: {
+        cookie: `vibeId=${vibeId};room=${room} `,
+      },
+    });
+    if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
+    const data = await res.json();
 
-    const session = cookies().get("vibeId");
-    const roomId = cookies().get("room")?.value;
-    if (!session || !session.value) {
-      throw new Error("No session found");
-    }
-
-    const decoded: any = jwt.verify(
-      session.value,
-      process.env.JWT_SECRET || ""
-    );
-    if (!decoded || !decoded.userId) {
-      throw new Error("Invalid token");
-    }
-
-    const [user, room] = await Promise.all([
-      await User.findById(decoded.userId), // Fetch the user by ID
-      await Room.findOne({ roomId }), // Fetch the room by roomId
-    ]);
-
-    const role = await RoomUser.findOne({
-      userId: decoded.userId,
-      roomId: room?._id,
-    }).select("role");
-
-    return JSON.parse(
-      JSON.stringify({
-        ...user.toObject(),
-        token: session.value,
-        roomId,
-        role: role?.toObject()?.role || "guest",
-      })
-    );
+    return JSON.parse(JSON.stringify(data));
   } catch (error: any) {
     console.error("Error in getLoggedInUser:", error.message);
     return null;

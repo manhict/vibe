@@ -138,7 +138,8 @@ function SearchSongPopup({
     });
     const added = await api.post(
       `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
-      selectedSongs
+      selectedSongs,
+      { credentials: "include" }
     );
     if (added.success) {
       emitMessage("update", "update");
