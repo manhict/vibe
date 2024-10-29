@@ -64,9 +64,9 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               style={{
                 backgroundImage: `url('${room.background || "/bg.webp"}' ) `,
               }}
-              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[10vw] max-h-[200px] w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px] p-4"
+              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] max-h-[200px] w-[12vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px] p-4"
             ></motion.div>
-            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[10vw] mt-2">
+            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize font-medium text-zinc-400 tracking-tight truncate w-[12vw] mt-2">
               {room.name[0]}
             </p>
           </motion.a>
@@ -89,7 +89,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         >
           <a
             href="/v"
-            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[10vw] max-h-[200px] max-md:-mt-2 w-[10vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
+            className=" hover:bg-white transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-h-[200px] max-md:-mt-2 w-[12vw] rounded-sm max-w-[200px] min-h-[84px] min-w-[84px]"
           >
             <motion.svg
               initial={{
