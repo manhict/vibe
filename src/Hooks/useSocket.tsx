@@ -17,6 +17,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
+import { useRouter } from "next/navigation";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -80,6 +81,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
   const upNextSongControllerRef = useRef<AbortController | null>(null);
+  const router = useRouter();
   // Memoized connect and disconnect functions
   const onConnect = useCallback((): void => {
     setIsConnected(true);
@@ -258,6 +260,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           return user;
         });
       }
+      router.push(`/v?room=${roomId}`);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
@@ -272,6 +275,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       upNextSong,
       loggedInUser,
       setUser,
+      roomId,
+      router,
     ]
   );
 
