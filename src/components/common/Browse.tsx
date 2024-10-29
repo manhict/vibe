@@ -6,6 +6,10 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
     <motion.div
+      style={{
+        WebkitMaskImage: "linear-gradient(to top, black 85%, transparent 100%)",
+        maskImage: "linear-gradient(to top, black 85%, transparent 100%)",
+      }}
       initial={{
         opacity: 0,
         filter: "blur(10px)",
