@@ -86,3 +86,8 @@ export const slideInVariants = {
   visible: { y: 0, opacity: 1 },
   exit: { y: "-100%", opacity: 0 },
 };
+
+export function containsOnlyEmojis(text) {
+  const emojiRegex = /^[\p{Emoji}\s]+$/gu; // Matches only emojis and spaces
+  return emojiRegex.test(text);
+}
