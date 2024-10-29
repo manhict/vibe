@@ -112,7 +112,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           type: "spring",
           stiffness: 45,
         }}
-        className=" my-8 text-[3.5vw] tracking-normal font-medium text-zinc-500/70"
+        className=" my-5 text-[3.5vw] tracking-normal font-medium text-zinc-100/80"
       >
         Tough Choice, isn&apos;t it
       </motion.p>
