@@ -40,7 +40,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       >
         Tough Choice, isn&apos;t it
       </motion.p>
-      <div className=" flex items-start flex-wrap relative justify-center w-full gap-6">
+      <div className=" flex items-start px-7 flex-wrap relative justify-center w-full gap-6">
         {data.map((room, index) => (
           <motion.a
             title={room.name[0]}
