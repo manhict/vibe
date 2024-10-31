@@ -90,7 +90,7 @@ function Terms() {
               want to hear next. The song with the highest number of votes will
               be played next in the queue.
             </p>
-            <ul className="list-disc pl-4 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 mt-2 text-gray-100 space-y-1.5">
               <li>
                 Voting is limited to the songs available in the queue, and users
                 may vote only on one song at a time.
@@ -106,8 +106,8 @@ function Terms() {
             <h2 className="text-xl font-semibold mb-4">
               5. Limitations of Service
             </h2>
-            <ul className="list-disc pl-4 text-gray-100 space-y-2">
-              <li>
+            <ul className="list-disc pl-4 space-y-2">
+              <li className="text-pink-400 ">
                 Non-Commercial Use: Vibe is solely for educational use and not
                 for any form of monetization or commercial activity.
               </li>
@@ -115,11 +115,6 @@ function Terms() {
                 Content Access: Audio content provided is strictly for
                 educational purposes. Users are not permitted to download or
                 share content outside the app.
-              </li>
-              <li>
-                Intellectual Property: All content, logos, and intellectual
-                property within Vibe remain the property of their respective
-                owners.
               </li>
             </ul>
           </section>
