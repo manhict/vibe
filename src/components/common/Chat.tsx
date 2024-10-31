@@ -200,7 +200,13 @@ function Chat({
                       </Link>
                     ) : (
                       <Linkify as="p" options={linkifyOptions}>
-                        <p className="w-fit  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tl-none">
+                        <p
+                          className={`w-fit  break-words bg-white/20 ${
+                            containsOnlyEmojis(message?.message)
+                              ? "text-5xl"
+                              : "text-sm"
+                          } px-4 py-1 rounded-md rounded-tl-none`}
+                        >
                           {message?.message}
                         </p>
                       </Linkify>
