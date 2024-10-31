@@ -42,12 +42,10 @@ function Privacy() {
             </p>
             <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
-                <strong className=" text-pink-400">Usernames</strong> for
-                identification in chat and voting activities.
+                Username for identification in chat and voting activities.
               </li>
               <li>
-                <strong className=" text-pink-400">Voting Activity</strong> to
-                manage song queue preferences within the app.
+                Voting Activity to manage song queue preferences within the app.
               </li>
             </ul>
           </section>
