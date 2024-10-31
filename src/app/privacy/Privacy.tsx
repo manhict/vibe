@@ -17,7 +17,7 @@ function Privacy() {
     >
       <div className="w-8/12 max-md:w-full max-md:px-5 py-8 px-4">
         <article className="space-y-8">
-          <header className="text-center mb-12">
+          <header className=" mb-12">
             <h1 className="text-3xl font-bold mb-2">Vibe Privacy Policy</h1>
             <p className="italic text-gray-100">Last Updated: [1/11/2024]</p>
           </header>
