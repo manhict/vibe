@@ -19,7 +19,7 @@ function Footer() {
       </div>
       <div className=" flex text-right text-sm font-medium text-zinc-200 flex-col">
         <p>
-          Made by{" "}
+          Developed by{" "}
           <a
             href="https://tanmayo7.vercel.app/"
             target="_blank"
