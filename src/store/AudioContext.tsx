@@ -244,22 +244,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("timeupdate", updateProgress);
       };
     }
-  }, [
-    setMediaSession,
-    currentSong,
-    play,
-    queue,
-    playNext,
-    isLooped,
-    lastEmitted,
-    lastEmittedTime,
-  ]);
+  }, [setMediaSession, lastEmitted, lastEmittedTime]);
 
   useEffect(() => {
-    if (!currentSong && queue.length > 0) {
-      play(queue[0]);
+    if (!currentSong && queue.length > 0 && audioRef.current) {
+      setCurrentSong(queue[0]);
+      audioRef.current.src =
+        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length - 1]?.url;
     }
-  }, [queue, play, currentSong]);
+  }, [queue, currentSong]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -27,6 +27,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
       Room: roomId || "",
     };
     api.setAuthToken(user?.token || null);
+    toast.loading("Connecting...", { id: "connecting" });
     socket.connect();
   }, [user, setUser, roomId]);
 

@@ -12,7 +12,12 @@ import {
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/store/AudioContext";
-import { formatArtistName, isImageUrl, linkifyOptions } from "@/utils/utils";
+import {
+  containsOnlyEmojis,
+  formatArtistName,
+  isImageUrl,
+  linkifyOptions,
+} from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
@@ -218,7 +223,13 @@ function Chat({
                       </Link>
                     ) : (
                       <Linkify as="p" options={linkifyOptions}>
-                        <p className=" w-fit  text-end  break-words bg-white/20 text-sm px-4 py-1 rounded-md rounded-tr-none">
+                        <p
+                          className={` w-fit  text-end  break-words bg-white/20  ${
+                            containsOnlyEmojis(message?.message)
+                              ? "text-5xl"
+                              : "text-sm"
+                          } px-4 py-1 rounded-md rounded-tr-none`}
+                        >
                           {message?.message}
                         </p>
                       </Linkify>

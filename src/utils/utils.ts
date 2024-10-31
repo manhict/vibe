@@ -87,7 +87,9 @@ export const slideInVariants = {
   exit: { y: "-100%", opacity: 0 },
 };
 
-// export function containsOnlyEmojis(text) {
-//   const emojiRegex = /^[\p{Emoji}\s]+$/gu; // Matches only emojis and spaces
-//   return emojiRegex.test(text);
-// }
+export function containsOnlyEmojis(text: string): boolean {
+  const emojiRegex =
+    //@ts-expect-error:expected
+    /^(?:[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{24C2}\u{2B50}\u{2B55}\u{2934}\u{2935}\u{3297}\u{3299}\u{203C}-\u{2049}\u{FE0F}])+$/u;
+  return emojiRegex.test(text);
+}
