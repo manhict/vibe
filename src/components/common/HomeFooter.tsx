@@ -9,16 +9,16 @@ function HomeFooter({ className }: { className?: string }) {
   return (
     <footer
       className={cn(
-        `absolute bottom-7 max-md:bottom-2 w-full flex justify-center items-center`,
+        `absolute bottom-7 flex-col text-white/80 gap-0.5  text-sm max-md:bottom-2 w-full flex justify-center items-center`,
         className
       )}
     >
-      <div className=" w-9/12  max-md:w-full max-md:px-5 border-t py-4 px-7 text-sm flex justify-between items-center border-white/20">
-        <p className=" text-white/70">
-          Built by{" "}
+      <div className=" w-8/12  max-md:w-full pt-4 max-md:px-5 border-t px-0.5 flex justify-between items-center border-white/20">
+        <p>
+          Made by{" "}
           <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
             <Link href="https://tanmayo7.vercel.app/" target="_blank">
-              Tanmay singh
+              Tanmay
             </Link>
           </span>{" "}
           &{" "}
@@ -28,7 +28,7 @@ function HomeFooter({ className }: { className?: string }) {
             </Link>
           </span>
         </p>
-        <div className="flex text-xl items-center text-white/70 gap-2">
+        <div className="flex text-xl items-center gap-2">
           <Link href="https://www.instagram.com/fixing_x/" target="_blank">
             <InstagramLogo
               // size={24}
@@ -43,6 +43,17 @@ function HomeFooter({ className }: { className?: string }) {
             />
           </Link>
         </div>
+      </div>
+      <div className=" px-0.5 flex gap-4 text-xs pt-1.5  text-white/70 justify-start w-8/12">
+        <Link href={"/terms"} className=" hover:text-white">
+          Terms
+        </Link>
+        <Link href={"/privacy"} className=" hover:text-white">
+          Privacy
+        </Link>
+        <Link href={"/"} className=" hover:text-white">
+          Home
+        </Link>
       </div>
     </footer>
   );

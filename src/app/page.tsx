@@ -16,35 +16,38 @@ function Page() {
         }}
         animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
         transition={{
-          duration: 0.5,
+          duration: 0.75,
         }}
         exit={{ opacity: 0 }}
-        className=" h-dvh w-dvw bg-[url('/background.webp')] bg-no-repeat bg-cover"
+        className=" h-dvh w-dvw bg-[url('/mask.svg')] bg-no-repeat bg-cover"
       >
         <div className=" z-50 absolute w-full h-[87dvh] flex justify-center items-center">
           <div className=" w-8/12 max-md:w-full max-md:px-5">
             <div className=" w-1/2 max-md:text-center  max-md:w-full flex font-semibold gap-4 flex-col max-md:justify-center max-md:items-center">
               <Image
                 src={"/logo.svg"}
-                className=" ml-1 size-20"
+                className=" ml-1 size-16"
                 alt="logo"
                 height={80}
                 width={80}
               />
-              <p className=" text-7xl max-md:text-5xl -mt-2">
+              <p className=" text-6xl max-md:text-5xl -mt-3">
                 Delightful <br />
                 Music Parties
               </p>
-              <p className=" -mt-4 text-7xl max-md:text-5xl   text-with-image">
+              <p className=" -mt-4 text-6xl max-md:text-5xl   text-with-image">
                 Start Here.
               </p>
-              <span className="ml-1 font-normal text-lg leading-tight my-2.5 mb-1">
-                High quality music, invite friends
-                <br />& host a memorable event today.
+              <span className="ml-1 font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
+                Set up an room, invite friends and enjoy music. <br /> Host a
+                memorable event today.
               </span>
               <Link href={"/v"}>
-                <Button size={"lg"} className="text-lg w-fit ml-1 ">
-                  Start Vibing
+                <Button
+                  size={"lg"}
+                  className="text-base font-semibold px-4 w-fit ml-1 "
+                >
+                  Create Your First Room
                 </Button>
               </Link>
             </div>

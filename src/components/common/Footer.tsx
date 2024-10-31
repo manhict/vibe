@@ -19,13 +19,13 @@ function Footer() {
       </div>
       <div className=" flex text-right text-sm font-medium text-zinc-200 flex-col">
         <p>
-          Developed by{" "}
+          Made by{" "}
           <a
             href="https://tanmayo7.vercel.app/"
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            Tanmay singh
+            Tanmay
           </a>
         </p>
         <p>

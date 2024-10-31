@@ -1,8 +1,8 @@
-import Terms from "./Terms";
+import Privacy from "./Privacy";
 
 export async function generateMetadata() {
   return {
-    title: `Vibe Terms of Service`,
+    title: `Vibe Privacy Policy`,
     description: `Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!`,
 
     icons: { icon: "/favicon.png" },
@@ -46,7 +46,7 @@ export async function generateMetadata() {
 }
 
 function page() {
-  return <Terms />;
+  return <Privacy />;
 }
 
 export default page;
