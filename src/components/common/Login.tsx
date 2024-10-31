@@ -20,8 +20,8 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { FaSpotify } from "react-icons/fa";
 
-function Login({ isOpen = false }: { isOpen: boolean }) {
-  const { setUser } = useUserContext();
+function Login() {
+  const { setUser, user } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -53,7 +53,7 @@ function Login({ isOpen = false }: { isOpen: boolean }) {
     }
   };
   return (
-    <Dialog key={"user Login"} defaultOpen={isOpen}>
+    <Dialog key={"user Login"} open={user ? false : true}>
       <DialogTrigger className=" border max-md:px-0 max-md:border-none border-[#79747E] h-full flex justify-center items-center px-5 rounded-xl text-base">
         <p className=" max-md:hidden">Login / SignUp</p>
         <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />

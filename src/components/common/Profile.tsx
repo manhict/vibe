@@ -31,7 +31,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   }, [user, setUser, roomId]);
 
   if (!user) {
-    return <Login isOpen={user ? false : true} />;
+    return <Login />;
   }
   return (
     <Dialog key={"user profile"}>
