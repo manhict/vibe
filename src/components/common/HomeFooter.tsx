@@ -9,7 +9,7 @@ function HomeFooter({ className }: { className?: string }) {
   return (
     <footer
       className={cn(
-        `absolute bottom-7 flex-col text-white/80 gap-0.5  text-sm max-md:bottom-2 w-full flex justify-center items-center`,
+        `absolute bottom-7 flex-col text-white/80 gap-0.5  text-sm max-md:bottom-4 w-full flex justify-center items-center`,
         className
       )}
     >
@@ -44,7 +44,7 @@ function HomeFooter({ className }: { className?: string }) {
           </Link>
         </div>
       </div>
-      <div className=" px-0.5 flex gap-4 text-xs pt-1.5  text-white/70 justify-start w-8/12">
+      <div className=" px-0.5 flex gap-4 text-xs pt-1.5  text-white/70 justify-start w-8/12 max-md:w-full max-md:px-5">
         <Link href={"/terms"} className=" hover:text-white">
           Terms
         </Link>

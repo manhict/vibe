@@ -26,7 +26,7 @@ function Page() {
             <div className=" w-1/2 max-md:text-center  max-md:w-full flex font-semibold gap-4 flex-col max-md:justify-center max-md:items-center">
               <Image
                 src={"/logo.svg"}
-                className=" ml-1 size-16"
+                className=" ml-1 size-16 max-md:size-20"
                 alt="logo"
                 height={80}
                 width={80}
@@ -38,9 +38,13 @@ function Page() {
               <p className=" -mt-4 text-6xl max-md:text-5xl   text-with-image">
                 Start Here.
               </p>
-              <span className="ml-1 font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
+              <span className="ml-1 max-md:hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
                 Set up an room, invite friends and enjoy music. <br /> Host a
                 memorable event today.
+              </span>
+              <span className="ml-1 max-md:flex hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
+                Set up an room, invite friends and enjoy music. Host a memorable
+                event today.
               </span>
               <Link href={"/v"}>
                 <Button

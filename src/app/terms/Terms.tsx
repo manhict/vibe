@@ -15,7 +15,7 @@ function Terms() {
       exit={{ opacity: 0 }}
       className=" flex items-center flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
     >
-      <div className="w-8/12 mx-auto py-8 px-4">
+      <div className="w-8/12 max-md:w-full max-md:px-5 mx-auto py-8 px-4">
         <article className="space-y-8">
           <header className="text-center mb-12">
             <h1 className="text-3xl font-bold mb-2">Vibe Terms of Service</h1>
