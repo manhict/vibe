@@ -174,7 +174,7 @@ function Terms() {
                 </section> */}
         </article>
       </div>
-      <HomeFooter className=" mt-2.5 relative bottom-5 w-[87%]" />
+      <HomeFooter className=" mt-2.5 relative bottom-5 w-[97%]" />
     </motion.div>
   );
 }
