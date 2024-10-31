@@ -188,11 +188,14 @@ function QueueList({
                       </p>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#9870d3] mb-2 text-white">
-                      {song.addedByUser && (
+                      {song.addedByUser &&
+                      song?.addedByUser?.username !== user?.username ? (
                         <p>
                           Added by {song?.addedByUser?.name} (
                           {song?.addedByUser?.username})
                         </p>
+                      ) : (
+                        <p>Added by You</p>
                       )}
                     </TooltipContent>
                   </Tooltip>
