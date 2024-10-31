@@ -41,6 +41,7 @@ export const metadata: Metadata = {
       "Explore, vote, and enjoy a community-driven music experience where your votes decide the beats.",
     url: "https://getvibe.in",
     type: "website",
+    siteName: "Vibe", // Add this line for site_name
     images: [
       {
         url: "https://getvibe.in/logo.svg",
