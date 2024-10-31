@@ -17,13 +17,13 @@ function Privacy() {
     >
       <div className="w-8/12 max-md:w-full max-md:px-5 py-8 px-4">
         <article className="space-y-8">
-          <header className=" mb-12">
-            <h1 className="text-3xl font-bold mb-2">Vibe Privacy Policy</h1>
+          <header className=" mb-5">
+            <h1 className="text-2xl font-bold mb-2">Vibe Privacy Policy</h1>
             <p className="italic text-gray-100">Last Updated: [1/11/2024]</p>
           </header>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
+            <h2 className="text-xl font-semibold mb-4">Introduction</h2>
             <p className="text-gray-100">
               Vibe is committed to protecting your privacy. This Privacy Policy
               outlines the types of information we collect, how it’s used, and
@@ -33,7 +33,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               1. Information We Collect
             </h2>
             <p className="text-gray-100">
@@ -53,7 +53,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               2. How We Use Your Information
             </h2>
             <p className="text-gray-100">
@@ -71,7 +71,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               3. Data Storage and Security
             </h2>
             <p className="text-gray-100">
@@ -83,7 +83,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               4. Third-Party Services
             </h2>
             <p className="text-gray-100">
@@ -94,7 +94,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">5. User Rights</h2>
+            <h2 className="text-xl font-semibold mb-4">5. User Rights</h2>
             <p className="text-gray-100">You have the right to:</p>
             <ul className="list-disc pl-6 text-gray-100 space-y-2">
               <li>Request access to your data stored within Vibe.</li>
@@ -109,7 +109,7 @@ function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               6. Changes to This Privacy Policy
             </h2>
             <p className="text-gray-100">
@@ -120,7 +120,7 @@ function Privacy() {
           </section>
 
           {/* <section>
-            <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
+            <h2 className="text-xl font-semibold mb-4">7. Contact Us</h2>
             <p className="text-gray-100">
               For questions or concerns about this Privacy Policy, please
               contact us at [Contact Email].

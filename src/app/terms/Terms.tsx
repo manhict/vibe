@@ -17,13 +17,13 @@ function Terms() {
     >
       <div className="w-8/12 max-md:w-full max-md:px-5 mx-auto py-8 px-4">
         <article className="space-y-8">
-          <header className=" mb-12">
-            <h1 className="text-3xl font-bold mb-2">Vibe Terms of Service</h1>
+          <header className=" mb-5">
+            <h1 className="text-2xl font-bold mb-2">Vibe Terms of Service</h1>
             <p className="italic text-gray-100">Last Updated: [1/11/2024]</p>
           </header>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">Welcome to Vibe</h2>
+            <h2 className="text-xl font-semibold mb-4">Welcome to Vibe</h2>
             <p className="text-gray-100">
               Vibe is a collaborative music experience app created for
               educational purposes. Please read these Terms of Service carefully
@@ -34,7 +34,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               1. Purpose of Service
             </h2>
             <p className="text-gray-100">
@@ -48,7 +48,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">2. User Eligibility</h2>
+            <h2 className="text-xl font-semibold mb-4">2. User Eligibility</h2>
             <p className="text-gray-100">
               By using Vibe, you represent that you are at least 18 years of age
               or have the consent of a parent or guardian, and you agree to
@@ -58,7 +58,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               3. User-Generated Content
             </h2>
             <p className="text-gray-100">
@@ -82,7 +82,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               4. Voting and Queue Management
             </h2>
             <p className="text-gray-100">
@@ -103,7 +103,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               5. Limitations of Service
             </h2>
             <ul className="list-disc pl-6 text-gray-100 space-y-2">
@@ -125,7 +125,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               6. Privacy and Data Collection
             </h2>
             <p className="text-gray-100">
@@ -145,7 +145,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4">
               7. Limitations of Liability
             </h2>
             <p className="text-gray-100">
@@ -157,7 +157,7 @@ function Terms() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">8. Amendments</h2>
+            <h2 className="text-xl font-semibold mb-4">8. Amendments</h2>
             <p className="text-gray-100">
               Vibe may update these Terms of Service from time to time. Users
               will be notified of any changes through an in-app notification or
@@ -166,7 +166,7 @@ function Terms() {
           </section>
 
           {/* <section>
-                  <h2 className="text-2xl font-semibold mb-4">9. Contact</h2>
+                  <h2 className="text-xl font-semibold mb-4">9. Contact</h2>
                   <p className="text-gray-100">
                     For questions or concerns about these Terms of Service, please
                     contact us at .
