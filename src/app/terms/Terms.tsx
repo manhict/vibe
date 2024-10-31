@@ -13,13 +13,13 @@ function Terms() {
         duration: 0.75,
       }}
       exit={{ opacity: 0 }}
-      className=" flex items-center flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
+      className=" flex items-center font-medium flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
     >
       <div className="w-8/12 max-md:w-full max-md:px-5 mx-auto py-8 px-4">
         <article className="space-y-8">
           <header className=" mb-5">
-            <h1 className="text-2xl font-bold mb-2">Vibe Terms of Service</h1>
-            <p className="italic text-gray-100">Last Updated: [1/11/2024]</p>
+            <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>
+            <p className="text-sm text-gray-100">Last Updated: 2024/01/11</p>
           </header>
 
           <section>
@@ -65,7 +65,7 @@ function Terms() {
               Vibe includes features that allow users to chat and vote on songs.
               By participating in chat and voting:
             </p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
                 You agree to keep interactions respectful and refrain from using
                 offensive or inappropriate language.
@@ -90,7 +90,7 @@ function Terms() {
               want to hear next. The song with the highest number of votes will
               be played next in the queue.
             </p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
                 Voting is limited to the songs available in the queue, and users
                 may vote only on one song at a time.
@@ -106,7 +106,7 @@ function Terms() {
             <h2 className="text-xl font-semibold mb-4">
               5. Limitations of Service
             </h2>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
                 Non-Commercial Use: Vibe is solely for educational use and not
                 for any form of monetization or commercial activity.
@@ -132,7 +132,7 @@ function Terms() {
               Vibe respects user privacy and is designed to collect minimal data
               necessary for its functionality.
             </p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
                 User information such as usernames and votes may be stored for
                 the app’s operational purposes.

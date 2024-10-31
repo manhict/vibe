@@ -13,13 +13,13 @@ function Privacy() {
         duration: 0.75,
       }}
       exit={{ opacity: 0 }}
-      className=" flex items-center flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
+      className=" flex items-center font-medium flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
     >
       <div className="w-8/12 max-md:w-full max-md:px-5 py-8 px-4">
         <article className="space-y-8">
           <header className=" mb-5">
-            <h1 className="text-2xl font-bold mb-2">Vibe Privacy Policy</h1>
-            <p className="italic text-gray-100">Last Updated: [1/11/2024]</p>
+            <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>
+            <p className="text-sm text-gray-100">Last Updated: 2024/01/11</p>
           </header>
 
           <section>
@@ -40,14 +40,14 @@ function Privacy() {
               Vibe is designed to collect minimal data for its functionality.
               The information we collect includes:
             </p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>
-                <strong>Usernames</strong> for identification in chat and voting
-                activities.
+                <strong className=" text-pink-400">Usernames</strong> for
+                identification in chat and voting activities.
               </li>
               <li>
-                <strong>Voting Activity</strong> to manage song queue
-                preferences within the app.
+                <strong className=" text-pink-400">Voting Activity</strong> to
+                manage song queue preferences within the app.
               </li>
             </ul>
           </section>
@@ -60,11 +60,11 @@ function Privacy() {
               The information collected by Vibe is used exclusively for app
               functionality. Specifically:
             </p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>To display usernames in chat for user interactions.</li>
               <li>To record voting preferences for queue management.</li>
             </ul>
-            <p className="text-gray-100">
+            <p className="text-pink-400 mt-2">
               We do not sell, trade, or otherwise share your personal
               information with third parties.
             </p>
@@ -96,7 +96,7 @@ function Privacy() {
           <section>
             <h2 className="text-xl font-semibold mb-4">5. User Rights</h2>
             <p className="text-gray-100">You have the right to:</p>
-            <ul className="list-disc pl-6 text-gray-100 space-y-2">
+            <ul className="list-disc pl-4 text-gray-100 space-y-2">
               <li>Request access to your data stored within Vibe.</li>
               <li>
                 Request deletion of your data, subject to technical feasibility
