@@ -17,8 +17,6 @@ import { spotifyUser, TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
-import { FaSpotify } from "react-icons/fa";
 
 function Login() {
   const { setUser, user } = useUserContext();
@@ -79,7 +77,7 @@ function Login() {
               <FcGoogle className=" size-5" />
               {loader ? "Signing in..." : "Continue with Google"}
             </Button>
-            <Link
+            {/* <Link
               href={`https://accounts.spotify.com/en/authorize?client_id=${
                 process.env.SPOTIFY_CLIENT_ID
               }&scope=user-read-private%20user-read-email&response_type=token&redirect_uri=${encodeURIComponent(
@@ -90,7 +88,7 @@ function Login() {
                 <FaSpotify className=" size-5" />
                 Continue with Spotify
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </DialogContent>
