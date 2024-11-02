@@ -85,6 +85,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   // Memoized connect and disconnect functions
   const onConnect = useCallback((): void => {
     setIsConnected(true);
+    toast.dismiss("connecting");
     setTransport(socketRef.current.io.engine.transport.name);
     socketRef.current.io.engine.on("upgrade", (transport) => {
       setTransport(transport.name);
