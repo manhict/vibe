@@ -1,6 +1,7 @@
 import { searchSongResult } from "@/lib/types";
 import { ytmusic } from "@/lib/ytMusic";
 import { NextRequest, NextResponse } from "next/server";
+import { encrypt } from "tanmayo7lock";
 import { Innertube } from "youtubei.js";
 
 export async function GET(req: NextRequest) {
@@ -82,7 +83,7 @@ export async function GET(req: NextRequest) {
         downloadUrl: [
           {
             quality: "320kbps",
-            url: `${process.env.STREAM_URL}/${s.videoId}`,
+            url: `${encrypt(s.videoId)}`,
           },
         ],
       })) || [];
@@ -120,7 +121,7 @@ export async function GET(req: NextRequest) {
           downloadUrl: [
             {
               quality: "320kbps",
-              url: `${process.env.STREAM_URL}/${s.id}`,
+              url: `${encrypt(s.id)}`,
             },
           ],
         })) || [];

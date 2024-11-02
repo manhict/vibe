@@ -74,9 +74,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // play
   const play = useCallback((song: searchResults) => {
     setCurrentSong(song);
+    const audioUrl = song?.downloadUrl[song?.downloadUrl?.length - 1]?.url;
     if (audioRef.current) {
-      audioRef.current.src =
-        song?.downloadUrl[song?.downloadUrl?.length - 1]?.url;
+      audioRef.current.src = audioUrl.startsWith("http")
+        ? audioUrl
+        : `${process.env.STREAM_URL}/${audioUrl}`;
       audioRef.current
         .play()
         .then(async () => {
@@ -197,8 +199,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Debounced function to emit progress
 
-  const [lastEmittedTime, setLastEmittedTime] = useState(0);
-  const [lastEmitted, setLastEmitted] = useState(0);
+  const lastEmittedTime = useRef(0);
+  const lastEmitted = useRef(0);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
@@ -217,14 +219,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime) >= 1) {
+        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.05) {
           setProgress(currentTime);
-          setLastEmittedTime(currentTime);
+          lastEmittedTime.current = currentTime;
         }
 
-        if (Math.abs(currentTime - lastEmitted) >= 7) {
+        if (Math.abs(currentTime - lastEmitted.current) >= 7) {
           socket.emit("progress", currentTime);
-          setLastEmitted(currentTime);
+          lastEmitted.current = currentTime;
         }
       }
     };
@@ -249,8 +251,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!currentSong && queue.length > 0 && audioRef.current) {
       setCurrentSong(queue[0]);
-      audioRef.current.src =
-        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length - 1]?.url;
+      const audioUrl =
+        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length]?.url;
+      audioRef.current.src = audioUrl.startsWith("http")
+        ? audioUrl
+        : `${process.env.STREAM_URL}/${audioUrl}`;
     }
   }, [queue, currentSong]);
 

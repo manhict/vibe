@@ -148,13 +148,10 @@ function QueueList({
       {queue
         ?.filter((r) => r.id !== currentSong?.id)
         ?.map((song, i) => (
-          <div key={song?.id}>
-            {i !== 0 && (
-              <div key={song?.id + i} className="h-0.5 bg-zinc-400/5"></div>
-            )}
+          <div key={song?.id + i}>
+            {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
             <label
               htmlFor={song?.id + i}
-              key={i}
               className={`flex gap-2 ${
                 i !== queue.length && " border-white/5"
               } py-2 hover:pl-2 hover:bg-white/10 transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
@@ -180,7 +177,7 @@ function QueueList({
                 onClick={(e) => handlePlay(e, song)}
                 className="flex flex-col gap-1 flex-grow text-sm w-6/12"
               >
-                <TooltipProvider key={song.id}>
+                <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="w-auto text-start">
                       <p className="cursor-pointer font-semibold truncate">

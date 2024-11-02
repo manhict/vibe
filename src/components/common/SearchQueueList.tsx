@@ -125,13 +125,8 @@ function SearchQueueList({
           {queue
             ?.filter((r) => r.id !== currentSong?.id)
             ?.map((song, i) => (
-              <div key={song?.id}>
-                {i !== 0 && (
-                  <div
-                    key={song?.id + i}
-                    className=" h-0.5 bg-zinc-400/5"
-                  ></div>
-                )}
+              <div key={song?.id + i}>
+                {i !== 0 && <div className=" h-0.5 bg-zinc-400/5"></div>}
                 <label
                   htmlFor={song?.id + i}
                   key={i}
@@ -160,7 +155,7 @@ function SearchQueueList({
                     onClick={(e) => handlePlay(e, song)}
                     className="flex flex-col flex-grow text-sm w-6/12"
                   >
-                    <TooltipProvider key={song.id}>
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger className=" w-auto text-start">
                           <p className="cursor-pointer font-semibold truncate">
