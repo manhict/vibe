@@ -61,7 +61,7 @@
     @apply border-border;
   }
   body {
-    cursor: url("/cursor.svg"), auto;
+    cursor: url("/cursor.svg") 1 1, auto;
 
     @apply bg-background text-foreground;
   }
