@@ -57,7 +57,7 @@ function SearchSongPopup({
       abortControllerRef.current = controller;
       const url = youtube
         ? `/api/youtube?id=${extractPlaylistID(value)}&room=${roomId}`
-        : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
+        : `${process.env.GLOBAL_BACKEND_URI}/api/search/?name=${value}&page=0`;
 
       setPage(0); // Reset page on a new search
       setLoading(true);
@@ -89,9 +89,9 @@ function SearchSongPopup({
       return;
 
     setLoading(true);
-    const url = `${process.env.SOCKET_URI}/api/search/?name=${query}&page=${
-      page + 1
-    }`;
+    const url = `${
+      process.env.GLOBAL_BACKEND_URI
+    }/api/search/?name=${query}&page=${page + 1}`;
 
     const res = await api.get(url);
     if (res.success) {
