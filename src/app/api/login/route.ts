@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const data: spotifyUser = await req.json();
-    console.log(data);
 
     const isAlready = await User.findOne({ email: data.email });
     if (isAlready) {

@@ -76,7 +76,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     setCurrentSong(song);
     const audioUrl = song?.downloadUrl[song?.downloadUrl?.length - 1]?.url;
     if (audioRef.current) {
-      audioRef.current.src = audioUrl.startsWith("http")
+      audioRef.current.src = audioUrl?.startsWith("http")
         ? audioUrl
         : `${process.env.STREAM_URL}/${audioUrl}`;
       audioRef.current
@@ -251,9 +251,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!currentSong && queue.length > 0 && audioRef.current) {
       setCurrentSong(queue[0]);
+      console.log(queue);
+
       const audioUrl =
-        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length]?.url;
-      audioRef.current.src = audioUrl.startsWith("http")
+        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length - 1]?.url;
+      audioRef.current.src = audioUrl?.startsWith("http")
         ? audioUrl
         : `${process.env.STREAM_URL}/${audioUrl}`;
     }
