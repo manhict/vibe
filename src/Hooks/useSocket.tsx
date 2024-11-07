@@ -95,7 +95,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const onDisconnect = useCallback((): void => {
     setIsConnected(false);
     setTransport("N/A");
-    toast.error("Connection Lost");
   }, []);
 
   const handleMessage = useCallback((data: any): void => {
