@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { encrypt } from "tanmayo7lock";
 import ytpl from "ytpl";
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
       downloadUrl: [
         {
           quality: "320kbps",
-          url: `https://sstream.onrender.com/stream/${s.id}`,
+          url: `https://sstream.onrender.com/stream/${encrypt(s.id)}`,
         },
       ],
     }));
