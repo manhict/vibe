@@ -29,16 +29,7 @@ function AddToQueue() {
     const shareUrl = `${window.location.origin}/v/?room=${roomId}&ref=${user.username}`;
 
     try {
-      //@ts-expect-error:ex
-      if (window.process && window.process?.type === "renderer") {
-        // In Electron: Dynamically import the clipboard module
-        //@ts-expect-error:ex
-        const { clipboard } = await import("electron"); // Only import in Electron
-
-        // In Electron: Copy link to clipboard
-        clipboard?.writeText(shareUrl);
-        toast.success("Link copied to clipboard for sharing!");
-      } else if (navigator.share) {
+      if (navigator.share) {
         // In Browser: Use Web Share API
         await navigator.share({ url: shareUrl });
         toast.success("Shared the link successfully!");
