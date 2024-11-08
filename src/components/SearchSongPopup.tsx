@@ -150,19 +150,7 @@ function SearchSongPopup({
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
-      setQueue((prev) => {
-        // Create a Set to track the unique IDs of songs already in the queue
-        const existingIds = new Set(prev.map((song) => song.id));
-
-        // Filter out duplicate songs from selectedSongs based on their ID
-        const filteredSongs = songs?.data.results.filter(
-          (song) => !existingIds.has(song.id)
-        );
-
-        // Return the new state, adding only the filtered songs
-        return [...filteredSongs, ...prev];
-      });
-
+      toast.loading("Adding songs to queue", { id: "adding" });
       const added = await api.post(
         `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
         songs?.data.results
@@ -170,9 +158,10 @@ function SearchSongPopup({
       if (added.success) {
         emitMessage("update", "update");
       }
+      toast.dismiss("adding");
       toast.success("All songs added to queue");
     }
-  }, [songs, setQueue, roomId]);
+  }, [songs, roomId]);
 
   return (
     <Dialog key={"songs"}>
