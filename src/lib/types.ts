@@ -15,7 +15,7 @@ export interface searchResults {
   artists: { primary: artists[] };
   image: downloadUrl[];
   addedBy: string;
-  source?: "youtube" | "ytmusic";
+  source?: "youtube";
   downloadUrl: downloadUrl[];
   addedByUser?: TUser;
   queueId?: string;
