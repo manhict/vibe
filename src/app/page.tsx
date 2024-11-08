@@ -22,7 +22,7 @@ function Page() {
         className=" h-dvh w-dvw bg-[url('/mask.svg')] bg-no-repeat bg-cover"
       >
         <div className=" z-50 absolute w-full h-[87dvh] flex justify-center items-center">
-          <div className=" w-8/12 max-md:w-full flex max-md:gap-6 max-md:pt-8 justify-center flex-wrap items-center max-md:px-5">
+          <div className=" w-8/12 max-xl:w-11/12 max-sm:w-full  max-lg:w-11/12 max-md:w-full flex max-md:gap-6 max-md:pt-8 justify-center flex-wrap items-center max-md:px-5">
             <div className=" w-1/2 max-md:text-center  max-md:w-full flex font-semibold gap-4 flex-col max-md:justify-center max-md:items-center">
               <Image
                 src={"/logo.svg"}

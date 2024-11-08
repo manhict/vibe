@@ -13,7 +13,7 @@ function HomeFooter({ className }: { className?: string }) {
         className
       )}
     >
-      <div className=" w-8/12  max-md:w-full pt-4 max-md:px-5 border-t px-0.5 flex justify-between items-center border-white/20">
+      <div className=" w-8/12 max-xl:w-11/12 max-sm:w-full  max-lg:w-11/12 max-md:w-full pt-4 max-md:px-5 border-t px-0.5 flex justify-between items-center border-white/20">
         <p>
           Made by{" "}
           <span className=" hover:text-white hover:underline hover:underline-offset-4 transition-all duration-500">
@@ -44,7 +44,7 @@ function HomeFooter({ className }: { className?: string }) {
           </Link>
         </div>
       </div>
-      <div className=" px-0.5 flex gap-4 text-xs pt-1.5  text-white/70 justify-start w-8/12 max-md:w-full max-md:px-5">
+      <div className=" px-0.5 flex gap-4 text-xs pt-1.5  text-white/70 justify-start w-8/12 max-xl:w-11/12 max-sm:w-full  max-lg:w-11/12 max-md:w-full max-md:px-5">
         <Link href={"/terms"} className=" hover:text-white">
           Terms
         </Link>
