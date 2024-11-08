@@ -197,7 +197,7 @@ function Player() {
                           currentSong?.downloadUrl[
                             currentSong.downloadUrl.length - 1
                           ].url
-                        }?v` || "/cache.jpg"
+                        }` || "/cache.jpg"
                   }
                 ></video>
               )}

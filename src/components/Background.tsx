@@ -24,7 +24,7 @@ function Background() {
             ? currentSong?.downloadUrl[currentSong.downloadUrl.length - 1].url
             : `${process.env.STREAM_URL}/${
                 currentSong?.downloadUrl[currentSong.downloadUrl.length - 1].url
-              }?v` || "/cache.jpg"
+              }` || "/cache.jpg"
         }
       />
 
