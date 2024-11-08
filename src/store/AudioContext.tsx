@@ -278,7 +278,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!currentSong && queue.length > 0 && audioRef.current) {
       setCurrentSong(queue[0]);
-      console.log(queue);
 
       const audioUrl =
         queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length - 1]?.url;

@@ -7,7 +7,7 @@ function Background() {
 
   return (
     <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center py-4 w-full">
-      {currentSong?.downloadUrl[
+      {!currentSong?.downloadUrl[
         currentSong?.downloadUrl?.length - 1
       ]?.url.startsWith("http") ? (
         <video
