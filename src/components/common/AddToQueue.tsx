@@ -38,9 +38,7 @@ function AddToQueue() {
         await navigator.clipboard.writeText(shareUrl);
         toast.success("Link copied to clipboard!");
       }
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred while sharing.");
-    }
+    } catch (error: any) {}
   }, [roomId, user]);
 
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
