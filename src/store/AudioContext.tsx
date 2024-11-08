@@ -92,6 +92,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           if (backgroundVideoRef.current) {
             backgroundVideoRef.current.play();
           }
+          document.title = song?.name;
           setIsPlaying(true);
         })
         .catch(() => {

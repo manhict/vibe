@@ -25,6 +25,8 @@ import useSelect from "@/Hooks/useSelect";
 import { FaYoutube } from "react-icons/fa";
 import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
+import { Skeleton } from "@/components/ui/skeleton";
+
 function SearchSongPopup({
   isAddToQueue = false,
   youtube = false,
@@ -217,7 +219,7 @@ function SearchSongPopup({
             placeholder={
               youtube
                 ? "Paste youtube playlist url to add songs"
-                : "Search Song"
+                : "Search Song or paste youtube video url"
             }
             className="border-none focus-visible:ring-0"
           />
@@ -229,6 +231,27 @@ function SearchSongPopup({
             )}
           </DialogClose>
         </div>
+        {loading && !songs && (
+          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
+            {Array.from(Array(6)).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="flex gap-2 rounded-none text-start cursor-pointer  border-white/20 p-2.5 px-4 items-center "
+              >
+                <Skeleton className="h-14 w-14 rounded-none" />
+                <div className="text-sm space-y-1 font-medium w-10/12 truncate">
+                  <div className="font-semibold truncate w-11/12">
+                    <Skeleton className=" w-40 h-3 rounded-none" />
+                  </div>
+                  <div className="font-medium truncate w-10/12 text-zinc-400 text-xs">
+                    <Skeleton className=" w-32 h-3 rounded-none" />
+                  </div>
+                  <p className=" text-xs text-[#a176eb]">☆</p>
+                </div>
+              </Skeleton>
+            ))}
+          </div>
+        )}
         {songs && (
           <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll">
             {songs?.data.results.map((song, i) => (
