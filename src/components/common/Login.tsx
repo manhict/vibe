@@ -53,7 +53,7 @@ function Login() {
     }
   };
   return (
-    <Dialog key={"user Login"} open={user ? false : true}>
+    <Dialog key={"user Login"} defaultOpen={user ? false : true}>
       <DialogTrigger className=" border max-md:px-0 max-md:border-none border-[#79747E] h-full flex justify-center items-center px-5 rounded-xl text-base">
         <p className=" max-md:hidden">Login / SignUp</p>
         <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
