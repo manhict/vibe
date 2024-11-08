@@ -105,7 +105,7 @@ function AddToQueue() {
   };
   const handleRemoveALL = () => {
     emitMessage("deleteAll", "remove");
-    setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
+    // setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
     setSearchQu((prev) => prev.filter((r) => r.id == currentSong?.id));
     setSelectedSongs([]);
   };
