@@ -193,7 +193,7 @@ function Player() {
                       ? currentSong?.downloadUrl[
                           currentSong.downloadUrl.length - 1
                         ].url
-                      : `${process.env.STREAM_URL}/${
+                      : `${"https://sstream-af4g.onrender.com/stream"}/${
                           currentSong?.downloadUrl[
                             currentSong.downloadUrl.length - 1
                           ].url
