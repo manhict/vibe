@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       downloadUrl: [
         {
           quality: "320kbps",
-          url: `https://sstream.onrender.com/stream/${encrypt(s.id)}`,
+          url: `${encrypt(s.id)}`,
         },
       ],
     }));

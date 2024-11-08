@@ -2,8 +2,11 @@
 import { useMediaQuery } from "@react-hook/media-query";
 import { motion } from "framer-motion";
 import { roomsData } from "@/lib/types";
+import Link from "next/link";
+import { useUserContext } from "@/store/userStore";
 export function Browse({ data = [] }: { data: roomsData[] }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { setRoomId } = useUserContext();
   return (
     <motion.div
       style={{
@@ -42,8 +45,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       </motion.p>
       <div className=" flex items-start px-7 flex-wrap relative justify-center w-full gap-6">
         {data.map((room, index) => (
-          <motion.a
-            title={room.name[0]}
+          <motion.div
+            title={room?.name[0]}
             initial={{
               y: isDesktop ? "5dvh" : 0,
               opacity: 0,
@@ -58,18 +61,22 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
             }}
             exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
             key={index}
-            href={`/v?room=${room.roomId}`}
           >
+            <Link
+              onClick={() => setRoomId(room?.roomId)}
+              href={`/v?room=${room?.roomId}`}
+              className=" absolute h-full w-full top-0 left-0"
+            ></Link>
             <motion.div
               style={{
-                backgroundImage: `url('${room.background || "/bg.webp"}' ) `,
+                backgroundImage: `url('${room?.background || "/bg.webp"}' ) `,
               }}
               className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] w-[12vw] rounded-md min-h-[84px] min-w-[84px] p-4"
             ></motion.div>
             <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize  font-medium  tracking-tight truncate w-[12vw] mt-2">
-              {room.name[0]}
+              {room?.name[0]}
             </p>
-          </motion.a>
+          </motion.div>
         ))}
         <motion.div
           initial={{

@@ -38,6 +38,8 @@ interface AudioContextType {
   setLoop: React.Dispatch<SetStateAction<boolean>>;
   shuffled: boolean;
   setShuffled: React.Dispatch<SetStateAction<boolean>>;
+  videoRef: React.RefObject<HTMLAudioElement> | undefined;
+  backgroundVideoRef: React.RefObject<HTMLAudioElement> | undefined;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -58,6 +60,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement>(
     typeof window !== "undefined" ? new Audio() : null
   );
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
@@ -82,6 +86,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
+          if (videoRef.current && backgroundVideoRef.current) {
+            videoRef.current.play();
+            backgroundVideoRef.current.play();
+          }
           setIsPlaying(true);
         })
         .catch(() => {
@@ -94,6 +102,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const pause = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
+      if (videoRef.current && backgroundVideoRef.current) {
+        backgroundVideoRef.current.pause();
+        videoRef.current.pause();
+      }
     }
     setIsPlaying(false);
   }, []);
@@ -104,6 +116,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
+          if (videoRef.current && backgroundVideoRef.current) {
+            backgroundVideoRef.current.play();
+            videoRef.current.play();
+          }
           setIsPlaying(true);
         })
         .catch((error) => {
@@ -151,6 +167,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // seek
   const seek = useCallback((value: number) => {
     if (audioRef.current) {
+      if (videoRef.current && backgroundVideoRef.current) {
+        videoRef.current.currentTime = value;
+        backgroundVideoRef.current.currentTime = value;
+      }
       audioRef.current.currentTime = value;
     }
   }, []);
@@ -190,6 +210,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       navigator.mediaSession.setActionHandler("seekto", (e) => {
         if (e.seekTime && user?.role == "admin") {
           seek(e.seekTime);
+          if (videoRef.current) {
+            videoRef.current.currentTime = e.seekTime;
+          }
         }
       });
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
@@ -219,8 +242,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (audioRef.current) {
         const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.05) {
+        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.04) {
           setProgress(currentTime);
+          if (videoRef.current && backgroundVideoRef.current) {
+            videoRef.current.currentTime = currentTime;
+            backgroundVideoRef.current.currentTime = currentTime;
+          }
           lastEmittedTime.current = currentTime;
         }
 
@@ -308,6 +335,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       setLoop,
       shuffled,
       setShuffled,
+      videoRef,
+      backgroundVideoRef,
     }),
     [
       play,
