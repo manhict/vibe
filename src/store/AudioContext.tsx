@@ -86,8 +86,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
-          if (videoRef.current && backgroundVideoRef.current) {
+          if (videoRef.current) {
             videoRef.current.play();
+          }
+          if (backgroundVideoRef.current) {
             backgroundVideoRef.current.play();
           }
           setIsPlaying(true);
@@ -102,9 +104,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const pause = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
-      if (videoRef.current && backgroundVideoRef.current) {
-        backgroundVideoRef.current.pause();
+      if (videoRef.current) {
         videoRef.current.pause();
+      }
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.pause();
       }
     }
     setIsPlaying(false);
@@ -116,9 +120,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
-          if (videoRef.current && backgroundVideoRef.current) {
-            backgroundVideoRef.current.play();
+          if (videoRef.current) {
             videoRef.current.play();
+          }
+          if (backgroundVideoRef.current) {
+            backgroundVideoRef.current.play();
           }
           setIsPlaying(true);
         })
@@ -167,8 +173,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // seek
   const seek = useCallback((value: number) => {
     if (audioRef.current) {
-      if (videoRef.current && backgroundVideoRef.current) {
+      if (videoRef.current) {
         videoRef.current.currentTime = value;
+      }
+      if (backgroundVideoRef.current) {
         backgroundVideoRef.current.currentTime = value;
       }
       audioRef.current.currentTime = value;
@@ -244,8 +252,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
         if (Math.abs(currentTime - lastEmittedTime.current) >= 1.04) {
           setProgress(currentTime);
-          if (videoRef.current && backgroundVideoRef.current) {
+          if (videoRef.current) {
             videoRef.current.currentTime = currentTime;
+          }
+          if (backgroundVideoRef.current) {
             backgroundVideoRef.current.currentTime = currentTime;
           }
           lastEmittedTime.current = currentTime;
