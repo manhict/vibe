@@ -37,7 +37,7 @@ function Player() {
     // isLooped,
     // setLoop,
     // setShuffled,
-    // videoRef,
+    videoRef,
   } = useAudio();
 
   const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
@@ -164,19 +164,19 @@ function Player() {
             className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
           >
             <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
-              {/* {currentSong?.source !== "youtube" ? ( */}
-              <Image
-                title={currentSong?.name || ""}
-                alt={currentSong?.name || ""}
-                height={300}
-                width={300}
-                className="cover  h-full object-cover  w-full"
-                src={
-                  currentSong?.image[currentSong.image.length - 1].url ||
-                  "/cache.jpg"
-                }
-              />
-              {/* ) : (
+              {currentSong?.source !== "youtube" ? (
+                <Image
+                  title={currentSong?.name || ""}
+                  alt={currentSong?.name || ""}
+                  height={300}
+                  width={300}
+                  className="cover  h-full object-cover  w-full"
+                  src={
+                    currentSong?.image[currentSong.image.length - 1].url ||
+                    "/cache.jpg"
+                  }
+                />
+              ) : (
                 <video
                   //@ts-expect-error: missing
                   ref={videoRef}
@@ -200,7 +200,7 @@ function Player() {
                         }` || "/cache.jpg"
                   }
                 ></video>
-              )} */}
+              )}
 
               <UpvotedBy />
               {currentSong?.source !== "youtube" && (
