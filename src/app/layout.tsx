@@ -109,13 +109,7 @@ export default function RootLayout({
             `,
           }}
         /> */}
-        <Suspense
-          fallback={
-            <div className=" flex h-screen items-center justify-center text-xs animate-pulse text-[#D0BCFF]">
-              Vibe
-            </div>
-          }
-        >
+        <Suspense>
           <UserProvider>
             <AudioProvider>
               <SocketProvider>
