@@ -11,7 +11,6 @@ import { Input } from "../ui/input";
 import Youtube from "./Youtube";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
-import { useAudio } from "@/store/AudioContext";
 import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
@@ -22,7 +21,6 @@ import SearchQueueList from "./SearchQueueList";
 
 function AddToQueue() {
   const { queue, roomId, user, setQueue } = useUserContext();
-  const { currentSong } = useAudio();
   const { total } = useSocket();
   const handleShare = useCallback(async () => {
     if (!user) return;
@@ -103,8 +101,7 @@ function AddToQueue() {
   };
   const handleRemoveALL = () => {
     emitMessage("deleteAll", "remove");
-    setQueue((prev) => prev.filter((r) => r.id == currentSong?.id));
-    setSearchQu((prev) => prev.filter((r) => r.id == currentSong?.id));
+
     setSelectedSongs([]);
   };
 
@@ -195,14 +192,14 @@ function AddToQueue() {
             Remove Selected {selectedSongs.length}
           </Button>
 
-          <Button
+          {/* <Button
             disabled={selectedSongs.length == 0}
             onClick={() => setSelectedSongs([])}
             size={"sm"}
             className=" w-fit bg-purple text-white hover:bg-purple/80"
           >
             Unselect all
-          </Button>
+          </Button> */}
           <Button
             onClick={handleRemoveALL}
             size={"sm"}

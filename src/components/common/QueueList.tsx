@@ -35,16 +35,9 @@ function QueueList({
   const { loading, handleUpdateQueue } = useSocket();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const upVote = useCallback(
-    (song: searchResults) => {
-      if (currentSong?.id == song.id) {
-        toast.info("Cant't vote current playing song");
-        return;
-      }
-      emitMessage("upvote", { queueId: song?.queueId });
-    },
-    [currentSong]
-  );
+  const upVote = useCallback((song: searchResults) => {
+    emitMessage("upvote", { queueId: song?.queueId });
+  }, []);
 
   const handleDelete = useCallback(
     (song: searchResults) => {
@@ -66,7 +59,10 @@ function QueueList({
     (e: React.MouseEvent, song: searchResults) => {
       if (!user) return toast.error("Login required");
       e.stopPropagation();
-
+      if (currentSong?.id == song.id) {
+        toast.info("Cant't vote currently playing song");
+        return;
+      }
       try {
         setQueue((prevQueue) => {
           const songIndex = prevQueue.findIndex((item) => item.id === song.id);
@@ -106,7 +102,7 @@ function QueueList({
         console.log(error);
       }
     },
-    [handleUpVote, setQueue, user]
+    [handleUpVote, setQueue, user, currentSong]
   );
 
   const Play = useCallback(
