@@ -142,15 +142,53 @@ function SearchSongPopup({
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
       toast.loading("Adding songs to queue", { id: "adding" });
-      const added = await api.post(
-        `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
-        songs?.data.results
-      );
-      if (added.success) {
+
+      const batchSize = 100;
+      const results = songs?.data.results;
+      const totalBatches = Math.ceil(results.length / batchSize);
+      const concurrencyLimit = 5; // Adjust the concurrency limit as needed
+
+      const addBatch = async (batch: any) => {
+        return api.post(
+          `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
+          batch
+        );
+      };
+
+      const executeBatches = async () => {
+        const batchPromises = [];
+
+        for (let i = 0; i < totalBatches; i++) {
+          const batch = results.slice(i * batchSize, (i + 1) * batchSize);
+          batchPromises.push(addBatch(batch));
+
+          // If we reach the concurrency limit, wait for these to resolve
+          if (batchPromises.length === concurrencyLimit) {
+            const responses = await Promise.all(batchPromises);
+            if (responses.some((res) => !res.success)) {
+              throw new Error("Failed to add some songs to the queue");
+            }
+            batchPromises.length = 0; // Clear the resolved batch
+          }
+        }
+
+        // Final set of promises if any remain
+        if (batchPromises.length > 0) {
+          const responses = await Promise.all(batchPromises);
+          if (responses.some((res) => !res.success)) {
+            throw new Error("Failed to add some songs to the queue");
+          }
+        }
+      };
+
+      try {
+        await executeBatches();
         emitMessage("update", "update");
+        toast.success("All songs added to queue");
+      } catch (error: any) {
+      } finally {
+        toast.dismiss("adding");
       }
-      toast.dismiss("adding");
-      toast.success("All songs added to queue");
     }
   }, [songs, roomId]);
 

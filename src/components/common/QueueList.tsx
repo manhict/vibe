@@ -155,7 +155,7 @@ function QueueList({
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
-            } py-2 hover:pl-2 hover:bg-white/10 transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
+            } py-2 hover:pl-2 hover:bg-white/10   cursor-pointer hover:rounded-xl items-center justify-between`}
           >
             <div className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -164,7 +164,7 @@ function QueueList({
                   alt={song.name}
                   height={500}
                   width={500}
-                  className="rounded-md group-hover:opacity-40 transition-all duration-500"
+                  className="rounded-md group-hover:opacity-40  "
                   src={song.image[song.image.length - 1].url}
                 />
                 <AvatarFallback>SX</AvatarFallback>
@@ -224,7 +224,7 @@ function QueueList({
         </div>
       ))}
       <div />
-      {/* {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>} */}
+      {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>}
     </div>
   );
 }
