@@ -16,18 +16,21 @@ function useCache() {
       //   currentSong.id
       // );
 
-      if (videoRef?.current && videoRef?.current.src !== currentVideoUrl) {
-        videoRef.current.src = currentVideoUrl;
-      }
       if (
         backgroundVideoRef?.current &&
-        backgroundVideoRef?.current.src !==
+        backgroundVideoRef?.current.src !== currentVideoUrl
+      ) {
+        backgroundVideoRef.current.src = currentVideoUrl;
+      }
+      if (
+        videoRef?.current &&
+        videoRef?.current.src !==
           currentVideoUrl.replace(
             process.env.VIDEO_STREAM_URI || "",
             "https://sstream.onrender.com/stream"
           )
       ) {
-        backgroundVideoRef.current.src = currentVideoUrl.replace(
+        videoRef.current.src = currentVideoUrl.replace(
           process.env.VIDEO_STREAM_URI || "",
           "https://sstream.onrender.com/stream"
         );
