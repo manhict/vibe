@@ -35,9 +35,16 @@ function QueueList({
   const { loading, handleUpdateQueue } = useSocket();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const upVote = useCallback((song: searchResults) => {
-    emitMessage("upvote", { queueId: song?.queueId });
-  }, []);
+  const upVote = useCallback(
+    (song: searchResults) => {
+      if (currentSong?.id == song.id) {
+        toast.info("Cant't vote current playing song");
+        return;
+      }
+      emitMessage("upvote", { queueId: song?.queueId });
+    },
+    [currentSong]
+  );
 
   const handleDelete = useCallback(
     (song: searchResults) => {
