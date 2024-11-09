@@ -47,7 +47,7 @@ function useCache() {
     if (upNextSongs.length > 0) {
       cacheUpNextSong();
     }
-  }, [upNextSongs, cacheUpNextSong, showVideo]);
+  }, [upNextSongs, cacheUpNextSong]);
   return;
 }
 
