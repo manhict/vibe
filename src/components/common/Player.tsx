@@ -21,7 +21,7 @@ import UpNextSongs from "./UpNextSongs";
 import { useSocket } from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 function Player() {
-  const { user } = useUserContext();
+  const { user, showVideo, setShowVideo } = useUserContext();
   const { messages } = useSocket();
   const {
     currentSong,
@@ -160,16 +160,42 @@ function Player() {
                   }
                 />
               ) : (
-                <video
-                  //@ts-expect-error: missing
-                  ref={videoRef}
-                  muted
-                  playsInline
-                  title={currentSong?.name || ""}
-                  height={300}
-                  width={300}
-                  className="cover  h-full object-cover  w-full"
-                ></video>
+                <div
+                  onClick={() => {
+                    if (localStorage.getItem("v")) {
+                      setShowVideo(null);
+                      localStorage.removeItem("v");
+                      return;
+                    }
+
+                    setShowVideo(true), localStorage.setItem("v", "true");
+                  }}
+                >
+                  {showVideo ? (
+                    <video
+                      //@ts-expect-error: missing
+                      ref={videoRef}
+                      muted
+                      playsInline
+                      title={currentSong?.name || ""}
+                      height={300}
+                      width={300}
+                      className="cover  h-full object-cover  w-full"
+                    ></video>
+                  ) : (
+                    <Image
+                      title={currentSong?.name || ""}
+                      alt={currentSong?.name || ""}
+                      height={300}
+                      width={300}
+                      className="cover z-10  h-full object-cover  w-full"
+                      src={
+                        currentSong?.image[currentSong.image.length - 1].url ||
+                        "/cache.jpg"
+                      }
+                    />
+                  )}
+                </div>
               )}
 
               <UpvotedBy />

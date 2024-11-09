@@ -21,6 +21,8 @@ interface UserContextType {
   listener: listener | null;
   setUpNextSongs: React.Dispatch<SetStateAction<searchResults[]>>;
   upNextSongs: searchResults[];
+  showVideo: boolean | null;
+  setShowVideo: React.Dispatch<SetStateAction<boolean | null>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -31,6 +33,11 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [upNextSongs, setUpNextSongs] = React.useState<searchResults[]>([]);
   const [user, setUser] = React.useState<TUser | null>(null);
   const [listener, setListener] = React.useState<listener | null>(null);
+  const [showVideo, setShowVideo] = React.useState<boolean | null>(() => {
+    const data =
+      typeof window !== "undefined" ? localStorage.getItem("v") : null;
+    return data ? JSON.parse(data) : null;
+  });
   const [roomId, setRoomId] = React.useState<string>(
     () => search.get("room") || generateRoomId()
   );
@@ -41,7 +48,8 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setQueue,
       roomId,
       setRoomId,
-
+      showVideo,
+      setShowVideo,
       user,
       setUser,
       listener,
@@ -49,7 +57,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setUpNextSongs,
       upNextSongs,
     }),
-    [listener, queue, roomId, user, upNextSongs]
+    [listener, queue, roomId, user, upNextSongs, showVideo]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

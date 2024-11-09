@@ -5,7 +5,7 @@ import { useCallback, useEffect } from "react";
 
 function useCache() {
   const { currentSong, videoRef, backgroundVideoRef } = useAudio();
-  const { upNextSongs } = useUserContext();
+  const { upNextSongs, showVideo } = useUserContext();
 
   const loadVideos = useCallback(async () => {
     if (!currentSong) return;
@@ -41,13 +41,13 @@ function useCache() {
     if (currentSong && currentSong.source == "youtube") {
       loadVideos();
     }
-  }, [currentSong, loadVideos]);
+  }, [currentSong, loadVideos, showVideo]);
 
   useEffect(() => {
     if (upNextSongs.length > 0) {
       cacheUpNextSong();
     }
-  }, [upNextSongs, cacheUpNextSong]);
+  }, [upNextSongs, cacheUpNextSong, showVideo]);
   return;
 }
 
