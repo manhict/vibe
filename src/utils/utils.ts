@@ -229,7 +229,7 @@ export async function checkIsCached(id: string): Promise<string> {
           resolve(URL.createObjectURL(result.blob));
         }
       }
-      throw new Error(`Cached no video`);
+      return null;
     };
 
     getRequest.onerror = () => reject(getRequest.error);

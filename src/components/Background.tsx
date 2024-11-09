@@ -17,11 +17,11 @@ function Background() {
           title={currentSong?.name || ""}
           height={300}
           width={300}
-          className="absolute top-0 left-0 w-full h-full object-cover z-[-1]"
+          className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
         />
       ) : (
         <div
-          className="relative bg-cover transition-all duration-700 bg-center w-full h-full"
+          className="relative bg-cover  object-cover transition-all duration-700 bg-center w-full h-full"
           style={{
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||

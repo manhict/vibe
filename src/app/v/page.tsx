@@ -1,8 +1,4 @@
 import Home from "@/components/common/Home";
-import dbConnect from "@/lib/dbConnect";
-import Room from "@/models/roomModel";
-import RoomUser from "@/models/roomUsers";
-import User from "@/models/userModel";
 import { Metadata } from "next";
 
 type Props = {
@@ -11,22 +7,25 @@ type Props = {
 export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
-  await dbConnect();
   const room = searchParams["room"];
   const username = searchParams["ref"];
   let user = null;
-  if (username) {
-    user = await User.findOne({ username });
-  } else {
-    if (room) {
-      const roomId = await Room.findOne({ roomId: room });
-      user = (
-        await RoomUser.findOne({ roomId: roomId?._id, role: "admin" }).populate(
-          "userId"
-        )
-      )?.userId;
-    }
+
+  const res = await fetch(`${process.env.SOCKET_URI}/api/metadata`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      payload: username ? "user" : "roomAdmin",
+      text: username ? username : room,
+    }),
+    cache: "no-cache",
+  });
+  if (res.ok) {
+    user = await res.json();
   }
+
   if (!user) return {};
   return {
     title: `Vibe x ${user?.name?.split(" ")[0] || "404"} `,
