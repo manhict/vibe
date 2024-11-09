@@ -76,7 +76,7 @@ export const playVariants = {
 };
 
 export const pauseVariants = {
-  hidden: { y: 25 }, // Comes from bottom
+  hidden: { y: 20 }, // Comes from bottom
   visible: { y: 0, transition: springConfig }, // Spring-based movement
   exit: { y: 20, transition: springConfig }, // Exits downwards with spring effect
 };
