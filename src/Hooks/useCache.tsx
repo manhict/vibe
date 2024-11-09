@@ -11,19 +11,26 @@ function useCache() {
     if (!currentSong) return;
     const currentVideoUrl = getURL(currentSong);
     if (currentVideoUrl) {
-      const cachedCurrentSongUrl = await cacheVideo(
-        currentVideoUrl,
-        currentSong.id
-      );
+      // const cachedCurrentSongUrl = await cacheVideo(
+      //   currentVideoUrl,
+      //   currentSong.id
+      // );
 
-      if (videoRef?.current && videoRef?.current.src !== cachedCurrentSongUrl) {
-        videoRef.current.src = cachedCurrentSongUrl;
+      if (videoRef?.current && videoRef?.current.src !== currentVideoUrl) {
+        videoRef.current.src = currentVideoUrl;
       }
       if (
         backgroundVideoRef?.current &&
-        backgroundVideoRef?.current.src !== cachedCurrentSongUrl
+        backgroundVideoRef?.current.src !==
+          currentVideoUrl.replace(
+            process.env.VIDEO_STREAM_URI || "",
+            "https://sstream.onrender.com/stream"
+          )
       ) {
-        backgroundVideoRef.current.src = cachedCurrentSongUrl;
+        backgroundVideoRef.current.src = currentVideoUrl.replace(
+          process.env.VIDEO_STREAM_URI || "",
+          "https://sstream.onrender.com/stream"
+        );
       }
     }
   }, [currentSong, videoRef, backgroundVideoRef]);
