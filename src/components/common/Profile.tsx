@@ -20,6 +20,10 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser } = useUserContext();
 
   useEffect(() => {
+    console.log(
+      "%cVibe is Sexy",
+      "color: #D0BCFF; font-size: 20px; padding: 10px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
+    );
     setUser(user);
     if (!roomId) toast.error("Room ID is required");
     socket.io.opts.extraHeaders = {
