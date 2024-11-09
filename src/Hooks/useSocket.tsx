@@ -225,7 +225,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${queue.length}&name`,
       {
         headers: {
-          noCache: "no-cache",
+          nocache: "no-cache",
         },
         signal: controller.signal,
       }
