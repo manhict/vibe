@@ -112,10 +112,22 @@ function Player() {
     },
     [duration, seek, setProgress, user]
   );
+  useEffect(() => {
+    const handleCheatCodes = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isChatOpen) {
+        setIsChatOpen(false);
+      }
+    };
 
+    document.addEventListener("keydown", handleCheatCodes);
+
+    return () => {
+      document.removeEventListener("keydown", handleCheatCodes);
+    };
+  }, [isChatOpen]);
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-8 px-5 flex flex-col items-center justify-center gap-[2.5dvh]">
-      <AnimatePresence>
+      <AnimatePresence key={"chat opened"}>
         {isChatOpen && (
           <motion.div
             initial="hidden"
@@ -123,9 +135,8 @@ function Player() {
             exit="hidden"
             variants={chatVariants}
             transition={{
-              type: "tween",
-              stiffness: 100,
-              damping: 25,
+              duration: 0.3,
+              ease: "easeInOut",
             }}
             className=" h-full flex flex-col py-2 w-full absolute  backdrop-blur-xl bg-black/10 inset-0"
           >
@@ -137,13 +148,13 @@ function Player() {
           </motion.div>
         )}
       </AnimatePresence>
-      <AnimatePresence>
+      <AnimatePresence key={"chat closed"}>
         {!isChatOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
           >
             <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">

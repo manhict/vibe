@@ -106,7 +106,7 @@ function AddToQueue() {
   };
 
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-4  pr-0">
+    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-3 pr-0">
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div
@@ -116,10 +116,8 @@ function AddToQueue() {
             className=" w-full"
             variants={slideInVariants}
             transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 20, // tweak this for smoother exit
-              duration: 0.4, // Adjust duration for a slower effect
+              duration: 0.2,
+              ease: "easeInOut",
             }}
           >
             <Input
@@ -134,7 +132,7 @@ function AddToQueue() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }} // Add a transition for the label
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="text-lg font-semibold"
           >
             In Queue {total && total > 0 && `(${total})`}
@@ -177,17 +175,15 @@ function AddToQueue() {
           exit="exit"
           variants={slideInVariants}
           transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 20, // tweak this for smoother exit
-            duration: 0.4, // Adjust duration for a slower effect
+            duration: 0.2,
+            ease: "easeInOut",
           }}
           className=" flex hide-scrollbar overflow-x-scroll py-1 -mb-1 mt-2 items-center gap-1"
         >
           <Button
             onClick={handleBulkDelete}
             size={"sm"}
-            className=" w-fit bg-purple text-white hover:bg-purple/80"
+            className=" w-fit text-xs bg-purple text-white hover:bg-purple/80"
           >
             Remove Selected {selectedSongs.length}
           </Button>
@@ -203,9 +199,9 @@ function AddToQueue() {
           <Button
             onClick={handleRemoveALL}
             size={"sm"}
-            className=" w-fit bg-red-600/85 text-white hover:bg-red-600/70"
+            className=" w-fit text-xs bg-red-600/85 text-white hover:bg-red-600/70"
           >
-            Clear all
+            Delete all
           </Button>
         </motion.div>
       )}

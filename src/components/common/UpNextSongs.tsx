@@ -10,7 +10,7 @@ function UpNextSongs() {
   const { currentSong } = useAudio();
   // Define animation variants
   const songVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 17 },
     visible: { opacity: 1, y: 0 },
   };
 
@@ -27,7 +27,7 @@ function UpNextSongs() {
                 animate="visible"
                 exit="hidden"
                 variants={songVariants}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
                 className="gap-1.5 backdrop-blur-lg p-1 rounded-lg border-white/20 border text-xs px-2 py-1.5 flex items-center"
               >
                 <Avatar className="size-9 rounded-sm">
