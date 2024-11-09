@@ -15,7 +15,7 @@ import React, {
 import { useUserContext } from "./userStore";
 import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
-import getURL, { cacheVideo } from "@/utils/utils";
+import getURL, { cacheVideo, checkIsCached } from "@/utils/utils";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -88,8 +88,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         videoRef.current.src = "";
       }
       const currentVideoUrl = getURL(song);
-
-      audioRef.current.src = currentVideoUrl;
+      if (song?.source == "youtube") {
+        audioRef.current.src = await checkIsCached(song?.id);
+      } else {
+        audioRef.current.src = currentVideoUrl;
+      }
 
       audioRef.current
         .play()
