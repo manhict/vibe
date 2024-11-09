@@ -73,7 +73,6 @@ function Player() {
   useEffect(() => {
     if (isChatOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-
       setSeen(true);
     } else {
       if (messagesEndRef.current) {
@@ -113,26 +112,6 @@ function Player() {
     },
     [duration, seek, setProgress, user]
   );
-  // const loop = useCallback(() => {
-  //   if (user?.role === "admin") {
-  //     if (!currentSong) return;
-  //     socket.emit("loop", !isLooped);
-  //     return;
-  //   }
-  //   setLoop((prev) => !prev);
-  //   toast.warning("Only admin can Loop");
-  // }, [user, isLooped, currentSong, setLoop]);
-  // const handleLoop = useDebounce(loop, 500);
-  // const shuffle = useCallback(() => {
-  //   if (user?.role === "admin") {
-  //     if (!currentSong) return;
-  //     socket.emit("shuffle", !shuffled);
-  //     return;
-  //   }
-  //   setShuffled((prev) => !prev);
-  //   toast.warning("Only admin can shuffle");
-  // }, [user, shuffled, currentSong, setShuffled]);
-  // const handleShuffle = useDebounce(shuffle, 500);
 
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-7 py-11 flex flex-col items-center justify-center gap-[2.5dvh]">
