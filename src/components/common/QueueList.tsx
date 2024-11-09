@@ -3,12 +3,6 @@ import { useUserContext } from "@/store/userStore";
 import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -146,10 +140,17 @@ function QueueList({
   return (
     <div
       ref={containerRef}
-      className="py-2 pr-2 max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1.5"
+      className="py-2 pr-2 max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-2"
     >
       {queue?.map((song, i) => (
-        <div key={song?.id + i}>
+        <div
+          title={
+            song.addedByUser && song.addedByUser.username !== user?.username
+              ? `Added by ${song.addedByUser.name} (${song.addedByUser.username})`
+              : "Added by You"
+          }
+          key={song?.id + i}
+        >
           {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
           <label
             htmlFor={song?.id + i}
@@ -178,26 +179,12 @@ function QueueList({
               onClick={(e) => handlePlay(e, song)}
               className="flex flex-col gap-1 flex-grow text-sm w-6/12"
             >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="w-auto text-start">
-                    <p className="cursor-pointer font-semibold truncate">
-                      {parse(song.name)}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-[#9870d3] mb-2 text-white">
-                    {song.addedByUser &&
-                    song?.addedByUser?.username !== user?.username ? (
-                      <p>
-                        Added by {song?.addedByUser?.name} (
-                        {song?.addedByUser?.username})
-                      </p>
-                    ) : (
-                      <p>Added by You</p>
-                    )}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div className="w-auto text-start">
+                <p className="cursor-pointer font-semibold truncate">
+                  {parse(song.name)}
+                </p>
+              </div>
+
               <p className="text-[#D0BCFF] truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
                 {currentSong?.id == song.id && "- Currently playing"}

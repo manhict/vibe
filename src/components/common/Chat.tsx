@@ -4,12 +4,6 @@ import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
 import React, { SetStateAction, useCallback, useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/store/AudioContext";
 import {
@@ -126,29 +120,23 @@ function Chat({
           {listener?.roomUsers
             ?.filter((r) => r.userId?._id !== user?._id)
             ?.map((roomUser, i) => (
-              <TooltipProvider key={roomUser?._id}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <div className={` ${i !== 0 && "-ml-2"} size-7`}>
-                      <Avatar className=" size-7 border border-white">
-                        <AvatarImage
-                          loading="lazy"
-                          alt={roomUser?.userId?.name}
-                          height={200}
-                          width={200}
-                          className=" rounded-full"
-                          src={roomUser?.userId?.imageUrl}
-                        />
-                      </Avatar>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                    <p>
-                      {roomUser?.userId?.username} ({roomUser?.userId?.name})
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div
+                title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
+                key={roomUser?._id}
+              >
+                <div className={` ${i !== 0 && "-ml-2"} size-7`}>
+                  <Avatar className=" size-7 border border-white">
+                    <AvatarImage
+                      loading="lazy"
+                      alt={roomUser?.userId?.name}
+                      height={200}
+                      width={200}
+                      className=" rounded-full"
+                      src={roomUser?.userId?.imageUrl}
+                    />
+                  </Avatar>
+                </div>
+              </div>
             ))}
           {listener && listener?.totalUsers > 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
