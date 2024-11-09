@@ -58,7 +58,7 @@ function SearchSongPopup({
       const controller = new AbortController();
       abortControllerRef.current = controller;
       const url = youtube
-        ? `/api/youtube?id=${extractPlaylistID(value)}`
+        ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(value)}`
         : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
       setPage(0); // Reset page on a new search
