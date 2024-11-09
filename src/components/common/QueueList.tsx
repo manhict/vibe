@@ -196,7 +196,8 @@ function QueueList({
                 </Tooltip>
               </TooltipProvider>
               <p className="text-[#D0BCFF] truncate text-xs">
-                {formatArtistName(song.artists.primary)}
+                {formatArtistName(song.artists.primary)}{" "}
+                {currentSong?.id == song.id && "- Currently playing"}
               </p>
             </div>
             {isDeleting ? (
