@@ -184,15 +184,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     );
     if (data.success) {
       const value = data.data as data;
-
-      setQueue((prev) => {
-        const existingIds = new Set(prev.map((song) => song.id));
-        // Filter and add only unique songs
-        const filteredSongs = value.results.filter(
-          (song) => !existingIds.has(song.id)
-        );
-        return [...prev, ...filteredSongs];
-      });
+      if (value?.results?.length > 0) {
+        setQueue((prev) => [...prev, ...(value?.results || [])]);
+      }
       setTotal(value?.total);
       setPage(value?.start + 1);
     }
@@ -230,6 +224,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     const data = await api.get(
       `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${queue.length}&name`,
       {
+        headers: {
+          noCache: "no-cache",
+        },
         signal: controller.signal,
       }
     );

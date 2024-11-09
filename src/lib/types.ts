@@ -119,3 +119,10 @@ export interface roomsData {
   name: [string];
   background: string;
 }
+
+export interface CachedVideo {
+  id: string;
+  url: string;
+  blob: Blob;
+  timestamp: number;
+}

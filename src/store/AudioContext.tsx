@@ -15,6 +15,7 @@ import React, {
 import { useUserContext } from "./userStore";
 import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
+import getURL, { cacheVideo } from "@/utils/utils";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -76,21 +77,28 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const volume = useMemo(() => currentVolume, [currentVolume]);
   const { user } = useUserContext();
   // play
-  const play = useCallback((song: searchResults) => {
+  const play = useCallback(async (song: searchResults) => {
     setCurrentSong(song);
-    const audioUrl = song?.downloadUrl[song?.downloadUrl?.length - 1]?.url;
     if (audioRef.current) {
-      audioRef.current.src = audioUrl?.startsWith("http")
-        ? audioUrl
-        : `${process.env.STREAM_URL}/${audioUrl}`;
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.src = "";
+      }
+      audioRef.current.src = "";
+      if (videoRef.current) {
+        videoRef.current.src = "";
+      }
+      const currentVideoUrl = getURL(song);
+
+      audioRef.current.src = currentVideoUrl;
+
       audioRef.current
         .play()
         .then(async () => {
           if (videoRef.current) {
-            videoRef.current.play();
+            videoRef.current?.play();
           }
           if (backgroundVideoRef.current) {
-            backgroundVideoRef.current.play();
+            backgroundVideoRef.current?.play();
           }
           document.title = song?.name;
           setIsPlaying(true);
@@ -106,10 +114,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (audioRef.current) {
       audioRef.current.pause();
       if (videoRef.current) {
-        videoRef.current.pause();
+        videoRef.current?.pause();
       }
       if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.pause();
+        backgroundVideoRef.current?.pause();
       }
     }
     setIsPlaying(false);
@@ -234,40 +242,55 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const lastEmittedTime = useRef(0);
   const lastEmitted = useRef(0);
 
+  const updateProgress = useCallback(() => {
+    if (audioRef.current) {
+      const currentTime = audioRef.current.currentTime;
+
+      if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
+        setProgress(currentTime);
+        if (videoRef.current) {
+          if (videoRef.current.paused && audioRef.current.paused == false) {
+            videoRef.current?.play();
+          }
+          videoRef.current.currentTime = currentTime;
+        }
+        if (backgroundVideoRef.current) {
+          if (
+            backgroundVideoRef.current.paused &&
+            audioRef.current.paused == false
+          ) {
+            backgroundVideoRef.current?.play();
+          }
+          backgroundVideoRef.current.currentTime = currentTime;
+        }
+        lastEmittedTime.current = currentTime;
+      }
+
+      if (Math.abs(currentTime - lastEmitted.current) >= 7) {
+        socket.emit("progress", currentTime);
+        lastEmitted.current = currentTime;
+      }
+      if (audioRef.current.paused == false) {
+        requestAnimationFrame(updateProgress);
+      }
+    }
+  }, []);
   useEffect(() => {
-    const handlePlay = () => setIsPlaying(true);
+    const handlePlay = () => (
+      requestAnimationFrame(updateProgress), setIsPlaying(true)
+    );
     const handlePause = () => setIsPlaying(false);
     const handleCanPlay = () => {
       setMediaSession();
+
       if (audioRef.current) {
         setDuration(audioRef.current.duration);
       }
     };
-
     const handleEnd = () => {
       emitMessage("songEnded", "songEnded");
     };
-    const updateProgress = () => {
-      if (audioRef.current) {
-        const currentTime = audioRef.current.currentTime;
 
-        if (Math.abs(currentTime - lastEmittedTime.current) >= 1.04) {
-          setProgress(currentTime);
-          if (videoRef.current) {
-            videoRef.current.currentTime = currentTime;
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current.currentTime = currentTime;
-          }
-          lastEmittedTime.current = currentTime;
-        }
-
-        if (Math.abs(currentTime - lastEmitted.current) >= 7) {
-          socket.emit("progress", currentTime);
-          lastEmitted.current = currentTime;
-        }
-      }
-    };
     const audioElement = audioRef.current;
 
     if (audioElement) {
@@ -275,26 +298,25 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
-      audioElement.addEventListener("timeupdate", updateProgress);
+
       return () => {
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);
         audioElement.removeEventListener("ended", handleEnd);
         audioElement.removeEventListener("canplay", handleCanPlay);
-        audioElement.removeEventListener("timeupdate", updateProgress);
       };
     }
-  }, [setMediaSession, lastEmitted, lastEmittedTime]);
+  }, [setMediaSession, lastEmitted, lastEmittedTime, updateProgress]);
 
   useEffect(() => {
     if (!currentSong && queue.length > 0 && audioRef.current) {
       setCurrentSong(queue[0]);
-
-      const audioUrl =
-        queue[0]?.downloadUrl[queue[0]?.downloadUrl?.length - 1]?.url;
-      audioRef.current.src = audioUrl?.startsWith("http")
-        ? audioUrl
-        : `${process.env.STREAM_URL}/${audioUrl}`;
+      const currentVideoUrl = getURL(queue[0]);
+      cacheVideo(currentVideoUrl, queue[0].id).then((audioUrl) => {
+        if (audioRef.current) {
+          audioRef.current.src = audioUrl;
+        }
+      });
     }
   }, [queue, currentSong]);
 

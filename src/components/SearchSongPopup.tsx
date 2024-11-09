@@ -38,7 +38,7 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId, user, setQueue } = useUserContext();
+  const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -125,19 +125,7 @@ function SearchSongPopup({
         style: { background: "#e94625" },
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
-
-    setQueue((prev) => {
-      // Create a Set to track the unique IDs of songs already in the queue
-      const existingIds = new Set(prev.map((song) => song.id));
-
-      // Filter out duplicate songs from selectedSongs based on their ID
-      const filteredSongs = selectedSongs.filter(
-        (song) => !existingIds.has(song.id)
-      );
-
-      // Return the new state, adding only the filtered songs
-      return [...filteredSongs, ...prev];
-    });
+    toast.loading("Adding songs to queue", { id: "adding" });
     const added = await api.post(
       `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
       selectedSongs,
@@ -148,7 +136,8 @@ function SearchSongPopup({
       toast.success("Songs added to queue");
     }
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user, setQueue, roomId]);
+    toast.dismiss("adding");
+  }, [setSelectedSongs, selectedSongs, user, roomId]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
@@ -234,11 +223,11 @@ function SearchSongPopup({
         {loading && !songs && (
           <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
             {Array.from(Array(6)).map((_, i) => (
-              <Skeleton
+              <div
                 key={i}
-                className="flex gap-2 rounded-none text-start cursor-pointer  border-white/20 p-2.5 px-4 items-center "
+                className="flex gap-2  rounded-none text-start cursor-pointer border-b border-white/20 p-2.5 px-4 items-center "
               >
-                <Skeleton className="h-14 w-14 rounded-none" />
+                <Skeleton className="h-14 w-14  rounded-none" />
                 <div className="text-sm space-y-1 font-medium w-10/12 truncate">
                   <div className="font-semibold truncate w-11/12">
                     <Skeleton className=" w-40 h-3 rounded-none" />
@@ -248,7 +237,7 @@ function SearchSongPopup({
                   </div>
                   <p className=" text-xs text-[#a176eb]">☆</p>
                 </div>
-              </Skeleton>
+              </div>
             ))}
           </div>
         )}

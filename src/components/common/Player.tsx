@@ -44,10 +44,14 @@ function Player() {
   const [formattedDuration, setFormattedDuration] = useState<string>("0:00");
   const [isChatOpen, setIsChatOpen] = useState(false);
   useEffect(() => {
-    setFormattedProgress(formatElapsedTime(progress));
-    setFormattedDuration(formatElapsedTime(duration));
-  }, [progress, duration]);
+    requestAnimationFrame(() =>
+      setFormattedProgress(formatElapsedTime(progress))
+    );
+  }, [progress]);
 
+  useEffect(() => {
+    setFormattedDuration(formatElapsedTime(duration));
+  }, [duration]);
   const handleSeek = (e: number[]) => {
     if (e[0]) {
       if (user && user.role !== "admin") {
@@ -186,19 +190,6 @@ function Player() {
                   height={300}
                   width={300}
                   className="cover  h-full object-cover  w-full"
-                  src={
-                    currentSong?.downloadUrl[
-                      currentSong?.downloadUrl?.length - 1
-                    ]?.url.startsWith("http")
-                      ? currentSong?.downloadUrl[
-                          currentSong.downloadUrl.length - 1
-                        ].url
-                      : `${"https://sstream-af4g.onrender.com/stream"}/${
-                          currentSong?.downloadUrl[
-                            currentSong.downloadUrl.length - 1
-                          ].url
-                        }` || "/cache.jpg"
-                  }
                 ></video>
               )}
 
@@ -210,7 +201,10 @@ function Player() {
               )}
             </div>
             <div className=" text-center w-full -mt-2 items-center justify-center flex flex-col text-sm">
-              <p className="title text-lg font-medium w-60 truncate">
+              <p
+                title={currentSong?.name || ""}
+                className="title text-lg font-medium w-60 truncate"
+              >
                 {parse(currentSong?.name || "Not Playing")}
               </p>
               <p className="artist w-56 text-zinc-200 truncate">
@@ -283,6 +277,8 @@ function Player() {
               <Slider
                 max={duration || 0}
                 value={[progress]}
+                step={1}
+                min={0}
                 disabled={user?.role !== "admin"}
                 onClick={handleValueChange}
                 onValueCommit={handleSeek}

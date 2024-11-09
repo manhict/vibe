@@ -34,6 +34,7 @@ const nextConfig = {
     LOCK_SECRET: process.env.LOCK_SECRET,
     STREAM_URL: process.env.STREAM_URL,
     GLOBAL_BACKEND_URI: process.env.GLOBAL_BACKEND_URI,
+    VIDEO_STREAM_URI: process.env.VIDEO_STREAM_URI,
   },
 };
 

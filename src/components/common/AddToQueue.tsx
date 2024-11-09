@@ -58,7 +58,7 @@ function AddToQueue() {
     const controller = new AbortController();
     queueControllerRef.current = controller;
     const data = await api.get(
-      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&name=${
+      `${process.env.SOCKET_URI}/api/queue?page=1&limit=4&room=${roomId}&name=${
         e?.target?.value || ""
       }`,
       {

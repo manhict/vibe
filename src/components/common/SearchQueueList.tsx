@@ -120,8 +120,8 @@ function SearchQueueList({
   return (
     <>
       {queue?.length > 0 ? (
-        <div className=" py-2 pr-2 hide-scrollbar border-b group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1.5">
-          <p>Search Result</p>
+        <div className=" py-2 pr-2 border-b-2 group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1.5">
+          <p className=" font-semibold">Search Result</p>
           {queue
             ?.filter((r) => r.id !== currentSong?.id)
             ?.map((song, i) => (

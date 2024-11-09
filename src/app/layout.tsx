@@ -6,7 +6,6 @@ import { UserProvider } from "@/store/userStore";
 import { AudioProvider } from "@/store/AudioContext";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
-import Script from "next/script";
 import { SocketProvider } from "@/Hooks/useSocket";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -110,7 +109,7 @@ export default function RootLayout({
             `,
           }}
         /> */}
-        <Suspense>
+        <Suspense fallback={<div>Vibe</div>}>
           <UserProvider>
             <AudioProvider>
               <SocketProvider>
@@ -128,16 +127,6 @@ export default function RootLayout({
           </UserProvider>
         </Suspense>
       </body>
-      <Script id="seo" async type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Vibe",
-          url: "https://getvibe.in",
-          description:
-            "A collaborative music platform where votes shape playlists.",
-        })}
-      </Script>
     </html>
   );
 }

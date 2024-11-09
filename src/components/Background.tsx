@@ -1,15 +1,14 @@
 "use client";
+import useCache from "@/Hooks/useCache";
 import { useAudio } from "@/store/AudioContext";
-import React from "react";
 
 function Background() {
   const { currentSong, backgroundVideoRef } = useAudio();
+  useCache();
 
   return (
     <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center py-4 w-full">
-      {!currentSong?.downloadUrl[
-        currentSong?.downloadUrl?.length - 1
-      ]?.url.startsWith("http") ? (
+      {currentSong?.source == "youtube" ? (
         <video
           //@ts-expect-error: missing
           ref={backgroundVideoRef}
@@ -19,16 +18,6 @@ function Background() {
           height={300}
           width={300}
           className="absolute top-0 left-0 w-full h-full object-cover z-[-1]"
-          src={
-            currentSong?.downloadUrl[
-              currentSong?.downloadUrl?.length - 1
-            ]?.url.startsWith("http")
-              ? currentSong?.downloadUrl[currentSong.downloadUrl.length - 1].url
-              : `${"https://sstream-af4g.onrender.com/stream"}/${
-                  currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]
-                    .url
-                }` || "/cache.jpg"
-          }
         />
       ) : (
         <div
