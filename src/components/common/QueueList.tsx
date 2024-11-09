@@ -1,6 +1,6 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import { cacheVideo, formatArtistName } from "@/utils/utils";
+import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import {
@@ -140,15 +140,6 @@ function QueueList({
     };
   }, [handleScroll]);
 
-  const cacheOnHover = useCallback(async (song: searchResults) => {
-    if (song?.source == "youtube") {
-      await cacheVideo(
-        song?.downloadUrl[song?.downloadUrl.length - 1]?.url,
-        song?.id
-      );
-    }
-  }, []);
-  const handleCache = useDebounce(cacheOnHover);
   return (
     <div
       ref={containerRef}
@@ -158,7 +149,6 @@ function QueueList({
         <div key={song?.id + i}>
           {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
           <label
-            onMouseEnter={() => handleCache(song)}
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"

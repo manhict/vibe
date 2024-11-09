@@ -94,7 +94,7 @@ export function containsOnlyEmojis(text: string): boolean {
   return emojiRegex.test(text);
 }
 
-const EXPIRE_TIME = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+const EXPIRE_TIME = 10 * 60 * 60 * 1000; // 1 hour in milliseconds
 
 export const cacheVideo = async (url: string, id: string): Promise<string> => {
   try {
