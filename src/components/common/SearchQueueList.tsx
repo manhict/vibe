@@ -114,7 +114,7 @@ function SearchQueueList({
   return (
     <>
       {queue?.length > 0 ? (
-        <div className=" py-2 pr-2 border-b-2 group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1.5">
+        <div className=" py-2 pr-2 border-b-2 group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1">
           <p className=" font-semibold">Search Result</p>
           {queue?.map((song, i) => (
             <div
@@ -131,7 +131,7 @@ function SearchQueueList({
                 key={i}
                 className={`flex gap-2 ${
                   i !== queue.length && " border-white/5"
-                } py-2 hover:pl-2  hover:bg-white/10  transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
+                } py-2 pl-2  hover:bg-white/10  transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
               >
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">
