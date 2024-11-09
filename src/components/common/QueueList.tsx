@@ -155,7 +155,7 @@ function QueueList({
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
-            } py-2 hover:pl-2 hover:bg-white/10   cursor-pointer hover:rounded-xl items-center justify-between`}
+            } py-2 pl-2 hover:bg-white/10   cursor-pointer hover:rounded-xl items-center justify-between`}
           >
             <div className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">

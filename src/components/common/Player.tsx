@@ -212,7 +212,7 @@ function Player() {
               >
                 {parse(currentSong?.name || "Not Playing")}
               </p>
-              <p className="artist w-56 text-zinc-200 truncate">
+              <p className="artist text-xs w-56 text-zinc-300 truncate">
                 {(currentSong &&
                   formatArtistName(currentSong?.artists?.primary)) ||
                   "Unknown"}
