@@ -28,9 +28,9 @@ function UpNextSongs() {
                 exit="hidden"
                 variants={songVariants}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="gap-1 backdrop-blur-lg p-1 rounded-lg border-white/20 border text-xs px-2 py-1.5 flex items-center"
+                className="gap-1.5 backdrop-blur-lg p-1 rounded-lg border-white/20 border text-xs px-2 py-1.5 flex items-center"
               >
-                <Avatar className="size-8 rounded-sm">
+                <Avatar className="size-9 rounded-sm">
                   <AvatarImage
                     loading="lazy"
                     alt={nextSong?.name}
@@ -50,7 +50,7 @@ function UpNextSongs() {
                   })`}
                   className="flex flex-col cursor-pointer leading-tight"
                 >
-                  <p className="w-24 font-semibold truncate">
+                  <p className="w-24 mb-0.5 font-semibold truncate">
                     {parse(nextSong?.name)}
                   </p>
                   <p className="w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
