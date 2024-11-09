@@ -40,16 +40,17 @@ function Login() {
           payload
         );
         if (res.success) {
-            await api.post(`/api/login`, payload);
+          await api.post(`/api/login`, payload);
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }
       } else {
         toast.error("Missing Name, Email and Photo URL");
       }
-      setLoader(false);
     } catch (error: any) {
       toast.error(error?.message);
+    } finally {
+      setLoader(false);
     }
   };
   return (
@@ -63,10 +64,10 @@ function Login() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500/70 rounded-2xl shadow-md">
+        <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500/80 rounded-2xl shadow-md">
           <div>
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
-            <p className=" text-zinc-400 text-xl">
+            <p className=" text-zinc-300 text-xl">
               lets get to know <br /> each other.
             </p>
           </div>
@@ -74,9 +75,9 @@ function Login() {
             <Button
               disabled={loader}
               onClick={handleLogin}
-              className=" gap-1.5 items-center shadow-none px-7 py-5"
+              className=" gap-1.5 w-56 items-center justify-center flex shadow-none px-1 py-5"
             >
-              <FcGoogle className=" size-5" />
+              <FcGoogle className=" size-5 " />
               {loader ? "Signing in..." : "Continue with Google"}
             </Button>
             {typeof window !== "undefined" &&
