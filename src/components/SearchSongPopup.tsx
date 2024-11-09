@@ -208,7 +208,7 @@ function SearchSongPopup({
             placeholder={
               youtube
                 ? "Paste youtube playlist url to add songs"
-                : "Search Song"
+                : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
           />
