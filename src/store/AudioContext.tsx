@@ -83,10 +83,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (backgroundVideoRef.current) {
         backgroundVideoRef.current.src = "";
       }
-      audioRef.current.src = "";
       if (videoRef.current) {
         videoRef.current.src = "";
       }
+      audioRef.current.src = "";
       const currentVideoUrl = getURL(song);
 
       audioRef.current.src = currentVideoUrl;
@@ -94,12 +94,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
-          if (videoRef.current) {
-            videoRef.current?.play();
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current?.play();
-          }
           document.title = song?.name;
           setIsPlaying(true);
         })
@@ -113,12 +107,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const pause = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
-      if (videoRef.current) {
-        videoRef.current?.pause();
-      }
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current?.pause();
-      }
     }
     setIsPlaying(false);
   }, []);
@@ -129,12 +117,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
-          if (videoRef.current) {
-            videoRef.current.play();
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current.play();
-          }
           setIsPlaying(true);
         })
         .catch((error) => {
@@ -230,6 +212,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           if (videoRef.current) {
             videoRef.current.currentTime = e.seekTime;
           }
+          if (backgroundVideoRef.current) {
+            backgroundVideoRef.current.currentTime = e.seekTime;
+          }
         }
       });
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
@@ -273,10 +258,24 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   }, []);
   useEffect(() => {
-    const handlePlay = () => (
-      requestAnimationFrame(updateProgress), setIsPlaying(true)
-    );
-    const handlePause = () => setIsPlaying(false);
+    const handlePlay = () => {
+      requestAnimationFrame(updateProgress), setIsPlaying(true);
+      if (videoRef.current) {
+        videoRef.current.play();
+      }
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.play();
+      }
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.pause();
+      }
+    };
     const handleCanPlay = () => {
       setMediaSession();
 
