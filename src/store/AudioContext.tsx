@@ -89,7 +89,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
       const currentVideoUrl = getURL(song);
       if (song?.source == "youtube") {
-        audioRef.current.src = await checkIsCached(song?.id);
+        const url = await checkIsCached(song?.id);
+        if (url) {
+          audioRef.current.src = url;
+        } else {
+          audioRef.current.src = currentVideoUrl;
+        }
       } else {
         audioRef.current.src = currentVideoUrl;
       }
