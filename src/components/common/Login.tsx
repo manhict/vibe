@@ -40,7 +40,6 @@ function Login() {
           payload
         );
         if (res.success) {
-          await api.post(`/api/login`, payload);
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }

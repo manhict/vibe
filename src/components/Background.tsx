@@ -7,7 +7,7 @@ function Background() {
   useCache();
 
   return (
-    <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center py-4 w-full">
+    <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center w-full">
       {currentSong?.source == "youtube" ? (
         <video
           //@ts-expect-error: missing
