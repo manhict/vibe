@@ -94,7 +94,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         </a>
         <Dialog key={"user profile"}>
           <DialogTrigger>
-            <Avatar className="size-10 cursor-pointer">
+            <Avatar className="size-10 max-md:size-8 cursor-pointer">
               <AvatarImage
                 width={500}
                 height={500}

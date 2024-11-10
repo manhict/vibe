@@ -21,6 +21,7 @@ import UpNextSongs from "./UpNextSongs";
 import { useSocket } from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { BsPip } from "react-icons/bs";
+import InviteFriends from "./InviteFriends";
 function Player() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { messages } = useSocket();
@@ -128,7 +129,7 @@ function Player() {
   }, [isChatOpen]);
   const [pip, setPIP] = useState<boolean>(false);
   return (
-    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-8 px-5 flex flex-col items-center justify-center gap-[2.5dvh]">
+    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-8 md:px-5 flex flex-col items-center justify-center px-4 gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
         {isChatOpen && (
           <motion.div
@@ -345,7 +346,7 @@ function Player() {
             <VolumeControl />
           </div>
         </div>
-        <div className=" select-none -my-1 flex items-center gap-4 px-4 w-full text-xs">
+        <div className=" select-none -my-1 flex items-center gap-4 md:px-4 w-full text-xs">
           <p className=" progress">{formattedProgress}</p>
 
           <Slider
@@ -398,6 +399,7 @@ function Player() {
         <UpNextSongs />
         <Listeners className=" max-md:flex hidden mt-10 -mb-10" />
       </div>
+      <InviteFriends className=" w-full md:hidden" />
     </div>
   );
 }
