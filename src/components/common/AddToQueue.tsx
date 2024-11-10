@@ -115,7 +115,7 @@ function AddToQueue() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="text-lg font-semibold"
+            className="md:text-lg max-md:pl-1.5 text-base font-semibold"
           >
             In Queue {total && total > 0 && `(${total})`}
           </motion.p>
