@@ -379,7 +379,10 @@ function Player() {
               } size-5 cursor-pointer hover:fill-zinc-200 `}
             />
           </svg>
-          <div title="Suggestions! Coming Soon">
+          <div
+            onClick={() => toast.info("Suggestions! Coming Soon")}
+            title="Suggestions! Coming Soon"
+          >
             <svg
               width="25"
               height="26"
