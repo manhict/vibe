@@ -84,7 +84,10 @@ function OnBoarding() {
                 <div className=" flex w-full items-center justify-between p-7">
                   {currentStep !== 3 && (
                     <p
-                      onClick={handleOnboarding}
+                      onClick={() => {
+                        localStorage.setItem("o", "false");
+                        setShowOnboarding(false);
+                      }}
                       className=" text-zinc-400 text-base cursor-pointer"
                     >
                       Skip
