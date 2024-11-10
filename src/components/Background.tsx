@@ -29,7 +29,7 @@ function Background() {
               style={{
                 backgroundImage: `url('${
                   currentSong?.image[currentSong?.image?.length - 1]?.url ||
-                  "/bg.webp"
+                  "/mask.svg"
                 }')`,
               }}
             />
@@ -41,7 +41,7 @@ function Background() {
           style={{
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||
-              "/bg.webp"
+              "/mask.svg"
             }')`,
           }}
         />
