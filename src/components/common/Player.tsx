@@ -192,7 +192,7 @@ function Player() {
                         videoRef?.current &&
                           videoRef?.current?.requestPictureInPicture().catch();
                       }}
-                      className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-5 bottom-2.5 right-2.5"
+                      className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-5 top-2.5 right-2.5"
                     />
                   )}
                   {showVideo ? (
