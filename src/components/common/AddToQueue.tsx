@@ -88,7 +88,7 @@ function AddToQueue() {
   };
 
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-[#49454F] w-[45%] rounded-xl p-3 pr-0">
+    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-white/15 w-[45%] rounded-xl p-3 pr-0">
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div
