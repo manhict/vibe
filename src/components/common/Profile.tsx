@@ -17,6 +17,7 @@ import { socket } from "@/app/socket";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import OnBoarding from "./OnBoarding";
+import { Input } from "../ui/input";
 function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser } = useUserContext();
 
@@ -107,14 +108,14 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <AvatarFallback>SX</AvatarFallback>
             </Avatar>
           </DialogTrigger>
-          <DialogContent className="w-fit border-none bg-transparent p-0">
-            <DialogHeader>
+          <DialogContent className="w-fit flex flex-col border-none bg-transparent p-0">
+            <DialogHeader className=" h-0">
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
             <div className="w-fit  flex items-center justify-center">
-              <div className="flex flex-col bg-black/80 p-5 items-center justify-center w-[20rem] overflow-hidden rounded-2xl">
-                <Avatar className="size-24 cursor-pointer">
+              <div className="flex flex-col bg-gradient-to-t from-[#434343] overflow-hidden to-gray-500/90  p-5 items-center justify-center w-[20rem] rounded-2xl">
+                <Avatar className="size-24">
                   <AvatarImage
                     width={500}
                     height={500}
@@ -127,10 +128,40 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   />
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
-                <p className=" my-4">
+                <p className=" my-2.5 font-medium">
                   {user?.name} ({user?.username})
                 </p>
+
+                <div className=" flex gap-2.5  w-full flex-col">
+                  <Input
+                    disabled
+                    placeholder="email"
+                    readOnly
+                    value={user?.email}
+                  />
+
+                  <Input
+                    readOnly
+                    placeholder="name"
+                    name="name"
+                    disabled
+                    defaultValue={user?.name}
+                  />
+
+                  <Input
+                    disabled
+                    readOnly
+                    placeholder="username"
+                    name="username"
+                    defaultValue={user?.username}
+                  />
+                  <p className=" text-xs p-0.5 text-zinc-400">
+                    Hint :- Try changing ur google account details.
+                  </p>
+                </div>
                 <Button
+                  variant={"default"}
+                  className=" w-full mt-2.5"
                   onClick={async () => {
                     const res = await api.get("/api/logout");
                     if (res.success) {
@@ -140,20 +171,6 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                 >
                   Logout
                 </Button>
-                {/* <form className=" flex gap-2.5 mt-4 mb-1.5 w-full flex-col">
-   {/* <Input placeholder="ID" readOnly value={user?._id} /> */}
-
-                {/* <Input
-     placeholder="username"
-     name="username"
-     defaultValue={user?.username}
-   />
-   <DialogClose>
-     <Button variant={"secondary"} className="w-full">
-       Update
-     </Button>
-   </DialogClose> */}
-                {/* </form> */}
               </div>
             </div>
           </DialogContent>
