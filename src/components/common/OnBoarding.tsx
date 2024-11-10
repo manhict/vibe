@@ -94,7 +94,7 @@ function OnBoarding() {
                   <Button
                     className={`${
                       currentStep == 3
-                        ? "w-full bg-[#9747FF] hover:bg-[#9747FF]/80 text-white outline-[#9747FF]"
+                        ? "w-full bg-[#9747FF] hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
                         : ""
                     } `}
                     onClick={handleOnboarding}
