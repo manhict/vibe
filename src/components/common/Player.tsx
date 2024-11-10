@@ -330,7 +330,17 @@ function Player() {
               </div>
               <div className="text-sm cursor-pointer gap-1.5 w-[30%] items-center flex">
                 {volume == 0 ? (
-                  <VolumeX onClick={() => setVolume(0.5)} className=" size-6" />
+                  <VolumeX
+                    onClick={() => {
+                      const volume = localStorage.getItem("volume");
+                      if (volume) {
+                        setVolume(Number(volume));
+                        return;
+                      }
+                      setVolume(0.2);
+                    }}
+                    className=" size-6"
+                  />
                 ) : volume < 0.5 ? (
                   <Volume1 onClick={() => setVolume(0)} className="size-6" />
                 ) : (
