@@ -87,7 +87,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         videoRef.current.src = "";
       }
       audioRef.current.src = "";
-      const currentVideoUrl = getURL(song);
+      const currentVideoUrl = getURL(song).replace(
+        process.env.VIDEO_STREAM_URI || "",
+        process.env.STREAM_URL || ""
+      );
 
       audioRef.current.src = currentVideoUrl;
 

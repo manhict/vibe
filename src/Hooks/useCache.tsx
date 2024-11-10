@@ -27,12 +27,12 @@ function useCache() {
         videoRef?.current.src !==
           currentVideoUrl.replace(
             process.env.VIDEO_STREAM_URI || "",
-            "https://sstream.onrender.com/stream"
+            process.env.BACKGROUND_STREAM_URI || ""
           )
       ) {
         videoRef.current.src = currentVideoUrl.replace(
           process.env.VIDEO_STREAM_URI || "",
-          "https://sstream.onrender.com/stream"
+          process.env.BACKGROUND_STREAM_URI || ""
         );
       }
     }
