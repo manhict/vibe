@@ -332,11 +332,6 @@ function Player() {
                 {volume == 0 ? (
                   <VolumeX
                     onClick={() => {
-                      const volume = localStorage.getItem("volume");
-                      if (volume && Number(volume) !== 0) {
-                        setVolume(Number(volume));
-                        return;
-                      }
                       setVolume(0.2);
                     }}
                     className=" size-6"
