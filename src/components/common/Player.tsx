@@ -163,7 +163,15 @@ function Player() {
               {currentSong?.source !== "youtube" ? (
                 <Image
                   priority
-                  title={currentSong?.name || ""}
+                  title={
+                    currentSong?.name
+                      ? `${currentSong.name} - Added by ${
+                          currentSong?.addedByUser?.username !== user?.username
+                            ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
+                            : "You"
+                        }`
+                      : "No song available"
+                  }
                   alt={currentSong?.name || ""}
                   height={300}
                   width={300}
@@ -201,7 +209,16 @@ function Player() {
                       ref={videoRef}
                       muted
                       playsInline
-                      title={currentSong?.name || ""}
+                      title={
+                        currentSong?.name
+                          ? `${currentSong.name} - Added by ${
+                              currentSong?.addedByUser?.username !==
+                              user?.username
+                                ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
+                                : "You"
+                            }`
+                          : "No song available"
+                      }
                       height={300}
                       width={300}
                       onLoadStart={() => {
@@ -215,7 +232,16 @@ function Player() {
                   ) : (
                     <Image
                       priority
-                      title={currentSong?.name || ""}
+                      title={
+                        currentSong?.name
+                          ? `${currentSong.name} - Added by ${
+                              currentSong?.addedByUser?.username !==
+                              user?.username
+                                ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
+                                : "You"
+                            }`
+                          : "No song available"
+                      }
                       alt={currentSong?.name || ""}
                       height={300}
                       width={300}
