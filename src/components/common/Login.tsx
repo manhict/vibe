@@ -75,7 +75,7 @@ function Login() {
             <Button
               disabled={loader}
               onClick={handleLogin}
-              className=" gap-1.5 w-56 items-center justify-center flex shadow-none px-1 py-5"
+              className=" gap-1.5 w-52 items-center justify-center flex shadow-none px-1 py-5"
             >
               <FcGoogle className=" size-5 " />
               {loader ? "Signing in..." : "Continue with Google"}

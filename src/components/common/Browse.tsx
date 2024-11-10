@@ -42,7 +42,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       >
         Tough Choice, isn&apos;t it
       </motion.p>
-      <div className=" flex items-start px-7 flex-wrap relative justify-center w-full gap-6">
+      <div className=" flex items-start  px-7 flex-wrap relative justify-center w-full gap-6">
         {data.map((room, index) => (
           <motion.a
             title={room?.name[0]}
@@ -71,7 +71,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               style={{
                 backgroundImage: `url('${room?.background || "/bg.webp"}' ) `,
               }}
-              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] w-[12vw] rounded-md min-h-[84px] min-w-[84px] p-4"
+              className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] w-[12vw] rounded-md min-h-[100px] min-w-[100px] p-4"
             ></motion.div>
             <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize  font-medium  tracking-tight truncate w-[12vw] mt-2">
               {room?.name[0]}
@@ -96,7 +96,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         >
           <a
             href="/v"
-            className=" hover:bg-zinc-800 transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[84px] min-w-[84px] group"
+            className=" hover:bg-zinc-800 transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[100px] min-w-[100px] group"
           >
             <motion.svg
               initial={{
@@ -111,7 +111,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
                 type: "spring",
                 stiffness: 45,
               }}
-              className=" h-[5vw] w-[5vw] rounded-md "
+              className="md:h-[5vw] md:w-[5vw] h-[10vw] w-[10vw] rounded-md "
               viewBox="0 0 68 68"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +122,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               />
             </motion.svg>
           </a>
-          <p className=" text-center mt-1.5 text-[1.3vw] font-medium   max-md:text-sm tracking-tight transition-all duration-150 ">
+          <p className=" text-center mt-1.5 text-[1.3vw] font-medium   max-md:text-sm max-md:mt-3 tracking-tight transition-all duration-150 ">
             Create Room
           </p>
         </motion.div>
