@@ -22,6 +22,7 @@ import { FaSpotify } from "react-icons/fa";
 
 function Login() {
   const { setUser, user } = useUserContext();
+
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -53,29 +54,30 @@ function Login() {
       setLoader(false);
     }
   };
+
   return (
     <Dialog key={"user Login"} defaultOpen={user ? false : true}>
       <DialogTrigger className=" border max-md:px-0 max-md:border-none border-[#79747E] h-full flex justify-center items-center px-5 rounded-xl text-base">
         <p className=" max-md:hidden">Login / SignUp</p>
         <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
       </DialogTrigger>
-      <DialogContent className="w-fit flex items-center justify-center bg-transparent border-none">
-        <DialogHeader>
+      <DialogContent className="w-fit flex-col flex items-center justify-center bg-transparent border-none">
+        <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className=" w-fit flex flex-col h-72 p-6 justify-between bg-zinc-500/80 rounded-2xl shadow-md">
-          <div>
+        <div className=" w-[17rem] flex flex-col gap-4  justify-between bg-gradient-to-t from-[#434343] overflow-hidden to-gray-500/90  rounded-2xl shadow-md">
+          <div className=" p-5 mb-16">
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
-            <p className=" text-zinc-300 text-xl">
+            <p className=" text-zinc-400 text-xl">
               lets get to know <br /> each other.
             </p>
           </div>
-          <div className=" flex flex-col items-center gap-2 justify-center">
+          <div className=" p-5 flex flex-col items-center gap-2 justify-center">
             <Button
               disabled={loader}
               onClick={handleLogin}
-              className=" gap-1.5 w-52 items-center justify-center flex shadow-none px-1 py-5"
+              className=" gap-1.5 w-56 items-center justify-center flex shadow-none px-1 py-5"
             >
               <FcGoogle className=" size-5 " />
               {loader ? "Signing in..." : "Continue with Google"}

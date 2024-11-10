@@ -76,8 +76,8 @@ function Listeners({ className }: { className?: string }) {
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[40%] max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
-        <DialogHeader>
+      <DialogContent className="w-[40%] flex-col max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
+        <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>

@@ -185,8 +185,24 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (data.success) {
       const value = data.data as data;
       if (value?.results?.length > 0) {
-        setQueue((prev) => [...prev, ...(value?.results || [])]);
+        setQueue((prev) => {
+          // Create a Set with IDs from the previous queue to track unique songs
+          const songIds = new Set(prev.map((song) => song.id));
+
+          // Filter new results to include only songs not already in the queue
+          const uniqueNewSongs = (value.results || []).filter((song) => {
+            if (!songIds.has(song.id)) {
+              songIds.add(song.id); // Add new song ID to Set
+              return true;
+            }
+            return false;
+          });
+
+          // Update the queue with only unique songs
+          return [...prev, ...uniqueNewSongs];
+        });
       }
+
       setTotal(value?.total);
       setPage(value?.start + 1);
     }

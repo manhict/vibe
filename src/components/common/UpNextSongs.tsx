@@ -16,7 +16,7 @@ function UpNextSongs() {
 
   return (
     <div className="hide-scrollbar select-none w-full flex gap-2 min-h-5 items-center justify-center">
-      <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
+      <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5 px-1">
         {upNextSongs.length > 0 &&
           upNextSongs
             .filter((s) => s.id !== currentSong?.id)
@@ -36,7 +36,7 @@ function UpNextSongs() {
                     alt={nextSong?.name}
                     height={500}
                     width={500}
-                    className="h-full w-full border"
+                    className="h-full object-cover w-full border"
                     src={
                       nextSong?.image[nextSong?.image?.length - 1]?.url ||
                       "/cache.jpg"

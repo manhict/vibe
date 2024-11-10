@@ -22,7 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
-import { FaYoutube } from "react-icons/fa";
+import { GrYoutube } from "react-icons/gr";
 import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -196,7 +196,7 @@ function SearchSongPopup({
     <Dialog key={"songs"}>
       {youtube ? (
         <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
-          <FaYoutube className="size-4" />
+          <GrYoutube className="size-4" />
         </DialogTrigger>
       ) : (
         <>
@@ -232,7 +232,7 @@ function SearchSongPopup({
         </>
       )}
       <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
-        <DialogHeader>
+        <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
@@ -306,7 +306,9 @@ function SearchSongPopup({
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
                 <div className="text-sm font-medium w-10/12 truncate">
-                  <p className="font-semibold truncate w-11/12">{song.name}</p>
+                  <p className="font-semibold truncate w-11/12">
+                    {parse(song.name)}
+                  </p>
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {formatArtistName(song.artists.primary)}
                   </p>

@@ -146,7 +146,7 @@ function SearchQueueList({
                       alt={song.name}
                       height={500}
                       width={500}
-                      className="rounded-md group-hover:opacity-40 "
+                      className="rounded-md object-cover group-hover:opacity-40 "
                       src={song.image[song.image.length - 1].url}
                     />
                     <AvatarFallback>SX</AvatarFallback>

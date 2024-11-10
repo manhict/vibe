@@ -160,14 +160,14 @@ function QueueList({
               currentSong?.id == song?.id && "bg-white/15"
             } hover:bg-white/10 cursor-pointer rounded-xl items-center justify-between`}
           >
-            <div className="relative">
+            <div title={String(song?.order)} className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
                 <AvatarImage
                   loading="lazy"
                   alt={song.name}
                   height={500}
                   width={500}
-                  className="rounded-md group-hover:opacity-40  "
+                  className="rounded-md object-cover group-hover:opacity-40  "
                   src={song.image[song.image.length - 1].url}
                 />
                 <AvatarFallback>SX</AvatarFallback>

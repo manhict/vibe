@@ -57,6 +57,8 @@ function Page() {
             </div>
             <div className=" w-1/2  max-md:w-full">
               <video
+                preload="true"
+                playsInline
                 src="/vibe.mp4"
                 className=" rounded-xl"
                 muted
