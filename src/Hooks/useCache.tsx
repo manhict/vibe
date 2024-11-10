@@ -16,21 +16,18 @@ function useCache() {
       //   currentSong.id
       // );
 
-      if (
-        backgroundVideoRef?.current &&
-        backgroundVideoRef?.current.src !== currentVideoUrl
-      ) {
-        backgroundVideoRef.current.src = currentVideoUrl;
+      if (videoRef?.current && videoRef?.current.src !== currentVideoUrl) {
+        videoRef.current.src = currentVideoUrl;
       }
       if (
-        videoRef?.current &&
-        videoRef?.current.src !==
+        backgroundVideoRef?.current &&
+        backgroundVideoRef?.current.src !==
           currentVideoUrl.replace(
             process.env.VIDEO_STREAM_URI || "",
             process.env.BACKGROUND_STREAM_URI || ""
           )
       ) {
-        videoRef.current.src = currentVideoUrl.replace(
+        backgroundVideoRef.current.src = currentVideoUrl.replace(
           process.env.VIDEO_STREAM_URI || "",
           process.env.BACKGROUND_STREAM_URI || ""
         );

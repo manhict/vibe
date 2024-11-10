@@ -20,6 +20,7 @@ function Background() {
               title={currentSong?.name || ""}
               height={300}
               width={300}
+              onCanPlay={(e) => e?.currentTarget?.play().catch()}
               className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
             />
           ) : (

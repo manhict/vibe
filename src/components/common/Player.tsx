@@ -227,6 +227,7 @@ function Player() {
                       onLoadedMetadata={() => {
                         setPIP(true);
                       }}
+                      onCanPlay={(e) => e?.currentTarget?.play().catch()}
                       className="cover h-full object-cover  w-full"
                     ></video>
                   ) : (
