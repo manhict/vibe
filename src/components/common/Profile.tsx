@@ -40,8 +40,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   }
   return (
     <>
-      <OnBoarding />
       <div className=" flex items-center gap-2">
+        <OnBoarding />
         <a href={"/browse"}>
           <Button className=" md:block hidden text-[#D0BCFF] hover:bg-[#D0BCFF]/15 bg-[#D0BCFF]/20 rounded-lg">
             Rooms

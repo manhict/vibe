@@ -333,7 +333,7 @@ function Player() {
                   <VolumeX
                     onClick={() => {
                       const volume = localStorage.getItem("volume");
-                      if (volume && Number(volume)! <= 0) {
+                      if (volume && Number(volume) !== 0) {
                         setVolume(Number(volume));
                         return;
                       }

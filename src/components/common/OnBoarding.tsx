@@ -32,7 +32,7 @@ function OnBoarding() {
   };
   return (
     <Dialog key={"user Login"} open={showOnboarding || false}>
-      <DialogTrigger className=" h-0 w-0 p-0 "></DialogTrigger>
+      <DialogTrigger className=" absolute h-0 w-0 p-0 "></DialogTrigger>
       <DialogContent className="w-fit flex flex-col items-center justify-center bg-transparent border-none">
         <DialogHeader className=" h-0">
           <DialogTitle />
