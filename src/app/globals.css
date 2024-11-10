@@ -68,8 +68,8 @@
 }
 /* WebKit scrollbar styles (for Chrome, Safari) */
 ::-webkit-scrollbar {
-  width: 2.5px; /* Initially hide the scrollbar */
-  height: 2.5px; /* Initially hide the horizontal scrollbar */
+  width: 1.5px; /* Initially hide the scrollbar */
+  height: 1.5px; /* Initially hide the horizontal scrollbar */
 }
 
 .hide-scrollbar::-webkit-scrollbar {

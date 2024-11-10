@@ -356,7 +356,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         total,
         loading,
         handleUpdateQueue,
-
         setPage,
       }}
     >
