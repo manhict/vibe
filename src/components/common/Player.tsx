@@ -200,53 +200,54 @@ function Player() {
                   className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-5 top-2.5 right-2.5"
                 />
               )}
-              {showVideo ? (
-                <video
-                  ref={videoRef}
-                  muted
-                  playsInline
-                  title={
-                    currentSong?.name
-                      ? `${currentSong.name} - Added by ${
-                          currentSong?.addedByUser?.username !== user?.username
-                            ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
-                            : "You"
-                        }`
-                      : "No song available"
-                  }
-                  height={300}
-                  width={300}
-                  onLoadStart={() => {
-                    setPIP(false);
-                  }}
-                  onLoadedMetadata={() => {
-                    setPIP(true);
-                  }}
-                  onCanPlay={(e) => e?.currentTarget?.play().catch()}
-                  className="cover h-full object-cover  w-full"
-                ></video>
-              ) : (
-                <Image
-                  priority
-                  title={
-                    currentSong?.name
-                      ? `${currentSong.name} - Added by ${
-                          currentSong?.addedByUser?.username !== user?.username
-                            ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
-                            : "You"
-                        }`
-                      : "No song available"
-                  }
-                  alt={currentSong?.name || ""}
-                  height={300}
-                  width={300}
-                  className="cover z-10  h-full object-cover  w-full"
-                  src={
-                    currentSong?.image[currentSong.image.length - 1].url ||
-                    "/cache.jpg"
-                  }
-                />
-              )}
+
+              <video
+                style={{ opacity: showVideo ? 1 : 0 }}
+                ref={videoRef}
+                muted
+                playsInline
+                title={
+                  currentSong?.name
+                    ? `${currentSong.name} - Added by ${
+                        currentSong?.addedByUser?.username !== user?.username
+                          ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
+                          : "You"
+                      }`
+                    : "No song available"
+                }
+                height={300}
+                width={300}
+                onLoadStart={() => {
+                  setPIP(false);
+                }}
+                onLoadedMetadata={() => {
+                  setPIP(true);
+                }}
+                onCanPlay={(e) => e?.currentTarget?.play().catch()}
+                className="cover absolute h-full object-cover  w-full"
+              ></video>
+
+              <Image
+                style={{ opacity: showVideo ? 0 : 1 }}
+                priority
+                title={
+                  currentSong?.name
+                    ? `${currentSong.name} - Added by ${
+                        currentSong?.addedByUser?.username !== user?.username
+                          ? `${currentSong?.addedByUser?.name} (${currentSong?.addedByUser?.username})`
+                          : "You"
+                      }`
+                    : "No song available"
+                }
+                alt={currentSong?.name || ""}
+                height={300}
+                width={300}
+                className="cover z-10  h-full object-cover  w-full"
+                src={
+                  currentSong?.image[currentSong.image.length - 1].url ||
+                  "/cache.jpg"
+                }
+              />
             </div>
           )}
 
