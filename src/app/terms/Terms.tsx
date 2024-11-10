@@ -3,19 +3,19 @@ import HomeFooter from "@/components/common/HomeFooter";
 import { motion } from "framer-motion";
 function Terms() {
   return (
-    <div className=" bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
-      <motion.div
-        initial={{
-          opacity: 0,
-          filter: "blur(10px)",
-        }}
-        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-        transition={{
-          duration: 0.75,
-        }}
-        exit={{ opacity: 0 }}
-        className=" flex items-center font-medium flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover"
-      >
+    <motion.div
+      initial={{
+        opacity: 0,
+        filter: "blur(10px)",
+      }}
+      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+      transition={{
+        duration: 0.75,
+      }}
+      exit={{ opacity: 0 }}
+      className=" bg-[url('/mask.svg')] bg-no-repeat bg-cover "
+    >
+      <div className=" flex items-center font-medium flex-col  w-full justify-center bg-[url('/mask.svg')] bg-cover">
         <div className="w-8/12 max-xl:w-11/12 max-sm:w-full  max-lg:w-11/12 max-md:w-full max-md:px-5 py-7">
           <article className="space-y-8">
             <header className=" mb-5">
@@ -173,8 +173,8 @@ function Terms() {
           </article>
         </div>
         <HomeFooter className=" md:relative md:mt-4" />
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }
 
