@@ -146,7 +146,7 @@ function SearchSongPopup({
       const batchSize = 100;
       const results = songs?.data.results;
       const totalBatches = Math.ceil(results.length / batchSize);
-      const concurrencyLimit = 5; // Adjust the concurrency limit as needed
+      const concurrencyLimit = 1; // Adjust the concurrency limit as needed
 
       const addBatch = async (batch: any) => {
         return api.post(
