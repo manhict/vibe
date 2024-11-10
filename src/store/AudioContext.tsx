@@ -238,6 +238,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         setProgress(currentTime);
+
+        lastEmittedTime.current = currentTime;
+      }
+
+      if (Math.abs(currentTime - lastEmitted.current) >= 5) {
+        socket.emit("progress", currentTime);
+        lastEmitted.current = currentTime;
         if (videoRef.current) {
           if (videoRef.current.paused && !audioRef.current.paused) {
             videoRef.current?.play();
@@ -250,12 +257,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           }
           backgroundVideoRef.current.currentTime = currentTime;
         }
-        lastEmittedTime.current = currentTime;
-      }
-
-      if (Math.abs(currentTime - lastEmitted.current) >= 5) {
-        socket.emit("progress", currentTime);
-        lastEmitted.current = currentTime;
       }
       if (audioRef.current.paused == false) {
         requestAnimationFrame(updateProgress);
