@@ -194,7 +194,7 @@ function Player() {
                   }}
                   className=" relative"
                 >
-                  {pip && (
+                  {pip && showVideo && (
                     <BsPip
                       onClick={(e) => {
                         e.stopPropagation();
