@@ -11,7 +11,7 @@ export const VolumeControl: React.FC = () => {
       max={1}
       step={0.02}
       value={[volume]}
-      onValueChange={(e) => setVolume(e[0])}
+      onValueChange={(e) => setVolume(e[0], true)}
     />
   );
 };

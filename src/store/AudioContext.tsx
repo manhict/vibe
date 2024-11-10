@@ -26,7 +26,7 @@ interface AudioContextType {
   unmute: () => void;
   playPrev: () => void;
   playNext: () => void;
-  setVolume: (value: number) => void;
+  setVolume: (value: number, save?: boolean) => void;
   isPlaying: boolean;
   isMuted: boolean;
   seek: (value: number) => void;
@@ -156,10 +156,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   }, []);
 
   // Set volume
-  const handleVolumeChange = (value: number) => {
+  const handleVolumeChange = (value: number, save?: boolean) => {
     if (audioRef.current) {
       audioRef.current.volume = value;
-      localStorage.setItem("volume", String(value));
+      if (save) {
+        localStorage.setItem("volume", String(value));
+      }
     }
     setVolume(value);
   };
