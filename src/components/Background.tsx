@@ -14,7 +14,6 @@ function Background() {
         <>
           {showVideo ? (
             <video
-              //@ts-expect-error: missing
               ref={backgroundVideoRef}
               muted
               playsInline

@@ -20,6 +20,7 @@ import UpvotedBy from "./UpvotedBy";
 import UpNextSongs from "./UpNextSongs";
 import { useSocket } from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
+import { BsPip } from "react-icons/bs";
 function Player() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { messages } = useSocket();
@@ -125,6 +126,7 @@ function Player() {
       document.removeEventListener("keydown", handleCheatCodes);
     };
   }, [isChatOpen]);
+  const [pip, setPIP] = useState<boolean>(false);
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border border-[#49454F] flex-grow rounded-xl p-8 px-5 flex flex-col items-center justify-center gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
@@ -181,17 +183,33 @@ function Player() {
 
                     setShowVideo(true), localStorage.setItem("v", "true");
                   }}
+                  className=" relative"
                 >
+                  {pip && (
+                    <BsPip
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        videoRef?.current &&
+                          videoRef?.current?.requestPictureInPicture().catch();
+                      }}
+                      className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-5 bottom-2.5 right-2.5"
+                    />
+                  )}
                   {showVideo ? (
                     <video
-                      //@ts-expect-error: missing
                       ref={videoRef}
                       muted
                       playsInline
                       title={currentSong?.name || ""}
                       height={300}
                       width={300}
-                      className="cover  h-full object-cover  w-full"
+                      onLoadStart={() => {
+                        setPIP(false);
+                      }}
+                      onLoadedMetadata={() => {
+                        setPIP(true);
+                      }}
+                      className="cover h-full object-cover  w-full"
                     ></video>
                   ) : (
                     <Image

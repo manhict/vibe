@@ -39,8 +39,8 @@ interface AudioContextType {
   setLoop: React.Dispatch<SetStateAction<boolean>>;
   shuffled: boolean;
   setShuffled: React.Dispatch<SetStateAction<boolean>>;
-  videoRef: React.RefObject<HTMLAudioElement> | undefined;
-  backgroundVideoRef: React.RefObject<HTMLAudioElement> | undefined;
+  videoRef: React.RefObject<HTMLVideoElement> | undefined;
+  backgroundVideoRef: React.RefObject<HTMLVideoElement> | undefined;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -264,19 +264,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const handlePlay = () => {
       requestAnimationFrame(updateProgress), setIsPlaying(true);
       if (videoRef.current) {
-        videoRef.current.play();
+        videoRef.current?.play();
       }
       if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.play();
+        backgroundVideoRef.current?.play();
       }
     };
     const handlePause = () => {
       setIsPlaying(false);
       if (videoRef.current) {
-        videoRef.current.pause();
+        videoRef.current?.pause();
       }
       if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.pause();
+        backgroundVideoRef.current?.pause();
       }
     };
     const handleCanPlay = () => {
