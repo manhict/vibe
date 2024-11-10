@@ -58,6 +58,7 @@ function QueueList({
         return;
       }
       try {
+        handleUpVote(song);
         setQueue((prevQueue) => {
           const songIndex = prevQueue.findIndex((item) => item.id === song.id);
           const songExists = songIndex !== -1;
@@ -91,7 +92,6 @@ function QueueList({
             ];
           }
         });
-        handleUpVote(song);
       } catch (error) {
         console.log(error);
       }
@@ -156,7 +156,9 @@ function QueueList({
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
-            } py-2 pl-2 hover:bg-white/10 cursor-pointer hover:rounded-xl items-center justify-between`}
+            } py-2 pl-2 ${
+              currentSong?.id == song?.id && "bg-white/15"
+            } hover:bg-white/10 cursor-pointer rounded-xl items-center justify-between`}
           >
             <div className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -185,7 +187,7 @@ function QueueList({
                 </p>
               </div>
 
-              <p className="text-[#D0BCFF] truncate text-xs">
+              <p className="text-[#D0BCFF] opacity-75 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
                 {currentSong?.id == song.id && "- Currently playing"}
               </p>

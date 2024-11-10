@@ -49,9 +49,13 @@ function SearchQueueList({
       {
         if (!user) return toast.error("Login required");
         e.stopPropagation();
-        handleUpVote(song);
+        if (currentSong?.id == song.id) {
+          toast.info("Cant't vote currently playing song");
+          return;
+        }
 
         try {
+          handleUpVote(song);
           setQueue((prev) => {
             const songExists = prev.find((item) => item.id === song.id);
 
@@ -92,7 +96,7 @@ function SearchQueueList({
         }
       }
     },
-    [handleUpVote, user]
+    [handleUpVote, user, currentSong]
   );
 
   const Play = useCallback(
@@ -115,7 +119,7 @@ function SearchQueueList({
     <>
       {queue?.length > 0 ? (
         <div className=" py-2 pr-2 border-b-2 group-hover:opacity-100 flex flex-col overflow-y-scroll gap-1">
-          <p className=" font-semibold">Search Result</p>
+          <p className=" font-medium">Search Result</p>
           {queue?.map((song, i) => (
             <div
               title={
@@ -131,7 +135,9 @@ function SearchQueueList({
                 key={i}
                 className={`flex gap-2 ${
                   i !== queue.length && " border-white/5"
-                } py-2 pl-2  hover:bg-white/10  transition-all duration-150 cursor-pointer hover:rounded-xl items-center justify-between`}
+                } py-2 pl-2 hover:bg-white/15  cursor-pointer items-center justify-between ${
+                  currentSong?.id == song?.id && "bg-white/10"
+                } hover:bg-white/10 cursor-pointer rounded-xl`}
               >
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -140,7 +146,7 @@ function SearchQueueList({
                       alt={song.name}
                       height={500}
                       width={500}
-                      className="rounded-md group-hover:opacity-40 transition-all duration-500"
+                      className="rounded-md group-hover:opacity-40 "
                       src={song.image[song.image.length - 1].url}
                     />
                     <AvatarFallback>SX</AvatarFallback>
@@ -160,7 +166,7 @@ function SearchQueueList({
                     </p>
                   </div>
 
-                  <p className="text-[#D0BCFF] truncate text-[12px]">
+                  <p className="text-[#D0BCFF] opacity-75 truncate text-[12px]">
                     {formatArtistName(song.artists.primary)}
                   </p>
                 </div>
