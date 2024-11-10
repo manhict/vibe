@@ -12,8 +12,6 @@ import Chat from "./Chat";
 import Listeners from "./Listeners";
 import { Slider } from "../ui/slider";
 import LikeButton from "./LinkeButton";
-// import { socket } from "@/app/socket";
-// import useDebounce from "@/Hooks/useDebounce";
 import parse from "html-react-parser";
 import PlayButton from "./PlayButton";
 import UpvotedBy from "./UpvotedBy";
@@ -22,7 +20,7 @@ import { useSocket } from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { BsPip } from "react-icons/bs";
 import InviteFriends from "./InviteFriends";
-function Player() {
+function MemoPLayer() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { messages } = useSocket();
   const {
@@ -406,5 +404,5 @@ function Player() {
     </div>
   );
 }
-
+const Player = React.memo(MemoPLayer);
 export default Player;
