@@ -63,7 +63,6 @@ function Page() {
               muted
               loop
               autoPlay
-              controls
             />
           </div>
         </div>
