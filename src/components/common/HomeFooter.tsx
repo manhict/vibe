@@ -9,7 +9,7 @@ function HomeFooter({ className }: { className?: string }) {
   return (
     <footer
       className={cn(
-        `absolute bottom-7 flex-col text-white/80 gap-0.5  text-sm max-md:bottom-4 w-full flex justify-center items-center`,
+        `md:absolute max-md:py-5 md:bottom-7 flex-col text-white/80 gap-0.5  text-sm  w-full flex justify-center items-center`,
         className
       )}
     >

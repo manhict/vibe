@@ -5,7 +5,7 @@ function Blur({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "absolute h-dvh w-dvw bg-black/80 backdrop-blur-sm top-0",
+        "absolute min-h-dvh min-w-dvw bg-black/80 backdrop-blur-sm top-0",
         className
       )}
     ></div>
