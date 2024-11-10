@@ -162,6 +162,7 @@ function Player() {
             <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
               {currentSong?.source !== "youtube" ? (
                 <Image
+                  priority
                   title={currentSong?.name || ""}
                   alt={currentSong?.name || ""}
                   height={300}
@@ -213,6 +214,7 @@ function Player() {
                     ></video>
                   ) : (
                     <Image
+                      priority
                       title={currentSong?.name || ""}
                       alt={currentSong?.name || ""}
                       height={300}

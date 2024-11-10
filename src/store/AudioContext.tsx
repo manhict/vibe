@@ -251,7 +251,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         lastEmittedTime.current = currentTime;
       }
 
-      if (Math.abs(currentTime - lastEmitted.current) >= 7) {
+      if (Math.abs(currentTime - lastEmitted.current) >= 5) {
         socket.emit("progress", currentTime);
         lastEmitted.current = currentTime;
       }
