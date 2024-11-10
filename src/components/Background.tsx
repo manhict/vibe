@@ -12,32 +12,32 @@ function Background() {
     <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center w-full">
       {currentSong?.source == "youtube" ? (
         <>
-          {showVideo ? (
-            <video
-              ref={backgroundVideoRef}
-              muted
-              playsInline
-              title={currentSong?.name || ""}
-              height={300}
-              width={300}
-              onCanPlay={(e) => e?.currentTarget?.play().catch()}
-              className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
-            />
-          ) : (
-            <div
-              className="relative bg-cover  object-cover transition-all duration-700 bg-center w-full h-full"
-              style={{
-                backgroundImage: `url('${
-                  currentSong?.image[currentSong?.image?.length - 1]?.url ||
-                  "/mask.svg"
-                }')`,
-              }}
-            />
-          )}
+          <video
+            style={{ opacity: showVideo ? 1 : 0 }}
+            ref={backgroundVideoRef}
+            muted
+            playsInline
+            title={currentSong?.name || ""}
+            height={300}
+            width={300}
+            onCanPlay={(e) => e?.currentTarget?.play().catch()}
+            className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
+          />
+
+          <div
+            className=" absolute bg-cover  object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
+            style={{
+              backgroundImage: `url('${
+                currentSong?.image[currentSong?.image?.length - 1]?.url ||
+                "/mask.svg"
+              }')`,
+              opacity: showVideo ? 0 : 1,
+            }}
+          />
         </>
       ) : (
         <div
-          className="relative bg-cover  object-cover transition-all duration-700 bg-center w-full h-full"
+          className="relative bg-cover  object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
           style={{
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||
