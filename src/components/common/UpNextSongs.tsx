@@ -53,7 +53,7 @@ function UpNextSongs() {
                   <p className="w-24 mb-0.5 font-semibold truncate">
                     {parse(nextSong?.name)}
                   </p>
-                  <p className="w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
+                  <p className="w-20 text-[#D0BCFF] truncate text-[0.6rem] font-medium">
                     {formatArtistName(nextSong?.artists?.primary) || "Unknown"}
                   </p>
                 </div>
