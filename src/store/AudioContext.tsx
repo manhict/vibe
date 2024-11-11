@@ -71,7 +71,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentVolume, setVolume] = useState<number>(1);
   const [isLooped, setLoop] = useState<boolean>(false);
   const [shuffled, setShuffled] = useState<boolean>(false);
-  const { queue, listener } = useUserContext();
+  const { queue } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
@@ -252,7 +252,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
+      if (Math.abs(currentTime - lastEmitted.current) >= 4) {
+        socket.emit("progress", currentTime);
         lastEmitted.current = currentTime;
         // Sync video progress with audio progress
         if (videoRef.current) {
@@ -262,14 +263,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         if (backgroundVideoRef.current) {
           backgroundVideoRef.current.currentTime = currentTime;
         }
-        if (
-          listener?.isAdminActive &&
-          user?.role !== "admin" &&
-          !audioRef.current.paused
-        ) {
-          return;
-        }
-        socket.emit("progress", currentTime);
       }
 
       // If audio is not paused, keep updating progress
@@ -277,7 +270,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [user?.role, listener?.isAdminActive]);
+  }, []);
 
   useEffect(() => {
     const handlePlay = () => {
