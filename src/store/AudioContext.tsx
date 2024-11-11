@@ -239,15 +239,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         setProgress(currentTime);
         if (videoRef.current) {
-          if (videoRef.current.paused && !audioRef.current.paused) {
-            videoRef.current?.play();
-          }
           videoRef.current.currentTime = currentTime;
         }
         if (backgroundVideoRef.current) {
-          if (backgroundVideoRef.current.paused && !audioRef.current.paused) {
-            backgroundVideoRef.current?.play();
-          }
           backgroundVideoRef.current.currentTime = currentTime;
         }
         lastEmittedTime.current = currentTime;
@@ -266,10 +260,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const handlePlay = () => {
       requestAnimationFrame(updateProgress), setIsPlaying(true);
       if (videoRef.current) {
-        videoRef.current?.play();
+        videoRef.current.autoplay = true;
       }
       if (backgroundVideoRef.current) {
-        backgroundVideoRef.current?.play();
+        backgroundVideoRef.current.autoplay = true;
       }
     };
     const handlePause = () => {
