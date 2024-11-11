@@ -236,32 +236,36 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (audioRef.current) {
       const currentTime = audioRef.current.currentTime;
 
+      // Update the visual progress every second
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         setProgress(currentTime);
+
+        // Sync video progress with audio progress
         if (videoRef.current) {
-          if (videoRef.current.paused && !audioRef.current.paused) {
-            videoRef.current?.play();
-          }
           videoRef.current.currentTime = currentTime;
         }
+
         if (backgroundVideoRef.current) {
-          if (backgroundVideoRef.current.paused && !audioRef.current.paused) {
-            backgroundVideoRef.current?.play();
-          }
           backgroundVideoRef.current.currentTime = currentTime;
         }
+
+        // Update the last emitted time for progress
         lastEmittedTime.current = currentTime;
       }
 
+      // Emit progress to the server every 5 seconds
       if (Math.abs(currentTime - lastEmitted.current) >= 5) {
         socket.emit("progress", currentTime);
         lastEmitted.current = currentTime;
       }
-      if (audioRef.current.paused == false) {
+
+      // If audio is not paused, keep updating progress
+      if (!audioRef.current.paused) {
         requestAnimationFrame(updateProgress);
       }
     }
   }, []);
+
   useEffect(() => {
     const handlePlay = () => {
       requestAnimationFrame(updateProgress), setIsPlaying(true);
