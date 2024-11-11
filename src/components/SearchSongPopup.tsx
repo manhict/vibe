@@ -38,7 +38,7 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId, user } = useUserContext();
+  const { roomId, user, setQueue } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -132,12 +132,28 @@ function SearchSongPopup({
       { credentials: "include" }
     );
     if (added.success) {
+      await setQueue((prev) => {
+        // Create a Set with IDs from the previous queue to track unique songs
+        const songIds = new Set(prev.map((song) => song.id));
+
+        // Filter new results to include only songs not already in the queue
+        const uniqueNewSongs = (selectedSongs || []).filter((song) => {
+          if (!songIds.has(song.id)) {
+            songIds.add(song.id); // Add new song ID to Set
+            return true;
+          }
+          return false;
+        });
+
+        // Update the queue with only unique songs
+        return [...prev, ...uniqueNewSongs];
+      });
       emitMessage("update", "update");
       toast.success("Songs added to queue");
     }
     setSelectedSongs([]);
     toast.dismiss("adding");
-  }, [setSelectedSongs, selectedSongs, user, roomId]);
+  }, [setSelectedSongs, selectedSongs, user, roomId, setQueue]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
