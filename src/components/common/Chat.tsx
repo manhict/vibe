@@ -24,7 +24,7 @@ function Chat({
   setIsChatOpen,
 }: {
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
-  messagesEndRef: React.RefObject<HTMLDListElement>;
+  messagesEndRef: React.RefObject<HTMLDivElement>;
 }) {
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
@@ -152,14 +152,12 @@ function Chat({
         <X onClick={() => setIsChatOpen(false)} className=" cursor-pointer" />
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
-        <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
+        <div
+          ref={messagesEndRef}
+          className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll"
+        >
           {messages.map((message) => (
-            <div
-              title={message?.time}
-              //@ts-expect-error:ex
-              ref={messagesEndRef}
-              key={message?.message}
-            >
+            <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
                 <div className=" flex gap-2">
                   <Avatar className="size-9">
