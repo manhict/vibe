@@ -71,7 +71,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentVolume, setVolume] = useState<number>(1);
   const [isLooped, setLoop] = useState<boolean>(false);
   const [shuffled, setShuffled] = useState<boolean>(false);
-  const { queue } = useUserContext();
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
@@ -319,11 +318,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   }, [setMediaSession, lastEmitted, lastEmittedTime, updateProgress]);
 
-  useEffect(() => {
-    if (!currentSong && queue.length > 0 && audioRef.current) {
-      setCurrentSong(queue[0]);
-    }
-  }, [queue, currentSong]);
+  // useEffect(() => {
+  //   if (!currentSong && queue.length > 0 && audioRef.current) {
+  //     setCurrentSong(queue[0]);
+  //   }
+  // }, [queue, currentSong]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
