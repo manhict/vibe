@@ -15,7 +15,7 @@ import React, {
 import { useUserContext } from "./userStore";
 import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
-import getURL, { cacheVideo } from "@/utils/utils";
+import getURL from "@/utils/utils";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -181,6 +181,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // Play the next song in the queue
   const playNext = useCallback(() => {
     if (socket.connected) {
+      audioRef.current?.pause();
       emitMessage("playNext", "playNext");
     }
   }, []);
@@ -188,6 +189,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // Play the previous song in the queue
   const playPrev = useCallback(() => {
     if (socket.connected) {
+      audioRef.current?.pause();
       emitMessage("playPrev", "playPrev");
     }
   }, []);
@@ -315,12 +317,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!currentSong && queue.length > 0 && audioRef.current) {
       setCurrentSong(queue[0]);
-      const currentVideoUrl = getURL(queue[0]);
-      cacheVideo(currentVideoUrl, queue[0].id).then((audioUrl) => {
-        if (audioRef.current) {
-          audioRef.current.src = audioUrl;
-        }
-      });
     }
   }, [queue, currentSong]);
 
