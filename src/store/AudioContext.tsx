@@ -252,9 +252,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 2) {
-        if (listener?.isAdminActive && user?.role !== "admin") return;
-        socket.emit("progress", currentTime);
+      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
         lastEmitted.current = currentTime;
         // Sync video progress with audio progress
         if (videoRef.current) {
@@ -264,6 +262,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         if (backgroundVideoRef.current) {
           backgroundVideoRef.current.currentTime = currentTime;
         }
+        if (
+          listener?.isAdminActive &&
+          user?.role !== "admin" &&
+          !audioRef.current.paused
+        ) {
+          return;
+        }
+        socket.emit("progress", currentTime);
       }
 
       // If audio is not paused, keep updating progress
