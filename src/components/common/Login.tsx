@@ -57,9 +57,9 @@ function Login() {
 
   return (
     <Dialog key={"user Login"} defaultOpen={user ? false : true}>
-      <DialogTrigger className=" border max-md:px-0 max-md:border-none border-none h-full flex justify-center items-center px-5 rounded-xl text-base md:block  hover:bg-[#D0BCFF]/15 bg-[#D0BCFF]/20 text-[#D0BCFF] ">
+      <DialogTrigger className=" border max-md:px-2.5 max-md:border-none border-none h-full flex justify-center items-center px-5 rounded-xl text-base md:block  hover:bg-[#D0BCFF]/15 bg-[#D0BCFF]/20 text-[#D0BCFF] ">
         <p className=" max-md:hidden">Login / SignUp</p>
-        <LogIn className=" size-6 text-zinc-200 hidden max-md:block" />
+        <LogIn className=" size-5 text-zinc-200 hidden max-md:block" />
       </DialogTrigger>
       <DialogContent className="w-fit flex-col flex items-center justify-center bg-transparent border-none">
         <DialogHeader className=" h-0">
