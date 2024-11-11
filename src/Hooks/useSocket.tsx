@@ -238,9 +238,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     const controller = new AbortController();
     queueControllerRef.current = controller;
     const data = await api.get(
-      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${
-        queue.length > 1 ? queue.length : 70
-      }&name`,
+      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${queue.length}&name`,
       {
         headers: {
           nocache: "no-cache",

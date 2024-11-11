@@ -132,8 +132,11 @@ function SearchSongPopup({
       { credentials: "include" }
     );
     if (added.success) {
-      emitMessage("update", "update");
-      toast.success("Songs added to queue");
+      const t = setTimeout(() => {
+        emitMessage("update", "update");
+        toast.success("Songs added to queue");
+      }, 500);
+      return () => clearTimeout(t);
     }
     setSelectedSongs([]);
     toast.dismiss("adding");
