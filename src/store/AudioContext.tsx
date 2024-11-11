@@ -97,7 +97,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
-          document.title = song?.name;
           setIsPlaying(true);
         })
         .catch(() => {

@@ -38,7 +38,7 @@ function OnBoarding() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className=" w-[316px] h-[414px] flex flex-col gap-4 bg-gradient-to-t from-[#434343] overflow-hidden to-gray-500/90  rounded-[28px] shadow-md ">
+        <div className=" w-[316px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-[#FFFFFF]/50 overflow-hidden from-black/20 gradient  rounded-[28px] shadow-md ">
           {user && showOnboarding && (
             <>
               <div className={`${currentStep == 3 ? "" : "bg-black "} h-1/2 `}>

@@ -66,7 +66,7 @@ function Login() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className=" w-[17rem] flex flex-col gap-4  justify-between bg-gradient-to-t from-[#434343] overflow-hidden to-gray-500/90  rounded-2xl shadow-md">
+        <div className=" w-[17rem] flex flex-col gap-4  justify-between bg-gradient-to-t to-[#FFFFFF]/50 overflow-hidden from-black/20  rounded-2xl shadow-md">
           <div className=" p-5 mb-16">
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
             <p className=" text-zinc-400 text-xl">

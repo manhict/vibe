@@ -114,7 +114,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <DialogDescription />
             </DialogHeader>
             <div className="w-fit  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t from-[#434343] overflow-hidden to-gray-500/90  p-5 items-center justify-center w-[20rem] rounded-2xl">
+              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/50 overflow-hidden from-black/20  p-5 items-center justify-center w-[20rem] rounded-2xl">
                 <Avatar className="size-24">
                   <AvatarImage
                     width={500}
