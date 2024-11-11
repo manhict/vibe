@@ -252,7 +252,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 4) {
+      if (Math.abs(currentTime - lastEmitted.current) >= 7) {
         socket.emit("progress", currentTime);
         lastEmitted.current = currentTime;
         // Sync video progress with audio progress
@@ -341,7 +341,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     document.addEventListener("keydown", handleKeyDown);
     const volume = localStorage.getItem("volume");
-    if (volume) {
+    if (volume && audioRef.current && audioRef?.current.volume !== 0) {
       handleVolumeChange(Number(volume));
     }
     return () => {
