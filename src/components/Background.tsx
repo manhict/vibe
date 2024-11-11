@@ -2,9 +2,10 @@
 import useCache from "@/Hooks/useCache";
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
+import { toast } from "sonner";
 
 function Background() {
-  const { showVideo } = useUserContext();
+  const { showVideo, setShowVideo } = useUserContext();
   const { currentSong, backgroundVideoRef } = useAudio();
   useCache();
 
@@ -20,6 +21,10 @@ function Background() {
             title={currentSong?.name || ""}
             height={300}
             width={300}
+            onError={() => {
+              setShowVideo(false);
+              toast.error("Video not available for this song");
+            }}
             onCanPlay={(e) => e?.currentTarget?.play().catch()}
             className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
           />
