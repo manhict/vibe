@@ -9,7 +9,7 @@ function InviteFriends({ className }: { className?: string }) {
   const { roomId, user } = useUserContext();
   const handleShare = useCallback(async () => {
     if (!user) return;
-    const shareUrl = `${window.location.origin}/v/?room=${roomId}&ref=${user.username}`;
+    const shareUrl = `${window.location.origin}/${roomId}&ref=${user.username}`;
 
     try {
       if (navigator.share) {
