@@ -152,7 +152,7 @@ function MemoPLayer() {
 
       <div
         style={{ opacity: isChatOpen ? 0 : 1 }}
-        className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
+        className="w-full max-md:min-h-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
       >
         <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
           {currentSong?.source !== "youtube" ? (
