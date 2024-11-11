@@ -277,7 +277,13 @@ function MemoPLayer() {
         <div className="flex -mt-1 items-center w-full justify-center gap-4">
           <div className=" flex items-center w-fit gap-2">
             <svg
-              onClick={playPrev}
+              onClick={() => {
+                if (user?.role == "admin") {
+                  playPrev();
+                  return;
+                }
+                toast.error("Only admin can play prev");
+              }}
               aria-label="play prev"
               className="cursor-pointer size-5 rotate-180"
               width="21"
@@ -300,7 +306,13 @@ function MemoPLayer() {
             <PlayButton />
 
             <svg
-              onClick={playNext}
+              onClick={() => {
+                if (user?.role == "admin") {
+                  playNext();
+                  return;
+                }
+                toast.error("Only admin can play next");
+              }}
               aria-label="play next"
               className="cursor-pointer size-5"
               width="21"
