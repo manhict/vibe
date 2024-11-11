@@ -70,7 +70,7 @@ function Login() {
           <div className=" p-5 mb-16">
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
             <p className=" text-zinc-400 text-xl">
-              lets get to know <br /> each other.
+              let&apos;s get to know <br /> each other.
             </p>
           </div>
           <div className=" p-5 flex flex-col items-center gap-2 justify-center">
