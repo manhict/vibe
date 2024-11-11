@@ -397,8 +397,10 @@ function MemoPLayer() {
           <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
         </div>
         <UpNextSongs />
-        <Listeners className=" max-md:flex hidden mt-4" />
-        <InviteFriends className=" w-full md:hidden -mb-4" />
+        <div className=" flex items-center w-full justify-between">
+          <Listeners className=" max-md:flex hidden " />
+          <InviteFriends className="md:hidden  pr-0" />
+        </div>
       </div>
     </div>
   );
