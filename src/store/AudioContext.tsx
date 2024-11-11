@@ -241,15 +241,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         setProgress(currentTime);
 
-        // Sync video progress with audio progress
-        if (videoRef.current) {
-          videoRef.current.currentTime = currentTime;
-        }
-
-        if (backgroundVideoRef.current) {
-          backgroundVideoRef.current.currentTime = currentTime;
-        }
-
         // Update the last emitted time for progress
         lastEmittedTime.current = currentTime;
       }
@@ -258,6 +249,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (Math.abs(currentTime - lastEmitted.current) >= 5) {
         socket.emit("progress", currentTime);
         lastEmitted.current = currentTime;
+        // Sync video progress with audio progress
+        if (videoRef.current) {
+          videoRef.current.currentTime = currentTime;
+        }
+
+        if (backgroundVideoRef.current) {
+          backgroundVideoRef.current.currentTime = currentTime;
+        }
       }
 
       // If audio is not paused, keep updating progress
