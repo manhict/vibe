@@ -142,7 +142,6 @@ function MemoPLayer() {
             className=" h-full z-50 flex flex-col py-2 w-full absolute  backdrop-blur-xl bg-black/10 inset-0"
           >
             <Chat
-              //@ts-expect-error:ex
               messagesEndRef={messagesEndRef}
               setIsChatOpen={setIsChatOpen}
             />
