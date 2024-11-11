@@ -184,7 +184,6 @@ function MemoPLayer() {
                   localStorage.removeItem("v");
                   return;
                 }
-                videoRef?.current?.paused && videoRef?.current?.play();
                 setShowVideo(true), localStorage.setItem("v", "true");
               }}
               className=" relative"

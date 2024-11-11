@@ -97,6 +97,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
+          if (videoRef.current) {
+            videoRef.current?.play();
+          }
+          if (backgroundVideoRef.current) {
+            backgroundVideoRef.current?.play();
+          }
           setIsPlaying(true);
         })
         .catch(() => {
