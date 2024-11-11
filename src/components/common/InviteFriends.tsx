@@ -1,3 +1,4 @@
+"use client";
 import Listeners from "./Listeners";
 import Youtube from "./Youtube";
 import { useCallback } from "react";

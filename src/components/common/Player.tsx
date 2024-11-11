@@ -19,7 +19,6 @@ import UpNextSongs from "./UpNextSongs";
 import { useSocket } from "@/Hooks/useSocket";
 import { socket } from "@/app/socket";
 import { BsPip } from "react-icons/bs";
-import InviteFriends from "./InviteFriends";
 function MemoPLayer() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { messages } = useSocket();
@@ -127,7 +126,7 @@ function MemoPLayer() {
   }, [isChatOpen]);
   const [pip, setPIP] = useState<boolean>(false);
   return (
-    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border  border-white/15 flex-grow rounded-xl p-8 md:px-5 flex flex-col items-center justify-center max-md:min-h-full px-4 gap-[2.5dvh]">
+    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg h-full border  border-white/15 flex-grow rounded-xl p-8 md:px-5 flex flex-col items-center justify-center px-4 gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
         {isChatOpen && (
           <motion.div
@@ -152,7 +151,7 @@ function MemoPLayer() {
 
       <div
         style={{ opacity: isChatOpen ? 0 : 1 }}
-        className="w-full max-md:min-h-full h-full flex flex-col items-center justify-center max-md:overflow-hidden gap-[2.5dvh]"
+        className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
       >
         <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
           {currentSong?.source !== "youtube" ? (
@@ -398,8 +397,7 @@ function MemoPLayer() {
           <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
         </div>
         <UpNextSongs />
-        <Listeners className=" max-md:flex hidden mt-10 -mb-2" />
-        <InviteFriends className=" w-full md:hidden -mb-10" />
+        <Listeners className=" max-md:flex hidden mt-10" />
       </div>
     </div>
   );

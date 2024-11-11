@@ -4,6 +4,7 @@ import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import Player from "@/components/common/Player";
 import Background from "../Background";
+import InviteFriends from "./InviteFriends";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
 
         <div className="max-md:w-full max-md:gap-0 h-full z-40 flex-wrap flex overflow-hidden max-xl:w-10/12 max-lg:w-10/12 max-sm:w-full max-md:overflow-scroll hide-scrollbar py-4 max-md:py-0 gap-4 w-7/12">
           <Player />
+          <InviteFriends className=" w-full md:hidden  px-3" />
           <AddToQueue />
         </div>
 
