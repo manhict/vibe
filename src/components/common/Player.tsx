@@ -223,8 +223,6 @@ function MemoPLayer() {
                   setPIP(true);
                 }}
                 onCanPlay={(e) => e?.currentTarget?.play().catch()}
-                autoSave="true"
-                autoPlay
                 className="cover absolute h-full object-cover  w-full"
               ></video>
 
