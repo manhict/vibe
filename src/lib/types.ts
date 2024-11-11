@@ -55,7 +55,6 @@ export interface TUser {
 export interface listener {
   totalUsers: number;
   currentPage: number;
-  isAdminActive: boolean;
   roomUsers: roomUsers[];
 }
 
