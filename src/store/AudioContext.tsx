@@ -239,9 +239,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         setProgress(currentTime);
         if (videoRef.current) {
+          if (videoRef.current.paused && !audioRef.current.paused) {
+            videoRef.current?.play();
+          }
           videoRef.current.currentTime = currentTime;
         }
         if (backgroundVideoRef.current) {
+          if (backgroundVideoRef.current.paused && !audioRef.current.paused) {
+            backgroundVideoRef.current?.play();
+          }
           backgroundVideoRef.current.currentTime = currentTime;
         }
         lastEmittedTime.current = currentTime;
