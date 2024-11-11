@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   title: "Vibe - Votes decide the beats",
   description:
     "Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!",
+  manifest: "/manifest.json",
   keywords: [
     "music",
     "collaborative playlists",

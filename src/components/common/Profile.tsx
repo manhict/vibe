@@ -113,8 +113,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
-            <div className="w-fit  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/50 overflow-hidden from-black/20  p-5 items-center justify-center w-[20rem] rounded-2xl">
+            <div className="  w-[316px] h-[414px]  flex items-center justify-center">
+              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/20  p-5 items-center justify-center w-[20rem] rounded-2xl">
                 <Avatar className="size-24">
                   <AvatarImage
                     width={500}
