@@ -135,7 +135,7 @@ export async function GET(request: Request) {
               alt="Profile"
               style={{
                 position: "absolute",
-                top: "20px",
+                top: "25px",
                 right: "25px",
                 width: "140px",
                 height: "140px",
