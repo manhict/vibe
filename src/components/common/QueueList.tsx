@@ -176,7 +176,7 @@ function QueueList({
                 <AvatarFallback>SX</AvatarFallback>
                 <Trash
                   onClick={() => handleDelete(song)}
-                  className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute group-hover:z-20 cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 />
                 {currentSong?.id == song.id && (
                   <div className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
