@@ -22,7 +22,7 @@ async function loadGoogleFont(font: string, text: string) {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const name = searchParams.get("name") || "Ajay";
+    const name = searchParams.get("name") || "404";
     const imageUrl =
       searchParams.get("image") ||
       "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/TanmayIMG_4211.jpeg";

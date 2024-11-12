@@ -39,7 +39,11 @@ export async function generateMetadata({
     openGraph: {
       images: [
         {
-          url: user?.imageUrl || "/",
+          url:
+            "https://getvibe.in/api/og?image=" +
+              user?.imageUrl +
+              "&name=" +
+              user?.name || "/",
         },
       ],
     },
