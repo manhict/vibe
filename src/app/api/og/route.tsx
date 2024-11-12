@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@700&text=${encodeURIComponent(
+  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@500&text=${encodeURIComponent(
     text
   )}`;
   const css = await (await fetch(url)).text();
@@ -124,6 +124,7 @@ export async function GET(request: Request) {
                   style={{
                     fontSize: 20,
                     color: "white",
+                    fontWeight: 200,
                   }}
                 >
                   getvibe.in
