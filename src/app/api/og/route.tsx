@@ -81,7 +81,8 @@ export async function GET(request: Request) {
                     fontWeight: 700,
                   }}
                 >
-                  {name.split(" ")[0]}
+                  {name.split(" ")[0].charAt(0).toUpperCase() +
+                    name.split(" ")[0].slice(1)}
                 </span>
                 <span
                   style={{
