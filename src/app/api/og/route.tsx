@@ -2,7 +2,7 @@
 import { ImageResponse } from "next/og";
 
 async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
+  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@100..900&text=${encodeURIComponent(
     text
   )}`;
   const css = await (await fetch(url)).text();
@@ -42,7 +42,6 @@ export async function GET(request: Request) {
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             padding: "40px",
-            fontFamily: "Geist, sans-serif",
           }}
         >
           <div
@@ -73,7 +72,7 @@ export async function GET(request: Request) {
                   style={{
                     fontSize: 54,
                     color: "#A78BFA",
-                    fontWeight: 600,
+                    fontWeight: 700,
                   }}
                 >
                   {name.split(" ")[0]}
