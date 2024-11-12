@@ -1,31 +1,36 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
-
 async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@100..900&text=${encodeURIComponent(
+  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@700&text=${encodeURIComponent(
     text
   )}`;
   const css = await (await fetch(url)).text();
   const resource = css.match(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/
+    /src: url\((.+?)\) format\('(opentype|truetype)'\)/
   );
 
   if (resource) {
     const response = await fetch(resource[1]);
-    if (response.status == 200) {
+    if (response.status === 200) {
       return await response.arrayBuffer();
     }
   }
 
-  throw new Error("failed to load font data");
+  throw new Error("Failed to load font data");
 }
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const name = searchParams.get("name") || "404";
+    const invite = "invited you to";
+    const vibe = "vibe together.";
     const imageUrl =
       searchParams.get("image") ||
       "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/TanmayIMG_4211.jpeg";
+
+    const fullText = `${name} ${invite} ${vibe}`;
+    const fontData = await loadGoogleFont("Geist", fullText);
 
     return new ImageResponse(
       (
@@ -42,6 +47,7 @@ export async function GET(request: Request) {
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             padding: "40px",
+            fontFamily: "Geist, sans-serif",
           }}
         >
           <div
@@ -84,7 +90,7 @@ export async function GET(request: Request) {
                     fontWeight: 700,
                   }}
                 >
-                  invited you to
+                  {invite}
                 </span>
                 <span
                   style={{
@@ -93,7 +99,7 @@ export async function GET(request: Request) {
                     fontWeight: 700,
                   }}
                 >
-                  vibe together.
+                  {vibe}
                 </span>
               </div>
 
@@ -130,7 +136,7 @@ export async function GET(request: Request) {
               style={{
                 position: "absolute",
                 top: "20px",
-                right: "20px",
+                right: "25px",
                 width: "140px",
                 height: "140px",
                 objectFit: "cover",
@@ -146,9 +152,8 @@ export async function GET(request: Request) {
         fonts: [
           {
             name: "Geist",
-            data: await loadGoogleFont("Geist", name),
+            data: fontData,
             style: "normal",
-            weight: 800,
           },
         ],
       }
@@ -159,5 +164,3 @@ export async function GET(request: Request) {
     });
   }
 }
-
-export const runtime = "edge";
