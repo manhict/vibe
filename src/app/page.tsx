@@ -24,8 +24,8 @@ function Page() {
       return;
     }
 
-    if (roomName.length > 8) {
-      setError("Name is too large, maximum 8 characters");
+    if (roomName.length > 11) {
+      setError("Name is too large, maximum 11 characters");
       return;
     }
     if (!isValidRoomId) {
@@ -55,8 +55,8 @@ function Page() {
       return;
     }
 
-    if (roomName.length > 8) {
-      setError("Name is too large, maximum 8 characters");
+    if (roomName.length > 11) {
+      setError("Name is too large, maximum 11 characters");
       return;
     }
     if (!isValidRoomId) {
