@@ -17,6 +17,13 @@ function Page() {
     const roomName = e.target.value;
     if (roomName.trim().length == 0) return;
     setError(null);
+    if (roomName.length <= 3) {
+      setError("Name is too short, minimum 4 characters");
+    }
+
+    if (roomName.length > 8) {
+      setError("Name is too large, maximum 8 characters");
+    }
     setLoader(true);
     const res = await api.get(
       `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
@@ -33,6 +40,13 @@ function Page() {
     e.preventDefault();
     if (roomName.trim().length == 0) return;
     setError(null);
+    if (roomName.length <= 3) {
+      setError("Name is too short, minimum 4 characters");
+    }
+
+    if (roomName.length > 8) {
+      setError("Name is too large, maximum 8 characters");
+    }
     setLoader(true);
     const res = await api.get(
       `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
