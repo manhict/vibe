@@ -19,7 +19,10 @@ function Page() {
     setError(null);
     setLoader(true);
     const res = await api.get(
-      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`
+      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
+      {
+        showErrorToast: false,
+      }
     );
     setLoader(false);
     if (res.error) {
@@ -32,7 +35,8 @@ function Page() {
     setError(null);
     setLoader(true);
     const res = await api.get(
-      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`
+      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
+      { showErrorToast: false }
     );
     if (res.success) {
       window.location.href = `/${roomName}`;

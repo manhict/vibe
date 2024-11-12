@@ -14,21 +14,26 @@ const setAuthToken = (token: string | null) => {
 };
 
 const handleResponse = async <T>(
-  response: Response
+  response: Response,
+  showErrorToast: boolean
 ): Promise<ApiResponse<T>> => {
   const isJsonResponse = response.headers
     .get("content-type")
     ?.includes("application/json");
+
   if (response.status === 404) {
-    toast.error("Not Found", {
-      style: { background: "#e94625" },
-    });
+    if (showErrorToast) {
+      toast.error("Not Found", {
+        style: { background: "#e94625" },
+      });
+    }
     return {
       success: false,
       status: response.status,
       error: "Page not found",
     };
   }
+
   if (!response.ok) {
     const error = isJsonResponse
       ? await response.json()
@@ -44,9 +49,11 @@ const handleResponse = async <T>(
         ? error.msg
         : "Something went wrong";
 
-    toast.error(errorMessage, {
-      style: { background: "#e94625" },
-    });
+    if (showErrorToast) {
+      toast.error(errorMessage, {
+        style: { background: "#e94625" },
+      });
+    }
     console.error("API call failed:", errorMessage);
 
     return {
@@ -65,9 +72,12 @@ const handleResponse = async <T>(
   };
 };
 
-const handleError = (error: any): ApiResponse<never> => {
+const handleError = (
+  error: any,
+  showErrorToast: boolean
+): ApiResponse<never> => {
   const errorMessage = error.message || "An error occurred";
-  if (error.name !== "AbortError") {
+  if (error.name !== "AbortError" && showErrorToast) {
     toast.error(errorMessage, {
       style: { background: "#e94625" },
     });
@@ -87,15 +97,17 @@ const api = {
   request: async <T>(
     url: string,
     method: string,
-    options: RequestInit = {}
+    options: RequestInit & { showErrorToast?: boolean } = {}
   ): Promise<ApiResponse<T>> => {
+    const { showErrorToast = true, ...fetchOptions } = options;
+
     try {
-      const headers = new Headers(options.headers);
+      const headers = new Headers(fetchOptions.headers);
 
       // Automatically set Content-Type to application/json if body is not FormData
-      if (options.body && !(options.body instanceof FormData)) {
+      if (fetchOptions.body && !(fetchOptions.body instanceof FormData)) {
         headers.set("Content-Type", "application/json");
-        options.body = JSON.stringify(options.body);
+        fetchOptions.body = JSON.stringify(fetchOptions.body);
       }
 
       // Set Authorization header if authToken is available
@@ -105,21 +117,21 @@ const api = {
 
       const response = await fetch(url, {
         method,
-        ...options,
+        ...fetchOptions,
         credentials: "include",
         next: { revalidate: 10 },
         headers,
       });
 
-      return await handleResponse<T>(response);
+      return await handleResponse<T>(response, showErrorToast);
     } catch (error: any) {
-      return handleError(error);
+      return handleError(error, showErrorToast);
     }
   },
 
   get: async <T>(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit & { showErrorToast?: boolean } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "GET", options);
   },
@@ -127,7 +139,7 @@ const api = {
   post: async <T>(
     url: string,
     data: any,
-    options: RequestInit = {}
+    options: RequestInit & { showErrorToast?: boolean } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "POST", {
       ...options,
@@ -138,7 +150,7 @@ const api = {
   put: async <T>(
     url: string,
     data: any,
-    options: RequestInit = {}
+    options: RequestInit & { showErrorToast?: boolean } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "PUT", {
       ...options,
@@ -148,7 +160,7 @@ const api = {
 
   delete: async <T>(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit & { showErrorToast?: boolean } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "DELETE", options);
   },
