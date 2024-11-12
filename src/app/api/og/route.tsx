@@ -49,7 +49,7 @@ export async function GET(request: Request) {
             style={{
               display: "flex",
               position: "relative",
-              padding: "21px",
+              padding: "20px",
               background: "#18181B",
               borderRadius: "24px",
               boxShadow: "0 0 100px rgba(147, 51, 234, 0.5)",
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
                     fontWeight: 600,
                   }}
                 >
-                  {name}
+                  {name.split(" ")[0]}
                 </span>
                 <span
                   style={{
@@ -130,8 +130,8 @@ export async function GET(request: Request) {
               alt="Profile"
               style={{
                 position: "absolute",
-                top: "15px",
-                right: "10px",
+                top: "20px",
+                right: "20px",
                 width: "140px",
                 height: "140px",
                 objectFit: "cover",
