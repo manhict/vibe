@@ -1,11 +1,50 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
 import Blur from "@/components/Blur";
 import HomeFooter from "@/components/common/HomeFooter";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import api from "@/lib/api";
+import React, { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import useDebounce from "@/Hooks/useDebounce";
 function Page() {
+  const [loader, setLoader] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [roomName, setRoomName] = useState<string>("");
+  const checkRoom = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const roomName = e.target.value;
+    if (roomName.trim().length == 0) return;
+    setError(null);
+    setLoader(true);
+    const res = await api.get(
+      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`
+    );
+    setLoader(false);
+    if (res.error) {
+      setError(res?.error);
+    }
+  };
+  const makeRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (roomName.trim().length == 0) return;
+    setError(null);
+    setLoader(true);
+    const res = await api.get(
+      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`
+    );
+    if (res.success) {
+      window.location.href = `/${roomName}`;
+      setLoader(false);
+      return;
+    }
+    setLoader(false);
+    if (res.error) {
+      setError(res?.error);
+    }
+  };
+  const handleCheckRoom = useDebounce(checkRoom, 1000);
   return (
     <div className="  bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
       <Blur className=" blur-2xl bg-transparent" />
@@ -34,25 +73,54 @@ function Page() {
               Delightful <br />
               Music Parties
             </p>
-            <p className=" -mt-4 text-6xl max-md:text-5xl   text-with-image">
+            <p className=" -mt-4 text-6xl max-md:text-5xl text-with-image">
               Start Here.
             </p>
             <span className="ml-1 max-md:hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
-              Set up an room, invite friends and enjoy music. <br /> Host a
-              memorable event today.
+              Invite friends, enjoy high quality music
+              <br /> & let votes will decide the beat🥂.
             </span>
             <span className="ml-1 max-md:flex hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
-              Set up an room, invite friends and enjoy music. Host a memorable
-              event today.
+              Invite friends, enjoy high quality music & let votes will decide
+              the beat🥂.
             </span>
-            <Link href={"/v"}>
+
+            <form
+              onSubmit={makeRoom}
+              className="w-[335px] h-[52px] pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+            >
+              <div className="w-[164px] h-5 relative">
+                <div
+                  className={`left-0 top-0 absolute ${
+                    roomName.length == 0 ? "text-white" : "text-white/60"
+                  } transition-all duration-150  text-sm font-semibold leading-tight tracking-tight`}
+                >
+                  getvibe.in/
+                </div>
+                <input
+                  min={4}
+                  autoFocus
+                  maxLength={8}
+                  max={8}
+                  onInput={(e) => setRoomName(e.currentTarget.value)}
+                  onChange={handleCheckRoom}
+                  placeholder="claim your vibe"
+                  className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0 absolute text-white text-sm font-medium leading-tight tracking-tight"
+                />
+              </div>
               <Button
-                size={"lg"}
-                className="text-base font-semibold px-4 w-fit ml-1 "
+                disabled={loader || typeof error === "string"}
+                type="submit"
+                className="h-10 w-20 bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
               >
-                Create Your First Room
+                {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
-            </Link>
+            </form>
+            {error && (
+              <p className=" text-red-500 font-normal text-xs -mt-2 px-1">
+                {error}
+              </p>
+            )}
           </div>
           <div className=" w-1/2  max-md:w-full">
             <video
