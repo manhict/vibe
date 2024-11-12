@@ -54,7 +54,7 @@ export async function GET(request: Request) {
             style={{
               display: "flex",
               position: "relative",
-              padding: "20px",
+              padding: "25px",
               background: "#18181B",
               borderRadius: "24px",
               boxShadow: "0 0 100px rgba(147, 51, 234, 0.5)",
@@ -137,8 +137,8 @@ export async function GET(request: Request) {
               alt="Profile"
               style={{
                 position: "absolute",
-                top: "25px",
-                right: "25px",
+                top: "30px",
+                right: "30px",
                 width: "140px",
                 height: "140px",
                 objectFit: "cover",
