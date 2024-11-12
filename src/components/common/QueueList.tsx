@@ -184,7 +184,7 @@ function QueueList({
                       <Image
                         height={100}
                         width={100}
-                        src="https://s6.ezgif.com/tmp/ezgif-6-450fb3a21a.gif"
+                        src="/bars.gif"
                         alt={song?.name}
                         className=" h-full w-full"
                       />
