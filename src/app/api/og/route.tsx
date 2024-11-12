@@ -90,7 +90,7 @@ export async function GET(request: Request) {
                     color: "#A78BFA",
                     fontWeight: "600",
                     letterSpacing: "-1px",
-                    lineHeight: ".8",
+                    lineHeight: ".9",
                   }}
                 >
                   Hey,
