@@ -76,10 +76,10 @@ function Login({ footer = false }: { footer?: boolean }) {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className=" w-[17rem] flex flex-col gap-4  justify-between bg-gradient-to-t to-[#FFFFFF]/25 overflow-hidden from-black/20  rounded-2xl shadow-md">
+        <div className=" w-[17rem] flex flex-col gap-4 justify-between bg-gradient-to-t from-[#FFFFFF]/25 overflow-hidden to-black/20  rounded-2xl shadow-md">
           <div className=" p-5 mb-16">
             <h1 className=" font-semibold text-2xl mb-2">Login Or SignUp</h1>
-            <p className=" text-zinc-400 text-xl">
+            <p className=" text-zinc-300 text-xl">
               let&apos;s get to know <br /> each other.
             </p>
           </div>
