@@ -16,6 +16,8 @@ function Page() {
     e.preventDefault();
     const roomName = e.target.value;
     setError(null);
+    const isValidRoomId = /^[a-zA-Z0-9]+$/.test(roomName);
+
     if (roomName.trim().length == 0) return;
     if (roomName.length <= 3) {
       setError("Name is too short, minimum 4 characters");
@@ -24,6 +26,10 @@ function Page() {
 
     if (roomName.length > 8) {
       setError("Name is too large, maximum 8 characters");
+      return;
+    }
+    if (!isValidRoomId) {
+      setError("Special characters not allowed");
       return;
     }
     setLoader(true);
@@ -41,6 +47,8 @@ function Page() {
   const makeRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    const isValidRoomId = /^[a-zA-Z0-9]+$/.test(roomName);
+
     if (roomName.trim().length == 0) return;
     if (roomName.length <= 3) {
       setError("Name is too short, minimum 4 characters");
@@ -49,6 +57,10 @@ function Page() {
 
     if (roomName.length > 8) {
       setError("Name is too large, maximum 8 characters");
+      return;
+    }
+    if (!isValidRoomId) {
+      setError("Special characters not allowed");
       return;
     }
     setLoader(true);
