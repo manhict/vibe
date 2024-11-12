@@ -48,7 +48,11 @@ export async function generateMetadata({
       site: "@tanmay11117",
       title: `${user?.name?.split(" ")[0]} Vibe`,
       description: `${user?.name?.split(" ")[0]} is listening on Vibe`,
-      images: user?.imageUrl || "/",
+      images:
+        "https://getvibe.in/api/og?image=" +
+          user?.imageUrl +
+          "&name=" +
+          user?.name || "/",
     },
   };
 }
