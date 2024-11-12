@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@500&text=${encodeURIComponent(
+  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@600&text=${encodeURIComponent(
     text
   )}`;
   const css = await (await fetch(url)).text();
