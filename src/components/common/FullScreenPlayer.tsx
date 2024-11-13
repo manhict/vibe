@@ -42,14 +42,14 @@ function FullScreenPlayer() {
 
   return (
     <motion.div
-      className="inset-0 overflow-hidden bg-black h-screen absolute z-50 flex items-center justify-center"
+      className="inset-0 overflow-hidden bg-pink-500 h-screen absolute z-50 flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
       <Background />
-      <Blur className=" bg-black/70" />
+      <Blur className=" bg-black/60" />
 
       {/* Top Element (Logo) sliding from the top */}
       <motion.div
@@ -101,7 +101,7 @@ function FullScreenPlayer() {
             alt={currentSong?.name || ""}
             height={300}
             width={300}
-            className="cover border object-cover"
+            className="cover object-cover"
             src={
               currentSong?.image[currentSong.image.length - 1].url ||
               "/cache.jpg"
