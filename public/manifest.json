@@ -24,10 +24,5 @@
   "description": "vibe on your favourite songs with your friends",
   "edge_side_panel": {
     "preferred_width": 800
-  },
-  "ovr_scope_extensions": [
-    {
-      "pattern": "*.getvibe.in"
-    }
-  ]
+  }
 }
