@@ -83,7 +83,7 @@ function FullScreenPlayer() {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className=" w-64"
+          className=" w-auto"
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Image
@@ -126,7 +126,7 @@ function FullScreenPlayer() {
             {(currentSong && formatArtistName(currentSong?.artists?.primary)) ||
               "Unknown"}
           </motion.p>
-          <ProgressBar className="md:px-0 w-[75vw] my-1" />
+          <ProgressBar className="md:px-0 w-[70dvw]  mr-14 my-1" />
         </div>
       </motion.div>
     </motion.div>
