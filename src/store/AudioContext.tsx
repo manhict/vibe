@@ -305,7 +305,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
     };
     const handleEnd = () => {
-      emitMessage("songEnded", "songEnded");
+      if (isAdminOnline.current) {
+        emitMessage("songEnded", "songEnded");
+      }
     };
 
     const audioElement = audioRef.current;
@@ -323,7 +325,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("canplay", handleCanPlay);
       };
     }
-  }, [setMediaSession, lastEmitted, lastEmittedTime, updateProgress]);
+  }, [
+    setMediaSession,
+    lastEmitted,
+    lastEmittedTime,
+    updateProgress,
+    isAdminOnline,
+  ]);
 
   // useEffect(() => {
   //   if (!currentSong && queue.length > 0 && audioRef.current) {
