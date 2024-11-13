@@ -84,7 +84,7 @@ function SearchSongPopup({
     [youtube]
   );
 
-  const handleSearch = useDebounce(search);
+  const handleSearch = useDebounce(search, 400);
 
   const searchMoreSongs = useCallback(async () => {
     if (!query || !songs || songs.data.results.length >= songs.data.total)

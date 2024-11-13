@@ -4,12 +4,14 @@ import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import Player from "@/components/common/Player";
 import Background from "../Background";
+import FullScreenPlayer from "./FullScreenPlayer";
 
 export default function Home() {
   return (
     <>
       <Background />
       <Blur />
+      <FullScreenPlayer />
       <div className="bg-cover absolute w-full top-0 flex flex-col items-center justify-center h-full md:py-2.5">
         <Header />
 

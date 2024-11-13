@@ -16,6 +16,7 @@ import { useUserContext } from "./userStore";
 import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
 import getURL from "@/utils/utils";
+import { toast } from "sonner";
 
 interface AudioContextType {
   play: (song: searchResults) => void;
@@ -105,6 +106,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         .catch((e) => {
           if (e.message.startsWith("Failed to load because no supported")) {
             emitMessage("playNext", "playNext");
+            toast.error("Song not available Skipping", {
+              style: { background: "#e94625" },
+            });
           }
           console.error("Error playing audio", e.message);
         });
@@ -331,12 +335,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     isAdminOnline,
   ]);
 
-  // useEffect(() => {
-  //   if (!currentSong && queue.length > 0 && audioRef.current) {
-  //     setCurrentSong(queue[0]);
-  //   }
-  // }, [queue, currentSong]);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
@@ -349,8 +347,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         e.preventDefault();
         togglePlayPause();
       }
+      if ((e.ctrlKey || e.altKey) && e.key === "ArrowRight") {
+        e.preventDefault();
+        playNext();
+      } else if ((e.ctrlKey || e.altKey) && e.key === "ArrowLeft") {
+        e.preventDefault();
+        playPrev();
+      }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     const volume = localStorage.getItem("volume");
     if (volume && audioRef.current && audioRef?.current.volume !== 0) {
@@ -359,7 +363,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [togglePlayPause]);
+  }, [togglePlayPause, playNext, playPrev]);
 
   const value = useMemo(
     () => ({
