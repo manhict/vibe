@@ -40,18 +40,8 @@ function MemoPLayer() {
     videoRef,
   } = useAudio();
 
-  const [formattedProgress, setFormattedProgress] = useState<string>("0:00");
-  const [formattedDuration, setFormattedDuration] = useState<string>("0:00");
   const [isChatOpen, setIsChatOpen] = useState(false);
-  useEffect(() => {
-    requestAnimationFrame(() =>
-      setFormattedProgress(formatElapsedTime(progress))
-    );
-  }, [progress]);
 
-  useEffect(() => {
-    setFormattedDuration(formatElapsedTime(duration));
-  }, [duration]);
   const handleSeek = (e: number[]) => {
     if (e[0]) {
       if (user && user.role !== "admin") {
@@ -355,7 +345,7 @@ function MemoPLayer() {
           </div>
         </div>
         <div className=" select-none -my-1 flex items-center gap-4 md:px-4 w-full text-xs">
-          <p className=" progress">{formattedProgress}</p>
+          <p className=" progress">{formatElapsedTime(progress)}</p>
 
           <Slider
             max={duration || 0}
@@ -368,7 +358,7 @@ function MemoPLayer() {
             onValueChange={handleProgress}
           />
 
-          <p className=" duration">{formattedDuration}</p>
+          <p className=" duration">{formatElapsedTime(duration)}</p>
         </div>
         <div className=" mb-0.5 flex text-zinc-600 gap-3 items-center">
           <svg
