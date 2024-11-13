@@ -37,7 +37,6 @@ function FullScreenPlayer() {
     }
   }
 
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) return;
   if (!isFullscreen) return;
 
   return (

@@ -104,10 +104,12 @@ function MemoPLayer() {
         className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
       >
         <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
-          <MdOutlineOpenInFull
-            onClick={openFullscreen}
-            className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
-          />
+          {!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && (
+            <MdOutlineOpenInFull
+              onClick={openFullscreen}
+              className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
+            />
+          )}
           {currentSong?.source !== "youtube" ? (
             <Image
               priority
