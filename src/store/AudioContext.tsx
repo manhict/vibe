@@ -74,7 +74,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
-  const { user } = useUserContext();
+  const { user, isAdminOnline } = useUserContext();
   // play
   const play = useCallback(async (song: searchResults) => {
     setCurrentSong(song);
@@ -104,8 +104,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           }
           setIsPlaying(true);
         })
-        .catch(() => {
-          console.error("Error playing audio");
+        .catch((e) => {
+          if (e.message.startsWith("Failed to load because no supported")) {
+            emitMessage("playNext", "playNext");
+          }
+          console.error("Error playing audio", e.message);
         });
     }
   }, []);
@@ -115,6 +118,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
+    socket.emit("status", false);
     setIsPlaying(false);
   }, []);
 
@@ -124,6 +128,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
+          socket.emit("status", true);
           setIsPlaying(true);
         })
         .catch((error) => {
@@ -251,8 +256,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 5) {
-        socket.emit("progress", currentTime);
+      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
+        if (isAdminOnline.current) {
+          socket.emit("progress", currentTime);
+        }
         lastEmitted.current = currentTime;
         // Sync video progress with audio progress
         if (videoRef.current) {
@@ -269,7 +276,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, []);
+  }, [isAdminOnline]);
 
   useEffect(() => {
     const handlePlay = () => {
