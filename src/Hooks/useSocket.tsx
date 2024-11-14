@@ -310,10 +310,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("joined", handleJoined);
     currentSocket.on("update", forceUpdateQueue);
     currentSocket.on("seekable", (r) => (isAdminOnline.current = r));
-    currentSocket.on(
-      "isplaying",
-      (d) => d && document.visibilityState == "visible" && play(decrypt(d))
-    );
+    currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
     currentSocket.on("play", (d) => d && play(decrypt(d)));
     currentSocket.on("seek", seek);
     return () => {
