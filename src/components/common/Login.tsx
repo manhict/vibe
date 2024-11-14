@@ -19,6 +19,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { FaSpotify } from "react-icons/fa";
+import { encryptObjectValues } from "@/utils/utils";
 
 function Login({ footer = false }: { footer?: boolean }) {
   const { setUser, user } = useUserContext();
@@ -38,10 +39,10 @@ function Login({ footer = false }: { footer?: boolean }) {
         };
         const res = await api.post(
           `${process.env.SOCKET_URI}/api/auth`,
-          payload
+          encryptObjectValues(payload as any)
         );
         if (res.success) {
-          await api.post(`/api/login`, payload);
+          await api.post(`/api/login`, {});
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }

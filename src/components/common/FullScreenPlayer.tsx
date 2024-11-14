@@ -127,6 +127,7 @@ function FullScreenPlayer() {
               "Unknown"}
           </motion.p>
           <ProgressBar className="md:px-0 w-[70dvw]  mr-14 my-1" />
+          {/* <Controller className=" justify-start" /> */}
         </div>
       </motion.div>
     </motion.div>

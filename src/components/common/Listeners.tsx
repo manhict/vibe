@@ -62,7 +62,7 @@ function Listeners({ className }: { className?: string }) {
                   </Tooltip>
                 </TooltipProvider>
               ))}
-            {listener && listener?.totalUsers > 5 && (
+            {listener && listener?.totalUsers >= 5 && (
               <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
                 <Avatar className=" size-6 border-white border">
                   <AvatarFallback>

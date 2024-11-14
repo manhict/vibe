@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useUserContext } from "@/store/userStore";
 import { TUser } from "@/lib/types";
-import { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
@@ -18,8 +18,10 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import OnBoarding from "./OnBoarding";
 import { Input } from "../ui/input";
+import { LoaderCircle } from "lucide-react";
+import { encryptObjectValues } from "@/utils/utils";
 function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
-  const { setUser } = useUserContext();
+  const { setUser, user: LoggedInUser } = useUserContext();
 
   useEffect(() => {
     console.log(
@@ -35,7 +37,39 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     api.setAuthToken(user?.token || null);
     socket.connect();
   }, [user, setUser, roomId]);
-
+  const [loader, setLoader] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const handleUpdate = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const payload: { name: string; username: string } | any = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      if (LoggedInUser && payload.username == LoggedInUser.username) return;
+      setLoader(true);
+      const res = await api.put(
+        `${process.env.SOCKET_URI}/api/update`,
+        encryptObjectValues(payload)
+      );
+      if (res.error) {
+        setError(res.error);
+      }
+      if (res.success) {
+        toast.success("Profile updated!");
+        if (LoggedInUser) {
+          setUser(() => ({
+            ...LoggedInUser,
+            username: payload.username,
+            name: payload.name,
+          }));
+        }
+      }
+      setLoader(false);
+    },
+    [LoggedInUser, setUser]
+  );
   if (!user) {
     return <Login />;
   }
@@ -113,7 +147,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
-            <div className="  w-[316px] h-[414px]  flex items-center justify-center">
+            <div className="  w-[416px] h-[414px]  flex items-center justify-center">
               <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
                 <Avatar className="size-24">
                   <AvatarImage
@@ -129,10 +163,15 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
                 <p className=" my-2.5 font-medium">
-                  {user?.name} ({user?.username})
+                  {LoggedInUser?.name || user?.name} (
+                  {LoggedInUser?.username || user?.username})
                 </p>
 
-                <div className=" flex gap-2.5  w-full flex-col">
+                <form
+                  onChange={() => error && setError(null)}
+                  onSubmit={handleUpdate}
+                  className=" flex gap-2.5  w-full flex-col"
+                >
                   <Input
                     disabled
                     placeholder="email"
@@ -141,24 +180,39 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   />
 
                   <Input
-                    readOnly
+                    maxLength={15}
+                    max={15}
+                    min={4}
                     placeholder="name"
                     name="name"
-                    disabled
                     defaultValue={user?.name}
                   />
 
                   <Input
-                    disabled
-                    readOnly
+                    maxLength={15}
+                    max={15}
+                    min={4}
                     placeholder="username"
                     name="username"
                     defaultValue={user?.username}
                   />
-                  <p className=" text-xs p-0.5 text-zinc-400">
-                    Hint :- Try changing ur google account details.
-                  </p>
-                </div>
+                  {error && (
+                    <p className=" text-xs p-0.5 text-red-400">{error}</p>
+                  )}
+
+                  <Button
+                    disabled={loader}
+                    variant={"default"}
+                    className=" w-full mt-2.5"
+                    type="submit"
+                  >
+                    {loader ? (
+                      <LoaderCircle className=" animate-spin " />
+                    ) : (
+                      "Update"
+                    )}
+                  </Button>
+                </form>
                 <Button
                   variant={"default"}
                   className=" w-full mt-2.5"
