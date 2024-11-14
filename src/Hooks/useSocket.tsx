@@ -171,6 +171,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const updateQueue = useCallback(async () => {
     if (total && queue.length >= total) return;
+
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -204,7 +205,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
 
-      setTotal(value?.total);
+      setTotal(value?.total - 1);
       setPage(value?.start + 1);
     }
     setLoading(false);
