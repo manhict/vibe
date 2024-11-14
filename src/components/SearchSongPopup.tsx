@@ -58,8 +58,8 @@ function SearchSongPopup({
       const controller = new AbortController();
       abortControllerRef.current = controller;
       const url = youtube
-        ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(value)}`
-        : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
+        ? `${process.env.SEARCH_API}/api/youtube?id=${extractPlaylistID(value)}`
+        : `${process.env.SEARCH_API}/api/search/?name=${value}&page=0`;
 
       setPage(0); // Reset page on a new search
       setLoading(true);
@@ -91,7 +91,7 @@ function SearchSongPopup({
       return;
 
     setLoading(true);
-    const url = `${process.env.SOCKET_URI}/api/search/?name=${query}&page=${
+    const url = `${process.env.SEARCH_API}/api/search/?name=${query}&page=${
       page + 1
     }`;
 
