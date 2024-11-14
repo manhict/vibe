@@ -106,7 +106,7 @@ function MemoPLayer() {
         <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
           <MdOutlineOpenInFull
             onClick={openFullscreen}
-            className=" max-md:hidden absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
+            className=" hidden absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
           />
 
           {currentSong?.source !== "youtube" ? (
