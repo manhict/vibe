@@ -42,7 +42,7 @@ function Login({ footer = false }: { footer?: boolean }) {
           encryptObjectValues(payload as any)
         );
         if (res.success) {
-          await api.post(`/api/login`, {});
+          await api.post(`/api/login`, { token: (res.data as any)?.token });
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }
