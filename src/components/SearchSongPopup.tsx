@@ -127,7 +127,7 @@ function SearchSongPopup({
     if (selectedSongs.length == 0) return toast.error("No song selected");
     toast.loading("Adding songs to queue", { id: "adding" });
     const added = await api.post(
-      `${process.env.SEARCH_API}/api/add?room=${roomId}`,
+      `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
       selectedSongs,
       { credentials: "include" }
     );
@@ -150,7 +150,7 @@ function SearchSongPopup({
 
       const addBatch = async (batch: any) => {
         return api.post(
-          `${process.env.SEARCH_API}/api/add?room=${roomId}`,
+          `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
           batch
         );
       };
