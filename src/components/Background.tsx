@@ -1,18 +1,18 @@
 "use client";
 import useCache from "@/Hooks/useCache";
 import { useAudio } from "@/store/AudioContext";
-// import { useUserContext } from "@/store/userStore";
+import { useUserContext } from "@/store/userStore";
 
 function Background() {
-  // const { showVideo, setShowVideo } = useUserContext();
-  const { currentSong } = useAudio();
+  const { showVideo, setShowVideo } = useUserContext();
+  const { currentSong, backgroundVideoRef } = useAudio();
   useCache();
 
   return (
     <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center w-full">
-      {currentSong?.source == "youtube" ? (
+      {currentSong?.video ? (
         <>
-          {/* <video
+          <video
             style={{ display: showVideo ? "block" : "none" }}
             ref={backgroundVideoRef}
             muted
@@ -26,7 +26,7 @@ function Background() {
             }}
             onCanPlay={(e) => e?.currentTarget?.play().catch()}
             className="relative bg-cover object-cover transition-all duration-700 bg-center w-full h-full"
-          /> */}
+          />
 
           <div
             className=" absolute bg-cover  object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
@@ -35,7 +35,7 @@ function Background() {
                 currentSong?.image[currentSong?.image?.length - 1]?.url ||
                 "/mask.svg"
               }')`,
-              // opacity: showVideo ? 0 : 1,
+              opacity: showVideo ? 0 : 1,
             }}
           />
         </>

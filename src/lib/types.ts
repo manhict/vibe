@@ -23,6 +23,7 @@ export interface searchResults {
   topVoters?: TUser[];
   isVoted?: boolean;
   order?: number;
+  video?: boolean;
 }
 export interface downloadUrl {
   quality: string;
