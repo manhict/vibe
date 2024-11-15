@@ -59,9 +59,7 @@ interface AudioProviderProps {
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-  const audioRef = useRef<HTMLAudioElement>(
-    typeof window !== "undefined" ? new Audio() : null
-  );
+  const audioRef = useRef<HTMLVideoElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -434,6 +432,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     ]
   );
   return (
-    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
+    <AudioContext.Provider value={value}>
+      {children}
+      <video ref={audioRef} hidden preload="true"></video>
+    </AudioContext.Provider>
   );
 };
