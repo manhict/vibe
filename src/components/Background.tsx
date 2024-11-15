@@ -20,7 +20,7 @@ function Background() {
             title={currentSong?.name || ""}
             height={300}
             width={300}
-            preload="none"
+            preload="none" // Prevents auto-loading
             onError={() => {
               setShowVideo(false);
             }}

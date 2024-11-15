@@ -34,14 +34,11 @@ function InviteFriends({ className }: { className?: string }) {
     } catch (error: any) {}
   }, [roomId, user]);
   return (
-    <Dialog>
-      <DialogTrigger>
-        <div
-          className={cn(" flex items-center justify-between pr-4", className)}
-        >
-          <Listeners className=" max-md:hidden" />
-
-          <div className=" flex items-center gap-1">
+    <div className={cn(" flex items-center justify-between pr-4", className)}>
+      <Listeners className=" max-md:hidden" />
+      <div className=" flex items-center gap-1">
+        <Dialog>
+          <DialogTrigger asChild>
             <div className="inline-flex cursor-pointer items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2.5 text-xs gap-1 bg-purple w-fit hover:bg-[#7140c5]">
               <svg
                 width="14"
@@ -58,74 +55,77 @@ function InviteFriends({ className }: { className?: string }) {
 
               <span>Invite Friends</span>
             </div>
-            <Youtube />
-          </div>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="w-fit flex flex-col border-none bg-transparent p-0">
-        <DialogHeader className=" h-0">
-          <DialogTitle className=" w-fit" />
-          <DialogDescription />
-        </DialogHeader>
-        <div className="  w-[416px] h-[414px]  flex items-center justify-center">
-          <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
-            <p className=" font-semibold text-2xl text-[#EADDFF]">
-              Invite Friends
-            </p>
-            <p className=" text-xs text-zinc-400 text-center">
-              {" "}
-              Share that feeling, the one when you listen to your most favorite
-              songs{" "}
-            </p>
-            <div className="w-full relative mt-4">
-              <Input
-                readOnly
-                onClick={async (e) => {
-                  await navigator.clipboard.writeText(e.currentTarget.value);
-                  toast.success("Link copied to clipboard!");
-                }}
-                className="pr-7 hover:opacity-80 cursor-pointer" /* Add right padding to avoid overlap with the SVG */
-                value={
-                  typeof window != "undefined"
-                    ? `${window.location.origin}/v?room=${roomId}&ref=${user?.username}`
-                    : ""
-                }
-              />
-              <svg
-                className="absolute  cursor-pointer top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.75 10.05V12.3C12.75 15.3 11.55 16.5 8.55 16.5H5.7C2.7 16.5 1.5 15.3 1.5 12.3V9.45C1.5 6.45 2.7 5.25 5.7 5.25H7.95"
-                  stroke="#D0BCFF"
-                  strokeWidth="0.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8.7 1.5H11.7M5.25 3.75C5.25 2.505 6.255 1.5 7.5 1.5H9.465M16.5 6V10.6425C16.5 11.805 15.555 12.75 14.3925 12.75M16.5 6H14.25C12.5625 6 12 5.4375 12 3.75V1.5L16.5 6ZM12.75 10.05H10.35C8.55 10.05 7.95 9.45 7.95 7.65V5.25L12.75 10.05Z"
-                  stroke="#D0BCFF"
-                  strokeWidth="0.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+          </DialogTrigger>
+          <DialogContent className="w-fit flex flex-col border-none bg-transparent p-0">
+            <DialogHeader className=" h-0">
+              <DialogTitle className=" w-fit" />
+              <DialogDescription />
+            </DialogHeader>
+            <div className="  w-[416px] h-[414px]  flex items-center justify-center">
+              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
+                <p className=" font-semibold text-2xl text-[#EADDFF]">
+                  Invite Friends
+                </p>
+                <p className=" text-xs text-zinc-400 text-center">
+                  {" "}
+                  Share that feeling, the one when you listen to your most
+                  favorite songs{" "}
+                </p>
+                <div className="w-full relative mt-4">
+                  <Input
+                    readOnly
+                    onClick={async (e) => {
+                      await navigator.clipboard.writeText(
+                        e.currentTarget.value
+                      );
+                      toast.success("Link copied to clipboard!");
+                    }}
+                    className="pr-7 hover:opacity-80 cursor-pointer" /* Add right padding to avoid overlap with the SVG */
+                    value={
+                      typeof window != "undefined"
+                        ? `${window.location.origin}/v?room=${roomId}&ref=${user?.username}`
+                        : ""
+                    }
+                  />
+                  <svg
+                    className="absolute  cursor-pointer top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12.75 10.05V12.3C12.75 15.3 11.55 16.5 8.55 16.5H5.7C2.7 16.5 1.5 15.3 1.5 12.3V9.45C1.5 6.45 2.7 5.25 5.7 5.25H7.95"
+                      stroke="#D0BCFF"
+                      strokeWidth="0.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8.7 1.5H11.7M5.25 3.75C5.25 2.505 6.255 1.5 7.5 1.5H9.465M16.5 6V10.6425C16.5 11.805 15.555 12.75 14.3925 12.75M16.5 6H14.25C12.5625 6 12 5.4375 12 3.75V1.5L16.5 6ZM12.75 10.05H10.35C8.55 10.05 7.95 9.45 7.95 7.65V5.25L12.75 10.05Z"
+                      stroke="#D0BCFF"
+                      strokeWidth="0.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
 
-            <Button
-              onClick={handleShare}
-              className=" bg-purple w-full hover:bg-purple/80 text-white mt-4"
-            >
-              Invite
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+                <Button
+                  asChild
+                  onClick={handleShare}
+                  className=" bg-purple w-full hover:bg-purple/80 text-white mt-4"
+                >
+                  Invite
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Youtube />
+      </div>
+    </div>
   );
 }
 
