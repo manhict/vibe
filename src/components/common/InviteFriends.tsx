@@ -62,7 +62,7 @@ function InviteFriends({ className }: { className?: string }) {
               <DialogDescription />
             </DialogHeader>
             <div className="  w-[416px] h-[414px]  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
+              <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
                 <p className=" font-semibold text-2xl text-[#EADDFF]">
                   Invite Friends
                 </p>
