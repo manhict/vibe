@@ -105,6 +105,7 @@ export interface spotifyTrack {
 
 export interface spotifyUser {
   display_name: string;
+  id: string;
   email: string;
   images: [
     {
