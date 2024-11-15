@@ -113,7 +113,6 @@ function InviteFriends({ className }: { className?: string }) {
                 </div>
 
                 <Button
-                  asChild
                   onClick={handleShare}
                   className=" bg-purple w-full hover:bg-purple/80 text-white mt-4"
                 >
