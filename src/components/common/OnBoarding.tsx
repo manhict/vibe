@@ -242,6 +242,9 @@ function OnBoarding() {
                             maxLength={15}
                             max={15}
                             min={4}
+                            onChange={(e) =>
+                              (e.target.value = e.target.value.toLowerCase())
+                            }
                             placeholder="username"
                             name="username"
                             className="py-5"

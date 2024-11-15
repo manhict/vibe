@@ -188,6 +188,9 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                     min={4}
                     placeholder="username"
                     name="username"
+                    onChange={(e) =>
+                      (e.target.value = e.target.value.toLowerCase())
+                    }
                     defaultValue={LoggedInUser?.username}
                   />
                   <Input
