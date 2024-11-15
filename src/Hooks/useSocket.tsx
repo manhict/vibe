@@ -233,7 +233,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
-    if (total.current && queue.length >= total.current) return;
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -260,7 +259,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       getUpNextSong();
     }
     setLoading(false);
-  }, [setQueue, queue, roomId, getUpNextSong, total]);
+  }, [setQueue, queue, roomId, getUpNextSong]);
 
   const forceUpdateQueue = useDebounce(UpdateQueue, 0);
   const handleJoined = useCallback(
