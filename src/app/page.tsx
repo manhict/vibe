@@ -152,7 +152,7 @@ function Page() {
                   value={roomName}
                   onInput={(e) => setRoomName(e.currentTarget.value)}
                   onChange={handleCheckRoom}
-                  placeholder="claim your vibe"
+                  placeholder="enter party name"
                   className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
                 />
               </div>
@@ -168,8 +168,7 @@ function Page() {
             <p className="h-4 text-red-500 font-normal text-xs -mt-2 px-1">
               {error}
             </p>
-            {typeof window !== "undefined" &&
-              !window.location.pathname.includes("/make") && <Login footer />}
+            <Login footer />
           </div>
           <div className=" w-1/2  max-md:w-full">
             <video

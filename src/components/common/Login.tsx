@@ -53,8 +53,11 @@ function Login({ footer = false }: { footer?: boolean }) {
       defaultOpen={footer ? false : user ? false : true}
     >
       {footer ? (
-        <DialogTrigger className="w-fit text-xs -mt-3.5 px-0.5 font-normal text-white/70 hover:text-white">
-          <p className=" hover:text-white">Login to your account?</p>
+        <DialogTrigger
+          asChild
+          className="w-fit text-xs -mt-3.5 px-0.5 font-normal text-white/70 hover:text-white"
+        >
+          <p>Login to your account?</p>
         </DialogTrigger>
       ) : (
         <DialogTrigger className=" border max-md:px-2.5 max-md:border-none border-none h-full flex justify-center items-center px-5 rounded-xl text-base md:block hover:bg-[#D0BCFF]/15 bg-[#D0BCFF]/20 text-[#D0BCFF] ">

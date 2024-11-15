@@ -13,7 +13,7 @@ function Background() {
       {currentSong?.source == "youtube" ? (
         <>
           <video
-            style={{ opacity: showVideo ? 1 : 0 }}
+            style={{ display: showVideo ? "block" : "none" }}
             ref={backgroundVideoRef}
             muted
             playsInline

@@ -153,7 +153,7 @@ function MemoPLayer() {
               )}
 
               <video
-                style={{ opacity: showVideo ? 1 : 0 }}
+                style={{ display: showVideo ? "block" : "none" }}
                 ref={videoRef}
                 muted
                 preload="none"
