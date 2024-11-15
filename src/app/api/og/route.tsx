@@ -89,7 +89,7 @@ export async function GET(request: Request) {
                     lineHeight: 0.5,
                   }}
                 >
-                  You listen to songs together?
+                  You to listen songs together?
                 </span>
               </div>
             </div>
