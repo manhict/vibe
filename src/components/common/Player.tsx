@@ -4,7 +4,6 @@ import { formatArtistName } from "@/utils/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { useUserContext } from "@/store/userStore";
 import Image from "next/image";
-import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import Chat from "./Chat";
 import Listeners from "./Listeners";
@@ -248,23 +247,6 @@ function MemoPLayer() {
               } size-5 cursor-pointer hover:fill-zinc-200 `}
             />
           </svg>
-          <div
-            onClick={() => toast.info("Suggestions! Coming Soon")}
-            title="Suggestions! Coming Soon"
-          >
-            <svg
-              width="25"
-              height="26"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                className="fill-zinc-500 cursor-pointer"
-                d="M22 12.92C16.4785 12.92 12 8.44154 12 2.92004C12 8.44154 7.5215 12.92 2 12.92C7.5215 12.92 12 17.3986 12 22.92C12 17.3986 16.4785 12.92 22 12.92Z"
-              />
-            </svg>
-          </div>
 
           <LikeButton hearts={["❤️", "💛", "😍", "🥰", "🥳"]} />
         </div>

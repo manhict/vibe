@@ -7,6 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export const onBoarding = [
   {
+    heading: "Own your vibe.",
+    description:
+      "Get the party started! Add a song you love, and let’s kick things off.",
+    ctaText: "Save",
+  },
+  {
     heading: "Add & Mix",
     description:
       "Invite everyone to add songs to the queue. The more, the merrier!",
