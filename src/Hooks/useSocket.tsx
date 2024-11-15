@@ -29,7 +29,7 @@ export interface Message {
 interface SocketContextType {
   isConnected: boolean;
   loading: boolean;
-  total: number | null;
+  total: React.MutableRefObject<number | null>;
   transport: string;
   messages: messages[];
   handleUpdateQueue: () => void;
@@ -77,7 +77,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
-  const [total, setTotal] = useState<number | null>(null);
+  const total = useRef<number | null>(null);
   const socketRef = useRef(socket);
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
@@ -170,7 +170,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (total && queue.length >= total) return;
+    if (total.current && queue.length >= total.current) return;
 
     setLoading(true);
     if (queueControllerRef.current) {
@@ -205,7 +205,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
 
-      setTotal(value?.total - 1);
+      total.current = value?.total - 1;
       setPage(value?.start + 1);
     }
     setLoading(false);
@@ -233,7 +233,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
-    if (total && queue.length >= total) return;
+    if (total.current && queue.length >= total.current) return;
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -255,7 +255,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const value = data.data as data;
       setQueue(value.results); // Replace the queue with the full result
 
-      setTotal(value?.total);
+      total.current = value?.total;
       setPage(1);
       getUpNextSong();
     }
