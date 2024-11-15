@@ -35,7 +35,6 @@ function Login({ footer = false }: { footer?: boolean }) {
         const payload: spotifyUser = {
           display_name: user.displayName,
           email: user.email,
-          id: user.uid,
           images: [{ url: user.photoURL }],
         };
         const res = await api.post(
