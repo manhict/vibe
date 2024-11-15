@@ -12,15 +12,15 @@ import parse from "html-react-parser";
 import UpvotedBy from "./UpvotedBy";
 import UpNextSongs from "./UpNextSongs";
 import { useSocket } from "@/Hooks/useSocket";
-import { BsPip } from "react-icons/bs";
+// import { BsPip } from "react-icons/bs";
 import InviteFriends from "./InviteFriends";
 import ProgressBar from "./ProgressBar";
 import Controller from "./Controller";
 import { MdOutlineOpenInFull } from "react-icons/md";
 function MemoPLayer() {
-  const { user, showVideo, setShowVideo } = useUserContext();
+  const { user, setShowVideo } = useUserContext();
   const { messages } = useSocket();
-  const { currentSong, videoRef } = useAudio();
+  const { currentSong } = useAudio();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -61,7 +61,7 @@ function MemoPLayer() {
       document.removeEventListener("keydown", handleCheatCodes);
     };
   }, [isChatOpen]);
-  const [pip, setPIP] = useState<boolean>(false);
+  // const [pip, setPIP] = useState<boolean>(false);
 
   function openFullscreen() {
     const elem = document.documentElement; // Select the whole document or another element
@@ -141,7 +141,7 @@ function MemoPLayer() {
               }}
               className=" relative"
             >
-              {pip && showVideo && (
+              {/* {pip && showVideo && (
                 <BsPip
                   onClick={(e) => {
                     e.stopPropagation();
@@ -150,8 +150,8 @@ function MemoPLayer() {
                   }}
                   className=" absolute  z-10 cursor-pointer opacity-70 hover:opacity-100 size-5 top-2.5 right-2.5"
                 />
-              )}
-
+              )} */}
+              {/* 
               <video
                 style={{ display: showVideo ? "block" : "none" }}
                 ref={videoRef}
@@ -177,10 +177,10 @@ function MemoPLayer() {
                 }}
                 onCanPlay={(e) => e?.currentTarget?.play().catch()}
                 className="cover absolute h-full object-cover  w-full"
-              ></video>
+              ></video> */}
 
               <Image
-                style={{ opacity: showVideo ? 0 : 1 }}
+                // style={{ opacity: showVideo ? 0 : 1 }}
                 priority
                 title={
                   currentSong?.name
