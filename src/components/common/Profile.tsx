@@ -47,7 +47,6 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
       formData.forEach((value, key) => {
         payload[key] = value;
       });
-      if (LoggedInUser && payload.username == LoggedInUser.username) return;
       setLoader(true);
       const res = await api.put(
         `${process.env.SOCKET_URI}/api/update`,
@@ -57,6 +56,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         setError(res.error);
       }
       if (res.success) {
+        setError(null);
         socket.emit("profile");
         toast.success("Profile updated!");
         if (LoggedInUser) {
@@ -149,7 +149,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <DialogDescription />
             </DialogHeader>
             <div className="  w-[416px] h-[414px]  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t to-[#FFFFFF]/20 overflow-hidden from-black/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
+              <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
                 <Avatar className="size-24">
                   <AvatarImage
                     width={500}
@@ -174,19 +174,12 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   className=" flex gap-2.5  w-full flex-col"
                 >
                   <Input
-                    disabled
-                    placeholder="email"
-                    readOnly
-                    value={user?.email}
-                  />
-
-                  <Input
                     maxLength={15}
                     max={15}
                     min={4}
                     placeholder="name"
                     name="name"
-                    defaultValue={user?.name}
+                    defaultValue={LoggedInUser?.name}
                   />
 
                   <Input
@@ -195,8 +188,16 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                     min={4}
                     placeholder="username"
                     name="username"
-                    defaultValue={user?.username}
+                    defaultValue={LoggedInUser?.username}
                   />
+                  <Input
+                    disabled
+                    className=" disabled:opacity-70"
+                    placeholder="email"
+                    readOnly
+                    value={LoggedInUser?.email}
+                  />
+
                   {error && (
                     <p className=" text-xs p-0.5 text-red-400">{error}</p>
                   )}

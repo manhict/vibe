@@ -55,6 +55,7 @@ function OnBoarding() {
         setCurrentStep((prev) => prev + 1);
         return;
       }
+
       setLoader(true);
       const res = await api.put(
         `${process.env.SOCKET_URI}/api/update`,
@@ -65,6 +66,7 @@ function OnBoarding() {
       }
       if (res.success) {
         socket.emit("profile");
+        setError(null);
         setCurrentStep((prev) => prev + 1);
         if (user) {
           setUser(() => ({
@@ -128,7 +130,7 @@ function OnBoarding() {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className=" w-[346px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-[#FFFFFF]/25 overflow-hidden from-black/70 gradient rounded-[28px] shadow-md"
+          className=" w-[346px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50 gradient rounded-[28px] shadow-md"
         >
           {user && showOnboarding && (
             <AnimatePresence mode="wait" initial={false}>
@@ -283,7 +285,7 @@ function OnBoarding() {
                         style={{
                           opacity: currentStep == 0 || currentStep == 1 ? 0 : 1,
                         }}
-                        className="text-zinc-400 text-base cursor-pointer"
+                        className="text-zinc-300 text-base cursor-pointer"
                       >
                         Skip
                       </p>
