@@ -137,6 +137,7 @@ function OnBoarding() {
                   {currentStep == 0 && (
                     <form
                       ref={formRef}
+                      onChange={() => error && setError(null)}
                       onSubmit={handleUpdate}
                       className=" w-full space-y-2.5 my-5"
                     >
