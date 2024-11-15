@@ -1,6 +1,6 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import getURL from "@/utils/utils";
+import getURL, { getBackgroundURL } from "@/utils/utils";
 import { useCallback, useEffect } from "react";
 
 function useCache() {
@@ -10,6 +10,7 @@ function useCache() {
   const loadVideos = useCallback(async () => {
     if (!currentSong) return;
     const currentVideoUrl = getURL(currentSong);
+    const backGroundVideoUrl = getBackgroundURL(currentSong);
     if (currentVideoUrl) {
       // const cachedCurrentSongUrl = await cacheVideo(
       //   currentVideoUrl,
@@ -24,18 +25,9 @@ function useCache() {
       }
       if (
         backgroundVideoRef?.current &&
-        backgroundVideoRef?.current.src !==
-          currentVideoUrl.replace(
-            process.env.VIDEO_STREAM_URI || "",
-            process.env.BACKGROUND_STREAM_URI || ""
-          ) +
-            "?v=v"
+        backgroundVideoRef?.current.src !== backGroundVideoUrl + "?v=v"
       ) {
-        backgroundVideoRef.current.src =
-          currentVideoUrl.replace(
-            process.env.VIDEO_STREAM_URI || "",
-            process.env.BACKGROUND_STREAM_URI || ""
-          ) + "?v=v";
+        backgroundVideoRef.current.src = currentVideoUrl + "?v=v";
       }
     }
   }, [currentSong, videoRef, backgroundVideoRef]);
