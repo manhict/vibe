@@ -13,13 +13,12 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
-import { spotifyUser, TUser } from "@/lib/types";
+import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { FaSpotify } from "react-icons/fa";
-import { encryptObjectValues } from "@/utils/utils";
 
 function Login({ footer = false }: { footer?: boolean }) {
   const { setUser, user } = useUserContext();
@@ -32,16 +31,9 @@ function Login({ footer = false }: { footer?: boolean }) {
       const user = result.user;
 
       if (user && user.displayName && user.email && user.photoURL) {
-        const payload: spotifyUser = {
-          display_name: user.displayName,
-          email: user.email,
-          id: user.uid,
-          images: [{ url: user.photoURL }],
-        };
-        const res = await api.post(
-          `${process.env.SOCKET_URI}/api/auth`,
-          encryptObjectValues(payload as any)
-        );
+        const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, {
+          token: await user.getIdToken(),
+        });
         if (res.success) {
           await api.post(`/api/login`, { token: (res.data as any)?.token });
           setUser((res.data as any).data as TUser);
