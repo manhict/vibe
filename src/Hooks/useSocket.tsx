@@ -330,7 +330,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("isplaying");
       currentSocket.off("play");
       currentSocket.off("seek", seek);
-      currentSocket.on("profile", updateListeners);
+      currentSocket.off("profile", updateListeners);
     };
   }, [
     handleUserLeftRoom,
