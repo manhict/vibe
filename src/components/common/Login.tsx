@@ -30,7 +30,7 @@ function Login({ footer = false }: { footer?: boolean }) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      if (user && user.displayName && user.email && user.photoURL) {
+      if (user) {
         const res = await api.post(`${process.env.SOCKET_URI}/api/auth`, {
           token: await user.getIdToken(),
         });
@@ -39,8 +39,6 @@ function Login({ footer = false }: { footer?: boolean }) {
           setUser((res.data as any).data as TUser);
           window.location.reload();
         }
-      } else {
-        toast.error("Missing Name, Email and Photo URL");
       }
     } catch (error: any) {
       toast.error(error?.message);
