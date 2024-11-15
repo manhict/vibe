@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import OnBoarding from "./OnBoarding";
 import { Input } from "../ui/input";
-import { LoaderCircle } from "lucide-react";
+import { AtSign, LoaderCircle, Mail, Sun } from "lucide-react";
 import { encryptObjectValues } from "@/utils/utils";
 function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser, user: LoggedInUser } = useUserContext();
@@ -151,7 +151,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
             </DialogHeader>
             <div className="  w-[416px] h-[414px]  flex items-center justify-center">
               <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
-                <Avatar className="size-24">
+                <Avatar className="size-28">
                   <AvatarImage
                     width={500}
                     height={500}
@@ -174,35 +174,45 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   onSubmit={handleUpdate}
                   className=" flex gap-2.5  w-full flex-col"
                 >
-                  <Input
-                    maxLength={15}
-                    max={15}
-                    min={4}
-                    placeholder="name"
-                    name="name"
-                    defaultValue={LoggedInUser?.name}
-                  />
+                  <div className=" relative flex items-center">
+                    <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
+                    <Input
+                      maxLength={15}
+                      max={15}
+                      min={4}
+                      className=" pl-7"
+                      placeholder="name"
+                      name="name"
+                      defaultValue={LoggedInUser?.name}
+                    />
+                  </div>
+                  <div className=" relative flex items-center">
+                    <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
+                    <Input
+                      maxLength={15}
+                      max={15}
+                      min={4}
+                      placeholder="username"
+                      name="username"
+                      className=" pl-7"
+                      value={inputValue}
+                      onChange={(e) =>
+                        setInputValue(e.target.value.toLowerCase())
+                      }
+                      defaultValue={LoggedInUser?.username}
+                    />
+                  </div>
+                  <div className=" relative flex items-center">
+                    <Mail className=" size-4 ml-2 text-zinc-400 absolute" />
 
-                  <Input
-                    maxLength={15}
-                    max={15}
-                    min={4}
-                    placeholder="username"
-                    name="username"
-                    value={inputValue}
-                    onChange={(e) =>
-                      setInputValue(e.target.value.toLowerCase())
-                    }
-                    defaultValue={LoggedInUser?.username}
-                  />
-                  <Input
-                    disabled
-                    className=" disabled:opacity-70"
-                    placeholder="email"
-                    readOnly
-                    value={LoggedInUser?.email}
-                  />
-
+                    <Input
+                      disabled
+                      className=" disabled:opacity-70 pl-7"
+                      placeholder="email"
+                      readOnly
+                      value={LoggedInUser?.email}
+                    />
+                  </div>
                   {error && (
                     <p className=" text-xs p-0.5 text-red-400">{error}</p>
                   )}

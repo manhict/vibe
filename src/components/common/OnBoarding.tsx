@@ -15,7 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
 import { encryptObjectValues } from "@/utils/utils";
 import api from "@/lib/api";
-import { LoaderCircle } from "lucide-react";
+import { AtSign, LoaderCircle, Sun } from "lucide-react";
+import { socket } from "@/app/socket";
 
 function OnBoarding() {
   const { user, setUser } = useUserContext();
@@ -52,10 +53,10 @@ function OnBoarding() {
       formData.forEach((value, key) => {
         payload[key] = value;
       });
-      if (user && payload.username == user.username) {
-        setCurrentStep((prev) => prev + 1);
-        return;
-      }
+      // if (user && payload.username == user.username) {
+      //   setCurrentStep((prev) => prev + 1);
+      //   return;
+      // }
 
       setLoader(true);
       const res = await api.put(
@@ -152,7 +153,7 @@ function OnBoarding() {
                 <div
                   className={`${
                     currentStep == 4
-                      ? ""
+                      ? "h-1/3 mb-2"
                       : currentStep == 0
                       ? ""
                       : "bg-black h-1/2 "
@@ -201,9 +202,9 @@ function OnBoarding() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="px-7 mt-4"
+                    className="px-7 mt-5"
                   >
-                    <p className="font-semibold text-2xl pb-0.5">
+                    <p className="font-semibold text-3xl pb-1">
                       {currentStep == 4
                         ? `${user.name.split(" ")[0]}, Set your vibe`
                         : onBoarding[currentStep].heading}
@@ -216,22 +217,25 @@ function OnBoarding() {
                         ref={formRef}
                         onChange={() => error && setError(null)}
                         onSubmit={handleUpdate}
-                        className="w-full space-y-2.5 my-5"
+                        className="w-full space-y-3 my-5"
                       >
                         <motion.div
                           initial={{ x: -20, opacity: 0 }}
                           animate={{ x: 0, opacity: 1 }}
                           transition={{ delay: 0.4 }}
                         >
-                          <Input
-                            maxLength={15}
-                            max={15}
-                            min={4}
-                            placeholder="name"
-                            name="name"
-                            className="py-5"
-                            defaultValue={user?.name}
-                          />
+                          <div className=" relative flex items-center">
+                            <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
+                            <Input
+                              maxLength={15}
+                              max={15}
+                              min={4}
+                              placeholder="name"
+                              name="name"
+                              className="py-5 pl-7"
+                              defaultValue={user?.name}
+                            />
+                          </div>
                         </motion.div>
 
                         <motion.div
@@ -239,19 +243,22 @@ function OnBoarding() {
                           animate={{ x: 0, opacity: 1 }}
                           transition={{ delay: 0.5 }}
                         >
-                          <Input
-                            maxLength={15}
-                            max={15}
-                            min={4}
-                            value={inputValue}
-                            onChange={(e) =>
-                              setInputValue(e.target.value.toLowerCase())
-                            }
-                            placeholder="username"
-                            name="username"
-                            className="py-5"
-                            defaultValue={user?.username}
-                          />
+                          <div className=" relative flex items-center">
+                            <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
+                            <Input
+                              maxLength={15}
+                              max={15}
+                              min={4}
+                              value={inputValue}
+                              onChange={(e) =>
+                                setInputValue(e.target.value.toLowerCase())
+                              }
+                              placeholder="username"
+                              name="username"
+                              className="py-5 pl-7"
+                              defaultValue={user?.username}
+                            />
+                          </div>
                         </motion.div>
 
                         {error && (
@@ -297,13 +304,14 @@ function OnBoarding() {
                     )}
 
                     <Button
+                      disabled={loader}
                       className={`${
                         currentStep == 4
-                          ? "w-full bg-[#9747FF] hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
+                          ? "w-full bg-[#9747FF] py-5 hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
                           : ""
                       }`}
                       onClick={handleOnboarding}
-                      size="default"
+                      size={"lg"}
                     >
                       {loader ? (
                         <LoaderCircle className="animate-spin" />
