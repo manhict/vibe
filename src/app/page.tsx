@@ -134,9 +134,9 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="min-w-[335px] max-w-[350px] min-h-[52px] pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
             >
-              <div className="flex items-center h-5 relative">
+              <div className="flex items-center relative">
                 <div
                   className={` ${
                     roomName.length == 0 ? "text-white" : "text-white/60"
@@ -153,13 +153,13 @@ function Page() {
                   onInput={(e) => setRoomName(e.currentTarget.value)}
                   onChange={handleCheckRoom}
                   placeholder="enter party name"
-                  className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
+                  className="placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
                 />
               </div>
               <Button
                 disabled={loader || typeof error === "string"}
                 type="submit"
-                className="h-10 w-20 bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
+                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
               >
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
