@@ -230,7 +230,7 @@ function MemoPLayer() {
         </div>
         <Controller />
         <ProgressBar />
-        <div className=" mb-0.5 flex text-zinc-600 gap-3 items-center">
+        <div className=" mb-0.5 flex text-zinc-500 gap-3 items-center">
           <svg
             width="24"
             height="24"
