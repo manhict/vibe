@@ -37,6 +37,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     api.setAuthToken(user?.token || null);
     socket.connect();
   }, [user, setUser, roomId]);
+  const [inputValue, setInputValue] = useState(user?.username);
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const handleUpdate = useCallback(
@@ -188,8 +189,9 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                     min={4}
                     placeholder="username"
                     name="username"
+                    value={inputValue}
                     onChange={(e) =>
-                      (e.target.value = e.target.value.toLowerCase())
+                      setInputValue(e.target.value.toLowerCase())
                     }
                     defaultValue={LoggedInUser?.username}
                   />

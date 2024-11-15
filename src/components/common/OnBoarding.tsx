@@ -19,6 +19,7 @@ import { LoaderCircle } from "lucide-react";
 
 function OnBoarding() {
   const { user, setUser } = useUserContext();
+  const [inputValue, setInputValue] = useState(user?.username);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(() => {
     const data =
@@ -200,7 +201,7 @@ function OnBoarding() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="px-7 mt-3"
+                    className="px-7 mt-4"
                   >
                     <p className="font-semibold text-2xl pb-0.5">
                       {currentStep == 4
@@ -242,8 +243,9 @@ function OnBoarding() {
                             maxLength={15}
                             max={15}
                             min={4}
+                            value={inputValue}
                             onChange={(e) =>
-                              (e.target.value = e.target.value.toLowerCase())
+                              setInputValue(e.target.value.toLowerCase())
                             }
                             placeholder="username"
                             name="username"
