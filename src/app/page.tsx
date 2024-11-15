@@ -134,11 +134,11 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="w-[335px] h-[52px] pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+              className="min-w-[335px] max-w-[350px] min-h-[52px] pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
             >
-              <div className="w-[164px] h-5 relative">
+              <div className="flex items-center h-5 relative">
                 <div
-                  className={`left-0 top-0 absolute ${
+                  className={` ${
                     roomName.length == 0 ? "text-white" : "text-white/60"
                   } transition-all duration-150  text-sm font-semibold leading-tight tracking-tight`}
                 >
@@ -153,13 +153,11 @@ function Page() {
                   onInput={(e) => setRoomName(e.currentTarget.value)}
                   onChange={handleCheckRoom}
                   placeholder="claim your vibe"
-                  className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0 absolute text-white text-sm font-medium leading-tight tracking-tight"
+                  className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
                 />
               </div>
               <Button
-                disabled={
-                  loader || typeof error === "string" || roomName.length === 0
-                }
+                disabled={loader || typeof error === "string"}
                 type="submit"
                 className="h-10 w-20 bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
               >

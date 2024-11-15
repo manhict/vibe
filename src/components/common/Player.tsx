@@ -156,6 +156,7 @@ function MemoPLayer() {
                 style={{ opacity: showVideo ? 1 : 0 }}
                 ref={videoRef}
                 muted
+                preload="none"
                 playsInline
                 title={
                   currentSong?.name

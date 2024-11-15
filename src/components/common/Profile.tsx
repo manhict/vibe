@@ -57,6 +57,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         setError(res.error);
       }
       if (res.success) {
+        socket.emit("profile");
         toast.success("Profile updated!");
         if (LoggedInUser) {
           setUser(() => ({

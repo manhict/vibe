@@ -315,6 +315,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
     currentSocket.on("play", (d) => d && play(decrypt(d)));
     currentSocket.on("seek", seek);
+    currentSocket.on("profile", updateListeners);
     return () => {
       currentSocket.off("connect", onConnect);
       currentSocket.off("disconnect", onDisconnect);
@@ -330,6 +331,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("isplaying");
       currentSocket.off("play");
       currentSocket.off("seek", seek);
+      currentSocket.on("profile", updateListeners);
     };
   }, [
     handleUserLeftRoom,
@@ -345,6 +347,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     play,
     seek,
     isAdminOnline,
+    updateListeners,
   ]);
 
   return (

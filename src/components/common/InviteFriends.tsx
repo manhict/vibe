@@ -85,7 +85,11 @@ function InviteFriends({ className }: { className?: string }) {
                   toast.success("Link copied to clipboard!");
                 }}
                 className="pr-7 hover:opacity-80 cursor-pointer" /* Add right padding to avoid overlap with the SVG */
-                value={`${window.location.origin}/v?room=${roomId}&ref=${user?.username}`}
+                value={
+                  typeof window != "undefined"
+                    ? `${window.location.origin}/v?room=${roomId}&ref=${user?.username}`
+                    : ""
+                }
               />
               <svg
                 className="absolute  cursor-pointer top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"

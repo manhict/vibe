@@ -64,6 +64,7 @@ function OnBoarding() {
         setError(res.error);
       }
       if (res.success) {
+        socket.emit("profile");
         setCurrentStep((prev) => prev + 1);
         if (user) {
           setUser(() => ({
@@ -127,7 +128,7 @@ function OnBoarding() {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="w-[316px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-[#FFFFFF]/25 overflow-hidden from-black/50 gradient rounded-[28px] shadow-md"
+          className=" w-[346px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-[#FFFFFF]/25 overflow-hidden from-black/70 gradient rounded-[28px] shadow-md"
         >
           {user && showOnboarding && (
             <AnimatePresence mode="wait" initial={false}>
