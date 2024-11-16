@@ -324,7 +324,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setReconnectLoader(false);
     }
   }, [setReconnectLoader, updateListeners, UpdateQueue]);
-  useTabActivity(300000, onReturnAfterInactivity);
+  useTabActivity(240000, onReturnAfterInactivity);
   // Centralized event listeners setup and cleanup
   useEffect(() => {
     const currentSocket = socketRef.current;
