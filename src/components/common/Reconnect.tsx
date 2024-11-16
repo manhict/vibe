@@ -7,7 +7,7 @@ function Reconnect() {
   if (!hiddenTimeRef.current) return;
   if (hiddenTimeRef.current < BACKGROUND_APP_TIMEOUT) return;
   return (
-    <div className=" w-full inset-0 text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-xl">
+    <div className=" w-full inset-0 max-md:px-5 max-md:text-lg text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-xl">
       <p>
         (
         {`App was in background for more ${Math.floor(
