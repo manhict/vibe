@@ -13,10 +13,10 @@ const useTabActivity = (
     const handleVisibilityChange = () => {
       if (document.hidden) {
         // Start the timer when the tab is hidden
-        inactivityStartRef.current = Date.now(); // Track the time when the tab becomes hidden
+        inactivityStartRef.current = Date.now(); // Track when the tab is hidden
         timeoutRef.current = setTimeout(() => {
           setIsActive(false); // Mark as inactive after timeout
-          setWasInactiveForLong(true); // Set inactivity flag when the user was inactive for too long
+          setWasInactiveForLong(true); // Flag that user was inactive for too long
         }, timeout);
       } else {
         // Clear timer and mark as active when the tab is visible again
@@ -26,16 +26,19 @@ const useTabActivity = (
         }
         setIsActive(true); // Set active immediately when user returns
 
-        // If the user comes back after being inactive for too long, trigger the callback
+        // Trigger callback if the user returns after being inactive for too long
         if (wasInactiveForLong && onReturnAfterInactivity) {
           onReturnAfterInactivity();
         }
 
-        // Reset inactivity flag
-        setWasInactiveForLong(false);
+        // Reset inactivity flag *only* after the callback
+        if (wasInactiveForLong) {
+          setWasInactiveForLong(false); // Reset inactivity flag after callback
+        }
       }
     };
 
+    // Add event listener for visibility change (tab switching or minimizing)
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Cleanup on unmount
