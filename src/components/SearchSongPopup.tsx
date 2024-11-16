@@ -124,7 +124,8 @@ function SearchSongPopup({
   }, [inView, loading, searchMoreSongs]);
 
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
-  const handlePlay = useCallback(async () => {
+  const handleAdd = useCallback(async () => {
+    if (selectedSongs.length == 0) return;
     if (!user)
       return toast.error("Login required to add song in queue", {
         style: { background: "#e94625" },
@@ -345,11 +346,11 @@ function SearchSongPopup({
             )}
           </div>
         )}
-        {selectedSongs.length > 0 && (
+        {songs && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
               <div className="flex overflow-x-scroll items-center gap-2.5">
-                {selectedSongs.map((song) => (
+                {selectedSongs?.map((song) => (
                   <div
                     key={song?.id}
                     className=" gap-1 bg-[#8D50F9]/20 p-1 rounded-lg border-zinc-600 border text-xs px-2 py-1.5 flex items-center"
@@ -395,8 +396,9 @@ function SearchSongPopup({
             </div>
             <DialogFooter className=" p-2.5 px-4 pb-4 bg-black/80 ">
               <DialogClose
-                onClick={handlePlay}
-                className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
+                disabled={selectedSongs.length == 0}
+                onClick={handleAdd}
+                className=" py-3 w-full disabled:bg-purple/50 rounded-xl bg-purple/80 font-semibold text-sm"
               >
                 <p className="w-full text-center">Add song</p>
               </DialogClose>
@@ -411,7 +413,7 @@ function SearchSongPopup({
             <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
               <DialogClose
                 onClick={handleAddAll}
-                className=" py-3 w-full  rounded-xl bg-purple/80 font-semibold text-sm"
+                className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
               >
                 <p className="w-full text-center">Add All</p>
               </DialogClose>
