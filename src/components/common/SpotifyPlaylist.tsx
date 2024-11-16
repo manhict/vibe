@@ -79,7 +79,7 @@
 //               <div
 //                 key={playlist.id}
 //                 onClick={() => handleLoadPlaylist(playlist.id)}
-//                 className={`flex gap-2 text-start cursor-pointer hover:bg-zinc-800/20 ${
+//                 className={`flex gap-2 text-start  hover:bg-zinc-800/20 ${
 //                   i != spotifyPlaylists.length - 1 && "border-b"
 //                 }  border-[#1D192B] p-2.5 items-center`}
 //               >

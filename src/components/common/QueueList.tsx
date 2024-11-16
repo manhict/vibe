@@ -2,7 +2,7 @@ import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 import { formatArtistName } from "@/utils/utils";
 import { Trash } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -20,7 +20,7 @@ interface QueueListProps {
   selectedSongs: searchResults[];
 }
 
-function QueueList({
+function QueueListComp({
   isDeleting = false,
   handleSelect,
   selectedSongs,
@@ -154,12 +154,13 @@ function QueueList({
         >
           {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
           <label
+            id={song?.id + i}
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
             } py-2 pl-2 ${
               currentSong?.id == song?.id && "bg-white/15"
-            } hover:bg-white/10 cursor-pointer rounded-xl items-center justify-between`}
+            } hover:bg-white/10 rounded-xl items-center justify-between`}
           >
             <div title={String(song?.order)} className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -177,11 +178,11 @@ function QueueList({
                 {!isDeleting && (
                   <Trash
                     onClick={() => handleDelete(song)}
-                    className="absolute group-hover:z-20 cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   />
                 )}
                 {currentSong?.id == song.id && (
-                  <div className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
+                  <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
                     {isPlaying ? (
                       <Image
                         height={100}
@@ -212,9 +213,7 @@ function QueueList({
               className="flex flex-col gap-1 flex-grow text-sm w-6/12"
             >
               <div className=" text-start w-11/12">
-                <p className="cursor-pointer font-semibold truncate">
-                  {parse(song.name)}
-                </p>
+                <p className=" font-semibold truncate">{parse(song.name)}</p>
               </div>
               <p className="text-[#D0BCFF] opacity-75 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
@@ -229,7 +228,7 @@ function QueueList({
                   name={song?.id + i}
                   id={song?.id + i}
                   type="checkbox"
-                  className="peer cursor-pointer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  className="peer  appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
                 />
                 <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
               </div>
@@ -246,5 +245,5 @@ function QueueList({
     </div>
   );
 }
-
+const QueueList = React.memo(QueueListComp);
 export default QueueList;

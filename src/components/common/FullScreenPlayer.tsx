@@ -64,7 +64,7 @@ function FullScreenPlayer() {
       {/* Close button with fade out on exit */}
       <motion.div
         onClick={closeFullscreen}
-        className="absolute opacity-70 hover:opacity-100 cursor-pointer top-4 right-4 text-white"
+        className="absolute opacity-70 hover:opacity-100  top-4 right-4 text-white"
         whileHover={{ scale: 1.1 }}
         exit={{ opacity: 0 }}
       >

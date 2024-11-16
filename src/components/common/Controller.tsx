@@ -26,7 +26,7 @@ function Controller({ className }: { className?: string }) {
             toast.error("Only admin can play prev");
           }}
           aria-label="play prev"
-          className="cursor-pointer size-5 rotate-180"
+          className=" size-5 rotate-180"
           width="21"
           height="16"
           viewBox="0 0 21 16"
@@ -55,7 +55,7 @@ function Controller({ className }: { className?: string }) {
             toast.error("Only admin can play next");
           }}
           aria-label="play next"
-          className="cursor-pointer size-5"
+          className=" size-5"
           width="21"
           height="16"
           viewBox="0 0 21 16"
@@ -73,7 +73,7 @@ function Controller({ className }: { className?: string }) {
           />
         </svg>
       </div>
-      <div className="text-sm cursor-pointer gap-1.5 w-[30%] items-center flex">
+      <div className="text-sm  gap-1.5 w-[30%] items-center flex">
         {volume == 0 ? (
           <VolumeX
             onClick={() => {

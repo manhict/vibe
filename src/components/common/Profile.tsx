@@ -220,7 +220,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         </a>
         <Dialog key={"user profile"}>
           <DialogTrigger>
-            <Avatar className="size-10 max-md:size-8 cursor-pointer">
+            <Avatar className="size-10 max-md:size-8 ">
               <AvatarImage
                 width={500}
                 height={500}
@@ -323,7 +323,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   <Button
                     disabled={loader}
                     variant={"default"}
-                    className=" w-full mt-2.5"
+                    className=" w-full mt-2.5 bg-purple hover:bg-purple/80 text-white"
                     type="submit"
                   >
                     {loader ? (

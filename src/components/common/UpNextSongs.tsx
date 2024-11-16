@@ -48,7 +48,7 @@ function UpNextSongs() {
                   title={`${parse(nextSong?.name)} (${
                     formatArtistName(nextSong?.artists?.primary) || "Unknown"
                   })`}
-                  className="flex flex-col cursor-pointer leading-tight"
+                  className="flex flex-col  leading-tight"
                 >
                   <p className="w-24 mb-0.5 font-semibold truncate">
                     {parse(nextSong?.name)}

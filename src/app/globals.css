@@ -56,13 +56,16 @@
     --chart-5: 340 75% 55%;
   }
 }
+html,
+body,
+* {
+  cursor: url("/cursor.svg"), auto !important;
+}
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    cursor: url("/cursor.svg"), auto;
-
     @apply bg-background text-foreground;
   }
 }

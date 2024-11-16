@@ -23,11 +23,9 @@ function InviteFriends({ className }: { className?: string }) {
 
     try {
       if (navigator.share) {
-        // In Browser: Use Web Share API
         await navigator.share({ url: shareUrl });
         toast.success("Shared the link successfully!");
       } else {
-        // Fallback: Copy to clipboard in unsupported browsers
         await navigator.clipboard.writeText(shareUrl);
         toast.success("Link copied to clipboard!");
       }
@@ -39,7 +37,7 @@ function InviteFriends({ className }: { className?: string }) {
       <div className=" flex items-center gap-1">
         <Dialog>
           <DialogTrigger asChild>
-            <div className="inline-flex cursor-pointer items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2.5 text-xs gap-1 bg-purple w-fit hover:bg-[#7140c5]">
+            <div className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2.5 text-xs gap-1 bg-purple w-fit hover:bg-[#7140c5]">
               <svg
                 width="14"
                 height="14"
@@ -80,7 +78,7 @@ function InviteFriends({ className }: { className?: string }) {
                       );
                       toast.success("Link copied to clipboard!");
                     }}
-                    className="pr-7 hover:opacity-80 cursor-pointer" /* Add right padding to avoid overlap with the SVG */
+                    className="pr-7 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
                     value={
                       typeof window != "undefined"
                         ? `${window.location.origin}/v?room=${roomId}&ref=${user?.username}`
@@ -88,7 +86,7 @@ function InviteFriends({ className }: { className?: string }) {
                     }
                   />
                   <svg
-                    className="absolute  cursor-pointer top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"
+                    className="absolute   top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"
                     width="18"
                     height="18"
                     viewBox="0 0 18 18"

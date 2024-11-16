@@ -83,9 +83,9 @@ export const pauseVariants = {
 };
 
 export const slideInVariants = {
-  hidden: { y: "-100%", opacity: 0 },
+  hidden: { y: "-20%", opacity: 0 },
   visible: { y: 0, opacity: 1 },
-  exit: { y: "-100%", opacity: 0 },
+  exit: { y: "-20%", opacity: 0 },
 };
 
 export function containsOnlyEmojis(text: string): boolean {
