@@ -379,7 +379,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      socket.emit("profile");
+      if (socket.connected) {
+        socket.emit("profile");
+      }
     }, 5000);
     return () => clearTimeout(t);
   }, []);
