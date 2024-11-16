@@ -132,7 +132,6 @@ function SearchQueueList({
             >
               {i !== 0 && <div className=" h-0.5 bg-zinc-400/5"></div>}
               <label
-                id={song?.id + i}
                 htmlFor={song?.id + i}
                 key={i}
                 className={`flex gap-2 ${

@@ -288,7 +288,6 @@ function SearchSongPopup({
           <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll">
             {songs?.data.results.map((song, i) => (
               <label
-                id={song?.id}
                 htmlFor={song?.id}
                 key={i}
                 title={`${parse(song.name)} (${
