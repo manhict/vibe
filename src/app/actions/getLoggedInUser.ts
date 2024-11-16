@@ -9,7 +9,8 @@ export async function getLoggedInUser() {
     if (!vibeId) return null;
     const res = await fetch(`${process.env.SOCKET_URI}/api/vibe`, {
       headers: {
-        cookie: `vibeIdR=${vibeId};room=${room} `,
+        Authorization: `Bearer ${vibeId}`,
+        cookie: `room=${room} `,
       },
       cache: "no-cache",
     });
