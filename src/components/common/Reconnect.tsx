@@ -10,7 +10,7 @@ function Reconnect() {
     <div className=" w-full inset-0 text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-xl">
       <p>
         (
-        {`Show because app was in background for more ${Math.floor(
+        {`App was in background for more ${Math.floor(
           hiddenTimeRef.current / 60000
         )} minutes`}
         )
