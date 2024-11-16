@@ -26,8 +26,6 @@ interface UserContextType {
   isAdminOnline: React.MutableRefObject<boolean>;
   isChatOpen: boolean;
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
-  reconnectLoader: boolean;
-  setReconnectLoader: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -45,7 +43,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       typeof window !== "undefined" ? localStorage.getItem("v") : null;
     return data ? JSON.parse(data) : null;
   });
-  const [reconnectLoader, setReconnectLoader] = React.useState<boolean>(false);
   const [roomId, setRoomId] = React.useState<string>(
     () => search.get("room") || generateRoomId()
   );
@@ -67,8 +64,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       isAdminOnline,
       isChatOpen,
       setIsChatOpen,
-      reconnectLoader,
-      setReconnectLoader,
     }),
     [
       listener,
@@ -79,7 +74,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       showVideo,
       isAdminOnline,
       isChatOpen,
-      reconnectLoader,
     ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

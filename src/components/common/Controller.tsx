@@ -73,7 +73,7 @@ function Controller({ className }: { className?: string }) {
           />
         </svg>
       </div>
-      <div className="text-sm  gap-1.5 w-[30%] items-center flex">
+      <div className="text-sm cursor-pointer  gap-1.5 w-[30%] items-center flex">
         {volume == 0 ? (
           <VolumeX
             onClick={() => {

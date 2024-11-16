@@ -47,7 +47,7 @@ function ProgressBar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "select-none -my-1 flex items-center gap-4 md:px-4 w-full text-xs",
+        "select-none -my-1 cursor-pointer flex items-center gap-4 md:px-4 w-full text-xs",
         className
       )}
     >
