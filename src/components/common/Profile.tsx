@@ -90,6 +90,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("image/")) return toast.error("Invalid Image");
       const reader = new FileReader();
       reader.onload = async () => {
         if (typeof reader.result === "string") {
