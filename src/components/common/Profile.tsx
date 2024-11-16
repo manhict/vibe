@@ -227,7 +227,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                 alt="Profile"
                 className=" rounded-full object-cover"
                 src={
-                  user?.imageUrl || "https://imagedump.vercel.app/notFound.jpg"
+                  LoggedInUser?.imageUrl ||
+                  "https://imagedump.vercel.app/notFound.jpg"
                 }
               />
               <AvatarFallback>SX</AvatarFallback>
