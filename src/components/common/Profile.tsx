@@ -141,10 +141,13 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         if (res.success) {
           const imageUrl = (res.data as any)?.data?.direct_url;
           const imageDelUrl = (res.data as any)?.data?.deletion_url;
-          const update = await api.put(`${process.env.SOCKET_URI}/api/dp`, {
-            imageUrl,
-            imageDelUrl,
-          });
+          const update = await api.put(
+            `${process.env.SOCKET_URI}/api/dp`,
+            encryptObjectValues({
+              imageUrl,
+              imageDelUrl,
+            })
+          );
           if (update.success) {
             toast.success("Profile picture updated!");
             if (LoggedInUser) {
