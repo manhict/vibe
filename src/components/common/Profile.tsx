@@ -9,7 +9,13 @@ import {
 } from "@/components/ui/dialog";
 import { useUserContext } from "@/store/userStore";
 import { TUser } from "@/lib/types";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
@@ -75,6 +81,86 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     },
     [LoggedInUser, setUser]
   );
+  const [image, setImage] = useState(
+    user?.imageUrl || "https://imagedump.vercel.app/notFound.jpg"
+  );
+  const [uploading, setUploading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadControllerRef = useRef<AbortController | null>(null);
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        if (typeof reader.result === "string") {
+          setImage(reader.result);
+          await uploadImage(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+  const uploadImage = useCallback(
+    async (file: File) => {
+      try {
+        if (uploadControllerRef.current) {
+          uploadControllerRef.current.abort();
+        }
+        const controller = new AbortController();
+        uploadControllerRef.current = controller;
+
+        const formData = new FormData();
+        formData.append(
+          "payload_json",
+          JSON.stringify({
+            upload_source: process.env.UPLOAD_SOURCE,
+            domain: process.env.UPLOAD_DOMAIN,
+            type: 1,
+            name: LoggedInUser?.username,
+          })
+        );
+        setUploading(true);
+        if (LoggedInUser?.imageDelUrl) {
+          await api.get(LoggedInUser.imageDelUrl, { showErrorToast: false });
+        }
+        formData.append("file", file);
+        const res = await api.post(process.env.UPLOAD_URL || "", formData, {
+          headers: {
+            "X-Window-Location": process.env.UPLOAD_LOCATION || "",
+            "X-Api-Sitekey": process.env.UPLOAD_SITE_KEY || "",
+            Authorization: process.env.UPLOAD_KEY || "",
+          },
+          signal: controller.signal,
+        });
+        if (res.success) {
+          const imageUrl = (res.data as any)?.data?.direct_url;
+          const imageDelUrl = (res.data as any)?.data?.deletion_url;
+          const update = await api.put(`${process.env.SOCKET_URI}/api/dp`, {
+            imageUrl,
+            imageDelUrl,
+          });
+          if (update.success) {
+            toast.success("Profile picture updated!");
+            if (LoggedInUser) {
+              setUser({ ...LoggedInUser, imageUrl, imageDelUrl });
+            }
+          }
+          socket.emit("profile");
+        }
+      } catch (error) {
+      } finally {
+        setUploading(false);
+      }
+    },
+    [setUser, LoggedInUser]
+  );
+
   if (!user) {
     return <Login />;
   }
@@ -154,18 +240,34 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
             </DialogHeader>
             <div className="  w-[416px] h-[414px]  flex items-center justify-center">
               <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
-                <Avatar className="size-28">
+                <Avatar
+                  className="size-28 relative"
+                  onClick={handleAvatarClick}
+                >
                   <AvatarImage
                     width={500}
                     height={500}
                     alt="Profile"
+                    style={{ opacity: uploading ? 0.5 : 1 }}
                     className=" rounded-full h-full w-full object-cover"
-                    src={
-                      user?.imageUrl ||
-                      "https://imagedump.vercel.app/notFound.jpg"
-                    }
+                    src={image}
+                  />
+
+                  <input
+                    disabled={uploading}
+                    hidden
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={handleImageChange}
                   />
                   <AvatarFallback>SX</AvatarFallback>
+                  {uploading && (
+                    <div className=" absolute  inset-0 justify-center  items-center flex">
+                      <LoaderCircle className=" animate-spin" />
+                    </div>
+                  )}
                 </Avatar>
                 <p className=" my-2.5 font-medium">
                   {LoggedInUser?.name || user?.name} (

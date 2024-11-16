@@ -51,6 +51,7 @@ export interface TUser {
   imageUrl: string;
   role?: "admin" | "listener" | string;
   token?: string;
+  imageDelUrl?: string;
 }
 
 export interface listener {

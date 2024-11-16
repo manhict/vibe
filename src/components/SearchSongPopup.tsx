@@ -44,42 +44,47 @@ function SearchSongPopup({
 
   const search = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      const value = e.target.value.trim();
-      setQuery(value);
-      if (value.length <= 0) {
-        setSongs(null);
-        setLoading(false);
-        return;
-      }
-
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-      const url = youtube
-        ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(value)}`
-        : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
-
-      setPage(0); // Reset page on a new search
-      setLoading(true);
-      const res = await api.get(url, { signal: controller.signal });
-      if (res.success) {
-        if (youtube) {
-          const tracks = res.data as searchResults[];
-          setSongs({
-            success: true,
-            data: {
-              total: tracks.length,
-              start: 0,
-              results: tracks,
-            },
-          });
-        } else {
-          setSongs((res?.data as searchSongResult) || []);
+      try {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
         }
+        const value = e.target.value.trim();
+        setQuery(value);
+        if (value.length <= 0) {
+          setSongs(null);
+          return;
+        }
+
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+        const url = youtube
+          ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(
+              value
+            )}`
+          : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
+
+        setPage(0); // Reset page on a new search
+        setLoading(true);
+        const res = await api.get(url, { signal: controller.signal });
+        if (res.success) {
+          if (youtube) {
+            const tracks = res.data as searchResults[];
+            setSongs({
+              success: true,
+              data: {
+                total: tracks.length,
+                start: 0,
+                results: tracks,
+              },
+            });
+          } else {
+            setSongs((res?.data as searchSongResult) || []);
+          }
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [youtube]
   );
@@ -231,7 +236,7 @@ function SearchSongPopup({
           )}
         </>
       )}
-      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
+      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-[95dvw]">
         <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
