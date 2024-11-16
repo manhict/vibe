@@ -18,6 +18,7 @@ import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
 import { useRouter } from "next/navigation";
+import useTabActivity from "./useTabActivity";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -67,7 +68,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setUser,
     roomId,
     isAdminOnline,
+    setReconnectLoader,
   } = useUserContext();
+
+  const isActive = useTabActivity();
   const { seek, play } = useAudio();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
@@ -113,6 +117,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, []);
 
   const updateListeners = useCallback(async () => {
+    if (!isActive) return;
     if (listenerControllerRef.current) {
       listenerControllerRef.current.abort();
     }
@@ -126,7 +131,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (data.success) {
       setListener(data.data as listener);
     }
-  }, [setListener, roomId]);
+  }, [setListener, roomId, isActive]);
 
   const handleHeart = useCallback((data: any) => {
     const value = decrypt(data) as { imageUrl: string };
@@ -150,7 +155,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserLeftRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (user.username == loggedInUser?.username) return;
+      if (
+        user.username == loggedInUser?.username ||
+        user.username === "@someone"
+      )
+        return;
       updateListeners();
       toast.info(`${user?.username} has left`, {
         style: { background: "#e94625" },
@@ -162,7 +171,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserJoinedRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (user.username == loggedInUser?.username) return;
+      if (
+        user.username == loggedInUser?.username ||
+        user.username === "@someone"
+      )
+        return;
       updateListeners();
       toast.info(`${user?.username} has Joined`);
     },
@@ -170,6 +183,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
+    if (!isActive) return;
     if (total.current && queue.length >= total.current) return;
 
     setLoading(true);
@@ -209,10 +223,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setPage(value?.start + 1);
     }
     setLoading(false);
-  }, [setQueue, page, queue, total, roomId]);
+  }, [setQueue, page, queue, total, roomId, isActive]);
   const handleUpdateQueue = useDebounce(updateQueue, 0);
 
   const upNextSong = useCallback(async () => {
+    if (!isActive) return;
     if (upNextSongControllerRef.current) {
       upNextSongControllerRef.current.abort();
     }
@@ -228,11 +243,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (data.success) {
       setUpNextSongs(data.data as searchResults[]);
     }
-  }, [roomId, setUpNextSongs]);
+  }, [roomId, setUpNextSongs, isActive]);
 
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
+    if (!isActive) return;
+    // force update user so that if scrolling then it not reset queue
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -259,7 +276,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       getUpNextSong();
     }
     setLoading(false);
-  }, [setQueue, queue, roomId, getUpNextSong]);
+  }, [setQueue, queue, roomId, getUpNextSong, isActive]);
 
   const forceUpdateQueue = useDebounce(UpdateQueue, 0);
   const handleJoined = useCallback(
@@ -297,6 +314,17 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     ]
   );
 
+  const onReturnAfterInactivity = useCallback(async () => {
+    setReconnectLoader(true);
+    try {
+      await updateListeners();
+      await UpdateQueue();
+    } catch (error) {
+    } finally {
+      setReconnectLoader(false);
+    }
+  }, [setReconnectLoader, updateListeners, UpdateQueue]);
+  useTabActivity(300000, onReturnAfterInactivity);
   // Centralized event listeners setup and cleanup
   useEffect(() => {
     const currentSocket = socketRef.current;
@@ -349,6 +377,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     updateListeners,
   ]);
 
+  useEffect(() => {
+    const t = setTimeout(() => {
+      socket.emit("profile");
+    }, 5000);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <SocketContext.Provider
       value={{

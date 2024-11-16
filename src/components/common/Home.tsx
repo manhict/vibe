@@ -4,9 +4,9 @@ import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import Player from "@/components/common/Player";
 import Background from "../Background";
-import FullScreenPlayer from "./FullScreenPlayer";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import Context from "./Context";
+import Reconnect from "./Reconnect";
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
       <ContextMenuTrigger>
         <Background />
         <Blur />
-        <FullScreenPlayer />
+        <Reconnect />
         <div className="bg-cover absolute w-full top-0 flex flex-col items-center justify-center h-full md:py-2.5">
           <Header />
 
