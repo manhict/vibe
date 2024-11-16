@@ -36,6 +36,9 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     };
     api.setAuthToken(user?.token || null);
     socket.connect();
+    return () => {
+      socket.disconnect();
+    };
   }, [user, setUser, roomId]);
   const [inputValue, setInputValue] = useState(user?.username);
   const [loader, setLoader] = useState<boolean>(false);
