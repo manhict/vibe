@@ -262,4 +262,4 @@ export function decryptObjectValues(obj: any) {
   }, {} as Record<string, string>);
 }
 
-export const BACKGROUND_APP_TIMEOUT = 150000;
+export const BACKGROUND_APP_TIMEOUT = 200000;
