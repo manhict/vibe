@@ -55,7 +55,7 @@ export default function InviteFriendsToast() {
     <div
       className={`
         fixed bottom-4 left-4 z-50 
-        transition-all duration-300 ease-out
+        transition-all duration-500 ease-out
         transform ${
           isAnimating
             ? "translate-y-0 opacity-100"
