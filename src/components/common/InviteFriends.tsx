@@ -82,7 +82,7 @@ function InviteFriends({ className }: { className?: string }) {
                     className="pr-7 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
                     value={
                       typeof window != "undefined"
-                        ? `${window.location.origin}/v?room=${roomId}&ref=${user?.username}`
+                        ? getInviteLink(roomId ? roomId : user?.username)
                         : ""
                     }
                   />
