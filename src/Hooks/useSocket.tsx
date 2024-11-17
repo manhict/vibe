@@ -17,7 +17,6 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
-import { useRouter } from "next/navigation";
 import { BACKGROUND_APP_TIMEOUT } from "@/utils/utils";
 // Define the shape of a message
 export interface Message {
@@ -88,7 +87,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
   const upNextSongControllerRef = useRef<AbortController | null>(null);
-  const router = useRouter();
 
   const onConnect = useCallback((): void => {
     setIsConnected(true);
@@ -297,7 +295,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
       const resetUrl = setTimeout(() => {
-        router.replace(`/v?room=${roomId}`);
+        window.history.replaceState(null, "", `/v?room=${roomId}`);
       }, 10000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
@@ -315,7 +313,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       loggedInUser,
       setUser,
       roomId,
-      router,
     ]
   );
 
