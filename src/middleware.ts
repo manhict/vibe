@@ -12,7 +12,6 @@ export default async function middleware(req: NextRequest) {
         headers: {
           Authorization: `Bearer ${vibeId}`,
         },
-        cache: "no-cache",
       });
       if (isLoggedIn.ok) {
         return NextResponse.redirect(new URL("/browse", req.nextUrl.origin));
