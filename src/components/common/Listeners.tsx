@@ -76,7 +76,7 @@ function Listeners({ className }: { className?: string }) {
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[40%] flex-col max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
+      <DialogContent className="max-w-2xl max-md:max-w-[95dvw] flex-col max-md:w-full  border flex justify-center items-center bg-transparent border-none">
         <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
@@ -94,13 +94,7 @@ function Listeners({ className }: { className?: string }) {
                 ?.filter((r) => r.userId?._id !== user?._id)
                 ?.map((user, j) => (
                   <div key={j} className=" w-full py-2 flex items-center gap-2">
-                    <Avatar className=" size-10">
-                      <AvatarImage
-                        loading="lazy"
-                        src={user?.userId?.imageUrl}
-                      />
-                      <AvatarFallback>SX</AvatarFallback>
-                    </Avatar>
+                    <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
                       <p>{user?.userId?.name}</p>
                       <p className=" text-xs">{user?.userId?.username}</p>
@@ -115,4 +109,28 @@ function Listeners({ className }: { className?: string }) {
   );
 }
 
+const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
+  return (
+    <Dialog>
+      <DialogTrigger className="flex items-center justify-center gap-2">
+        <Avatar className=" size-10">
+          <AvatarImage loading="lazy" src={imageUrl} />
+          <AvatarFallback>SX</AvatarFallback>
+        </Avatar>
+      </DialogTrigger>
+      <DialogContent className="max-w-md flex-col max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
+        <DialogHeader className=" h-0">
+          <DialogTitle />
+          <DialogDescription />
+        </DialogHeader>
+        <div className=" w-full flex items-center justify-center">
+          <Avatar className=" size-52">
+            <AvatarImage loading="lazy" src={imageUrl} />
+            <AvatarFallback>SX</AvatarFallback>
+          </Avatar>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 export default Listeners;
