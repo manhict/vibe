@@ -297,7 +297,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
       const resetUrl = setTimeout(() => {
-        router.push(`/v?room=${roomId}`);
+        router.replace(`/v?room=${roomId}`);
       }, 10000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
