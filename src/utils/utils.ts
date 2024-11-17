@@ -270,3 +270,11 @@ export const getInviteLink = (roomId?: string, username?: string) => {
   }
   return `${window.location.origin}/v?room=${roomId}&new=true`;
 };
+
+export function getRandom(emojis: { msg: string; gif: string }[]): {
+  msg: string;
+  gif: string;
+} {
+  const randomIndex = Math.floor(Math.random() * emojis.length);
+  return emojis[randomIndex];
+}

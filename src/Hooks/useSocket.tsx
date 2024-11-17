@@ -341,8 +341,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       if (wasAwayForTooLong) {
         await updateListeners();
         await UpdateQueue();
-        hiddenTimeRef.current = 0;
-        return;
+        const resetTime = setTimeout(() => {
+          hiddenTimeRef.current = 0;
+        }, 2000);
+        return () => {
+          clearTimeout(resetTime);
+        };
       }
       hiddenTimeRef.current = 0;
     }
