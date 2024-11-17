@@ -32,7 +32,11 @@ export default function DeleteAll({
             Are you sure you want to <br /> delete all songs?
           </p>
           <DialogClose className="gap-2 flex flex-col items-center">
-            <Button variant={"purple"} onClick={handleRemoveALL}>
+            <Button
+              variant={"purple"}
+              className=" bg-red-600/85 text-white hover:bg-red-600/70"
+              onClick={handleRemoveALL}
+            >
               Yes, Delete All
             </Button>
             <Button className="w-full">Cancel</Button>
