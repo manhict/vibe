@@ -124,7 +124,7 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
           <DialogDescription />
         </DialogHeader>
         <div className=" w-full flex items-center justify-center">
-          <Avatar className=" size-52">
+          <Avatar className=" size-60">
             <AvatarImage loading="lazy" src={imageUrl} />
             <AvatarFallback>SX</AvatarFallback>
           </Avatar>
