@@ -127,7 +127,7 @@ function SearchSongPopup({
   const handleAdd = useCallback(async () => {
     if (selectedSongs.length == 0) return;
     if (!user)
-      return toast.error("Login required to add song in queue", {
+      return toast.error("Login to add song in queue", {
         style: { background: "#e94625" },
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
@@ -346,7 +346,7 @@ function SearchSongPopup({
             )}
           </div>
         )}
-        {songs && (
+        {selectedSongs.length > 0 && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
               <div className="flex overflow-x-scroll items-center gap-2.5">
