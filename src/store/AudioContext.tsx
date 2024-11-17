@@ -338,8 +338,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
-
+      const isOnlineEmit = setTimeout(() => {
+        socket.emit("status", !audioRef.current?.paused);
+        socket.emit("profile");
+      }, 2000);
       return () => {
+        clearTimeout(isOnlineEmit);
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);
         audioElement.removeEventListener("ended", handleEnd);
