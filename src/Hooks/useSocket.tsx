@@ -80,6 +80,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     []
   );
   const hiddenTimeRef = useRef<number>(0);
+  const fetchWhenComeBack = useRef<boolean>(false);
   const timerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
@@ -119,6 +120,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, []);
 
   const updateListeners = useCallback(async () => {
+    if (isActive.current) {
+      fetchWhenComeBack.current = true;
+    }
     if (!isActive.current) return;
     if (listenerControllerRef.current) {
       listenerControllerRef.current.abort();
@@ -185,6 +189,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
+    if (isActive.current) {
+      fetchWhenComeBack.current = true;
+    }
     if (!isActive.current) return;
     if (total.current && queue.length >= total.current) return;
 
@@ -229,6 +236,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUpdateQueue = useDebounce(updateQueue);
 
   const upNextSong = useCallback(async () => {
+    if (isActive.current) {
+      fetchWhenComeBack.current = true;
+    }
     if (!isActive.current) return;
     if (upNextSongControllerRef.current) {
       upNextSongControllerRef.current.abort();
@@ -250,6 +260,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
+    if (isActive.current) {
+      fetchWhenComeBack.current = true;
+    }
     if (!isActive.current) return;
     // force update user so that if scrolling then it not reset queue
     setLoading(true);
@@ -338,10 +351,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
 
       isActive.current = true;
-      if (wasAwayForTooLong) {
+      if (wasAwayForTooLong && fetchWhenComeBack) {
         await updateListeners();
         await UpdateQueue();
         hiddenTimeRef.current = 0;
+        fetchWhenComeBack.current = false;
         return;
       }
       hiddenTimeRef.current = 0;
