@@ -16,6 +16,7 @@ import { data, searchResults } from "@/lib/types";
 import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
+import DeleteAll from "./DeleteAll";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue } = useUserContext();
@@ -170,13 +171,7 @@ function AddToQueueComp() {
           >
             Remove Selected {selectedSongs.length}
           </Button>
-          <Button
-            onClick={handleRemoveALL}
-            size={"sm"}
-            className=" w-fit text-xs bg-red-600/85 text-white hover:bg-red-600/70"
-          >
-            Delete all
-          </Button>
+          <DeleteAll handleRemoveALL={handleRemoveALL} />
         </motion.div>
       )}
       <div className="h-full hide-scrollbar transition-all z-50 overflow-y-scroll">
