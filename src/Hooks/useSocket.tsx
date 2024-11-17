@@ -296,7 +296,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }
       const resetUrl = setTimeout(() => {
         window.history.replaceState(null, "", `/v?room=${roomId}`);
-      }, 10000);
+      }, 40000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
