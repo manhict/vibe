@@ -296,13 +296,16 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           return user;
         });
       }
-      router.push(`/v?room=${roomId}`);
+      const resetUrl = setTimeout(() => {
+        router.push(`/v?room=${roomId}`);
+      }, 10000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
       updateListeners();
       handleUpdateQueue();
       upNextSong();
+      return () => clearTimeout(resetUrl);
     },
     [
       handleUpdateQueue,

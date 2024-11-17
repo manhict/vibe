@@ -262,4 +262,11 @@ export function decryptObjectValues(obj: any) {
   }, {} as Record<string, string>);
 }
 
-export const BACKGROUND_APP_TIMEOUT = 200000;
+export const BACKGROUND_APP_TIMEOUT = 150000;
+
+export const getInviteLink = (roomId?: string, username?: string) => {
+  if (username) {
+    return `${window.location.origin}/v?room=${roomId}&ref=${username}&new=true`;
+  }
+  return `${window.location.origin}/v?room=${roomId}&new=true`;
+};

@@ -7,12 +7,14 @@ import Background from "../Background";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import Context from "./Context";
 import Reconnect from "./Reconnect";
+import InviteFriendsToast from "./InviteFriendsToast";
 
 export default function Home() {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
         <Background />
+        <InviteFriendsToast />
         <Blur />
         <Reconnect />
         <div className="bg-cover absolute w-full top-0 flex flex-col items-center justify-center h-full md:py-2.5">

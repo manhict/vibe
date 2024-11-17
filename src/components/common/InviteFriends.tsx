@@ -15,11 +15,12 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { getInviteLink } from "@/utils/utils";
 function InviteFriends({ className }: { className?: string }) {
   const { roomId, user } = useUserContext();
   const handleShare = useCallback(async () => {
-    if (!user) return;
-    const shareUrl = `${window.location.origin}/v?room=${roomId}&ref=${user.username}`;
+    if (!roomId) return;
+    const shareUrl = getInviteLink(roomId, user?.username);
 
     try {
       if (navigator.share) {
