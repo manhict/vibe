@@ -6,7 +6,7 @@ import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
-import { addSong, extractPlaylistID, formatArtistName } from "@/utils/utils";
+import { extractPlaylistID, formatArtistName } from "@/utils/utils";
 import { useInView } from "react-intersection-observer";
 import { Dialog } from "@radix-ui/react-dialog";
 import {
@@ -26,6 +26,7 @@ import { GrYoutube } from "react-icons/gr";
 import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
+import useAddSong from "@/Hooks/useAddSong";
 
 function SearchSongPopup({
   isAddToQueue = false,
@@ -41,7 +42,7 @@ function SearchSongPopup({
   const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
-
+  const { addSong } = useAddSong();
   const search = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
@@ -133,7 +134,7 @@ function SearchSongPopup({
     if (selectedSongs.length == 0) return toast.error("No song selected");
     await addSong(selectedSongs, roomId);
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user, roomId]);
+  }, [setSelectedSongs, selectedSongs, user, roomId, addSong]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {

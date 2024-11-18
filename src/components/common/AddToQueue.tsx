@@ -7,7 +7,7 @@ import SearchSongPopup from "../SearchSongPopup";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
-import { addSong, slideInVariants } from "@/utils/utils";
+import { slideInVariants } from "@/utils/utils";
 import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
@@ -17,10 +17,12 @@ import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
+import useAddSong from "@/Hooks/useAddSong";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
   const { total } = useSocket();
+  const { addSong } = useAddSong();
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -97,7 +99,7 @@ function AddToQueueComp() {
       if (!song) return;
       await addSong([song], roomId);
     },
-    [roomId, showDragOptions]
+    [roomId, showDragOptions, addSong]
   );
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
