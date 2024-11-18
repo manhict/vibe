@@ -348,7 +348,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         await UpdateQueue();
         reconnectTimerRef.current = window.setTimeout(() => {
           hiddenTimeRef.current = 0;
-        }, 1000);
+        }, 500);
         return;
       }
       hiddenTimeRef.current = 0;
