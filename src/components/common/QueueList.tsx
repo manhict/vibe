@@ -161,6 +161,7 @@ function QueueListComp({
         >
           {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
           <label
+            onClick={(e) => handlePlay(e, song)}
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
@@ -169,10 +170,7 @@ function QueueListComp({
             } hover:bg-white/10 rounded-xl items-center justify-between`}
           >
             <div title={String(song?.order)} className="relative">
-              <Avatar
-                onClick={(e) => handlePlay(e, song)}
-                className="size-[3.2rem] rounded-md relative group"
-              >
+              <Avatar className="size-[3.2rem] rounded-md relative group">
                 <AvatarImage
                   loading="lazy"
                   alt={song.name}
