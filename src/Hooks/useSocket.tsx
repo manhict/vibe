@@ -342,7 +342,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       if (wasAwayForTooLong) {
         await updateListeners();
         await UpdateQueue();
-        await delay(700);
+        await delay(200);
         hiddenTimeRef.current = 0;
         return;
       }
