@@ -278,3 +278,6 @@ export function getRandom(emojis: { msg: string; gif: string }[]): {
   const randomIndex = Math.floor(Math.random() * emojis.length);
   return emojis[randomIndex];
 }
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

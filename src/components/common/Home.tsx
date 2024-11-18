@@ -8,6 +8,7 @@ import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import Context from "./Context";
 import Reconnect from "./Reconnect";
 import InviteFriendsToast from "./InviteFriendsToast";
+import DraggableOptions from "./DraggableOptions";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <InviteFriendsToast />
         <Blur />
         <Reconnect />
+        <DraggableOptions />
         <div className="bg-cover absolute w-full top-0 flex flex-col items-center justify-center h-full md:py-2.5">
           <Header />
 

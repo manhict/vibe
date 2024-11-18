@@ -17,7 +17,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
-import { BACKGROUND_APP_TIMEOUT } from "@/utils/utils";
+import { BACKGROUND_APP_TIMEOUT, delay } from "@/utils/utils";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -342,8 +342,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       if (wasAwayForTooLong) {
         await updateListeners();
         await UpdateQueue();
+        await delay(700);
         hiddenTimeRef.current = 0;
-
         return;
       }
       hiddenTimeRef.current = 0;

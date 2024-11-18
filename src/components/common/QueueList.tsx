@@ -1,7 +1,6 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 import { formatArtistName } from "@/utils/utils";
-import { Trash } from "lucide-react";
 import React, { useCallback, useEffect, useRef } from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
@@ -25,7 +24,7 @@ function QueueListComp({
   handleSelect,
   selectedSongs,
 }: QueueListProps) {
-  const { queue, setQueue, user } = useUserContext();
+  const { queue, setQueue, user, setShowDragOptions } = useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -33,20 +32,6 @@ function QueueListComp({
   const upVote = useCallback((song: searchResults) => {
     emitMessage("upvote", { queueId: song?.queueId });
   }, []);
-
-  const handleDelete = useCallback(
-    (song: searchResults) => {
-      if (isDeleting) return;
-      emitMessage("deleteSong", {
-        queueId: song?.queueId,
-        addedBy: song?.addedBy,
-      });
-      if (user?.role === "admin" || song.addedBy === user?._id) {
-        setQueue((prev) => prev.filter((s) => s.id !== song.id));
-      }
-    },
-    [setQueue, user, isDeleting]
-  );
 
   const handleUpVote = useDebounce(upVote);
 
@@ -130,7 +115,6 @@ function QueueListComp({
   useEffect(() => {
     const container = containerRef.current;
 
-    // Attach scroll event listener
     container?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -138,6 +122,18 @@ function QueueListComp({
     };
   }, [handleScroll]);
 
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    song: searchResults
+  ) => {
+    setShowDragOptions(true);
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOptions(false);
+  };
   return (
     <div
       ref={containerRef}
@@ -145,6 +141,9 @@ function QueueListComp({
     >
       {queue?.map((song, i) => (
         <div
+          onDragEnd={handleDragEnd}
+          onDragStart={(e) => handleDragStart(e, song)}
+          draggable
           title={
             song.addedByUser && song.addedByUser.username !== user?.username
               ? `Added by ${song.addedByUser.name} (${song.addedByUser.username})`
@@ -174,14 +173,24 @@ function QueueListComp({
                   src={song.image[song.image.length - 1].url}
                 />
                 <AvatarFallback>SX</AvatarFallback>
-                {!isDeleting && (
-                  <Trash
-                    onClick={() => handleDelete(song)}
+                {currentSong?.id !== song?.id && (
+                  <svg
+                    onClick={(e) => handlePlay(e, song)}
                     className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  />
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.8324 9.66406C15.0735 9.47748 15.2686 9.23818 15.4029 8.9645C15.5371 8.69082 15.6069 8.39004 15.6069 8.0852C15.6069 7.78036 15.5371 7.47957 15.4029 7.20589C15.2686 6.93221 15.0735 6.69291 14.8324 6.50634C11.7106 4.09079 8.22476 2.18684 4.50523 0.86576L3.82515 0.624141C2.5254 0.162771 1.15171 1.04177 0.9757 2.38422C0.484012 6.16897 0.484012 10.0014 0.9757 13.7862C1.15275 15.1286 2.5254 16.0076 3.82515 15.5463L4.50523 15.3046C8.22476 13.9836 11.7106 12.0796 14.8324 9.66406Z"
+                      fill="white"
+                    />
+                  </svg>
                 )}
                 {currentSong?.id == song.id && (
-                  <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
+                  <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300">
                     {isPlaying ? (
                       <Image
                         height={100}
@@ -207,10 +216,7 @@ function QueueListComp({
                 )}
               </Avatar>
             </div>
-            <div
-              onClick={(e) => handlePlay(e, song)}
-              className="flex flex-col gap-1 flex-grow text-sm w-6/12"
-            >
+            <div className="flex flex-col gap-1 flex-grow text-sm w-6/12">
               <div className=" text-start w-11/12">
                 <p className=" font-semibold truncate">{parse(song.name)}</p>
               </div>

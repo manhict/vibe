@@ -26,6 +26,8 @@ interface UserContextType {
   isAdminOnline: React.MutableRefObject<boolean>;
   isChatOpen: boolean;
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
+  showDragOptions: boolean;
+  setShowDragOptions: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -37,6 +39,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<TUser | null>(null);
   const isAdminOnline = React.useRef<boolean>(true);
   const [isChatOpen, setIsChatOpen] = React.useState<boolean>(false);
+  const [showDragOptions, setShowDragOptions] = React.useState<boolean>(false);
   const [listener, setListener] = React.useState<listener | null>(null);
   const [showVideo, setShowVideo] = React.useState<boolean | null>(() => {
     const data =
@@ -64,6 +67,8 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       isAdminOnline,
       isChatOpen,
       setIsChatOpen,
+      showDragOptions,
+      setShowDragOptions,
     }),
     [
       listener,
@@ -74,6 +79,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       showVideo,
       isAdminOnline,
       isChatOpen,
+      showDragOptions,
     ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

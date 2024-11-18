@@ -32,6 +32,7 @@ function UpNextSongs() {
               >
                 <Avatar className="size-9 rounded-sm">
                   <AvatarImage
+                    draggable="false"
                     loading="lazy"
                     alt={nextSong?.name}
                     height={500}

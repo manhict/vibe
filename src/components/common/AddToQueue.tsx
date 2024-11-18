@@ -16,7 +16,7 @@ import { data, searchResults } from "@/lib/types";
 import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
-import DeleteAll from "./DeleteAll";
+import VibeAlert from "./VibeAlert";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue } = useUserContext();
@@ -171,7 +171,13 @@ function AddToQueueComp() {
           >
             Remove Selected {selectedSongs.length}
           </Button>
-          <DeleteAll handleRemoveALL={handleRemoveALL} />
+          <VibeAlert
+            title="Delete all"
+            headingClassName=" w-8/12"
+            confirmText="Yes, delete all"
+            heading="Are you sure you want to delete all songs?"
+            action={handleRemoveALL}
+          />
         </motion.div>
       )}
       <div className="h-full hide-scrollbar transition-all z-50 overflow-y-scroll">
