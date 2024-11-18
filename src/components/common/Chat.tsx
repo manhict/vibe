@@ -118,7 +118,7 @@ function Chat({
         <p>Chat</p>
         <div className=" flex items-center">
           {listener?.roomUsers
-            ?.filter((r) => r.userId?._id !== user?._id)
+            ?.filter((r) => r.userId?.username !== user?.username)
             ?.map((roomUser, i) => (
               <div
                 title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
@@ -138,7 +138,7 @@ function Chat({
                 </div>
               </div>
             ))}
-          {listener && listener?.totalUsers > 5 && (
+          {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
                 <AvatarFallback>
