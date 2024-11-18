@@ -24,12 +24,12 @@ function Reconnect() {
   if (!hiddenTimeRef.current) return;
   if (hiddenTimeRef.current < BACKGROUND_APP_TIMEOUT) return;
   return (
-    <div className=" w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-3xl">
+    <div className=" w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-2xl">
       <p>{emotion.msg}</p>
       <div className=" my-4 rounded-xl overflow-hidden">
-        <video muted autoPlay loop src={emotion.gif} height={400} width={400} />
+        <video muted autoPlay loop src={emotion.gif} height={300} width={300} />
       </div>
-      <p>Restoring activity...</p>
+      <p className=" text-lg md:text-xl">Restoring activity...</p>
       <LoaderCircleIcon className=" my-2 size-7 animate-spin" />
     </div>
   );
