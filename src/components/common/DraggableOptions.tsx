@@ -26,18 +26,6 @@ export default function DraggableOptions() {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const jsonData = e.dataTransfer.getData("application/json");
-    const song = JSON.parse(jsonData);
-    if (song) {
-      setIsDragging(false);
-      setShowDragOptions(false);
-      handleDelete(song);
-    }
-  };
-
   const handleDelete = useCallback(
     (song: searchResults) => {
       emitMessage("deleteSong", {
@@ -49,6 +37,20 @@ export default function DraggableOptions() {
       }
     },
     [setQueue, user]
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const jsonData = e.dataTransfer.getData("application/json");
+      if (!jsonData) return;
+      const song = JSON.parse(jsonData);
+      if (!song) return;
+      setIsDragging(false);
+      setShowDragOptions(false);
+      handleDelete(song);
+    },
+    [handleDelete, setShowDragOptions]
   );
 
   return (

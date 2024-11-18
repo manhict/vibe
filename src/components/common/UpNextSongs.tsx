@@ -4,14 +4,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatArtistName } from "@/utils/utils";
 import { motion } from "framer-motion";
 import { useAudio } from "@/store/AudioContext";
+import { searchResults } from "@/lib/types";
 
 function UpNextSongs() {
   const { upNextSongs } = useUserContext();
   const { currentSong } = useAudio();
-  // Define animation variants
+
   const songVariants = {
     hidden: { opacity: 0, y: 17 },
     visible: { opacity: 1, y: 0 },
+  };
+  const handleDragStart = (e: any, song: searchResults) => {
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
   };
 
   return (
@@ -22,6 +26,8 @@ function UpNextSongs() {
             .filter((s) => s.id !== currentSong?.id)
             .map((nextSong) => (
               <motion.div
+                onDragStart={(e) => handleDragStart(e, nextSong)}
+                draggable
                 key={nextSong.id}
                 initial="hidden"
                 animate="visible"

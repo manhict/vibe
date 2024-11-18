@@ -134,10 +134,11 @@ function QueueListComp({
     e.preventDefault();
     setShowDragOptions(false);
   };
+
   return (
     <div
       ref={containerRef}
-      className="py-2 pr-2 max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
+      className="py-2 pr-2  max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
     >
       {queue?.map((song, i) => (
         <div

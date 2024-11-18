@@ -4,10 +4,10 @@ import { Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
-import { slideInVariants } from "@/utils/utils";
+import { addSong, slideInVariants } from "@/utils/utils";
 import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
@@ -19,7 +19,7 @@ import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
 
 function AddToQueueComp() {
-  const { queue, roomId, user, setQueue } = useUserContext();
+  const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
   const { total } = useSocket();
 
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
@@ -87,9 +87,27 @@ function AddToQueueComp() {
     setQueue([]);
     setSelectedSongs([]);
   };
-
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      if (showDragOptions) return;
+      const jsonData = e.dataTransfer.getData("application/json");
+      if (!jsonData) return;
+      const song = JSON.parse(jsonData);
+      if (!song) return;
+      await addSong([song], roomId);
+    },
+    [roomId, showDragOptions]
+  );
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-white/15 w-[45%] rounded-xl p-3 pr-0">
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-white/15 w-[45%] rounded-xl p-3 pr-0"
+    >
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div

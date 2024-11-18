@@ -1,4 +1,7 @@
+import api from "@/lib/api";
+import { emitMessage } from "@/lib/customEmits";
 import { artists, CachedVideo, searchResults } from "@/lib/types";
+import { toast } from "sonner";
 import { decrypt, encrypt } from "tanmayo7lock";
 
 export const formatArtistName = (artists: artists[]) => {
@@ -281,3 +284,20 @@ export function getRandom(emojis: { msg: string; gif: string }[]): {
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const addSong = async (
+  selectedSongs: searchResults[],
+  roomId?: string | null
+) => {
+  if (!roomId) return;
+  toast.loading("Adding songs to queue", { id: "adding" });
+  const added = await api.post(
+    `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
+    selectedSongs
+  );
+  if (added.success) {
+    emitMessage("update", "update");
+    toast.success("Songs added to queue");
+  }
+  toast.dismiss("adding");
+};

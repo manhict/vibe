@@ -74,6 +74,12 @@ function MemoPLayer() {
       (elem as any).msRequestFullscreen();
     }
   }
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (currentSong) {
+      e.dataTransfer.setData("application/json", JSON.stringify(currentSong));
+    }
+  };
+
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg md:h-full border  border-white/15 flex-grow rounded-xl p-8 md:px-5 flex flex-col items-center justify-center px-4 gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
@@ -101,7 +107,11 @@ function MemoPLayer() {
         style={{ opacity: isChatOpen ? 0 : 1 }}
         className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
       >
-        <div className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl">
+        <div
+          draggable={currentSong ? true : false}
+          onDragStart={(e) => handleDragStart(e)}
+          className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl"
+        >
           <MdOutlineOpenInFull
             onClick={openFullscreen}
             className=" hidden absolute  z-10  opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
@@ -109,6 +119,7 @@ function MemoPLayer() {
 
           {!currentSong?.video ? (
             <Image
+              draggable="false"
               priority
               title={
                 currentSong?.name
@@ -152,6 +163,7 @@ function MemoPLayer() {
               )}
 
               <video
+                draggable="false"
                 style={{ display: showVideo ? "block" : "none" }}
                 ref={videoRef}
                 muted
@@ -179,6 +191,7 @@ function MemoPLayer() {
               ></video>
 
               <Image
+                draggable="false"
                 style={{ opacity: showVideo ? 0 : 1 }}
                 priority
                 title={

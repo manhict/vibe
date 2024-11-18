@@ -6,7 +6,7 @@ import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
-import { extractPlaylistID, formatArtistName } from "@/utils/utils";
+import { addSong, extractPlaylistID, formatArtistName } from "@/utils/utils";
 import { useInView } from "react-intersection-observer";
 import { Dialog } from "@radix-ui/react-dialog";
 import {
@@ -131,18 +131,8 @@ function SearchSongPopup({
         style: { background: "#e94625" },
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
-    toast.loading("Adding songs to queue", { id: "adding" });
-    const added = await api.post(
-      `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
-      selectedSongs,
-      { credentials: "include" }
-    );
-    if (added.success) {
-      emitMessage("update", "update");
-      toast.success("Songs added to queue");
-    }
+    await addSong(selectedSongs, roomId);
     setSelectedSongs([]);
-    toast.dismiss("adding");
   }, [setSelectedSongs, selectedSongs, user, roomId]);
 
   const handleAddAll = useCallback(async () => {
