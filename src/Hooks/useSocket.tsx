@@ -318,6 +318,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const handleVisibilityChange = useCallback(async () => {
+    if (!window.location.pathname.startsWith("/v")) return;
     if (document.hidden) {
       const startTime = Date.now();
       timerRef.current = window.setInterval(() => {
