@@ -26,10 +26,10 @@ function Reconnect() {
   return (
     <div className=" w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/70 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-3xl">
       <p>{emotion.msg}</p>
-      {/* <p>Restoring activity...</p> */}
       <div className=" my-4 rounded-xl overflow-hidden">
         <video muted autoPlay loop src={emotion.gif} height={400} width={400} />
       </div>
+      <p>Restoring activity...</p>
       <LoaderCircleIcon className=" my-2 size-7 animate-spin" />
     </div>
   );
