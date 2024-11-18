@@ -25,6 +25,7 @@ export default function DraggableOptions() {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(true);
   };
   const handleDelete = useCallback(
     (song: searchResults) => {

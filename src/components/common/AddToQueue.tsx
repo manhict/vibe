@@ -21,10 +21,9 @@ import VibeAlert from "./VibeAlert";
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
   const { total } = useSocket();
-
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
+  const [isDragging, setIsDragging] = useState(false);
   useEffect(() => {
     if (queue.length <= 1) {
       setIsDeleting(false);
@@ -101,12 +100,28 @@ function AddToQueueComp() {
   );
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(true);
   };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
   return (
     <div
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-white/15 w-[45%] rounded-xl p-3 pr-0"
+      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
+        isDragging ? "border-white/70" : "border-white/15"
+      } rounded-xl p-3 pr-0`}
     >
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
