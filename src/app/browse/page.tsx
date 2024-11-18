@@ -49,7 +49,7 @@ export async function generateMetadata() {
 async function page() {
   const vibeId = cookies().get("vibeId")?.value;
   if (!vibeId) redirect("/");
-  const res = await fetch(`${process.env.SOCKET_URI}/api/rooms`, {
+  const res = await fetch(`${process.env.SOCKET_URI}/api/rooms/browse`, {
     headers: {
       cookie: `vibeIdR=${vibeId}`,
     },
