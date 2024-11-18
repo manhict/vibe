@@ -33,7 +33,7 @@ function MemoPLayer() {
   const [seen, setSeen] = useState<boolean>(true);
   useEffect(() => {
     if (isChatOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
       setSeen(true);
     } else {
       if (messagesEndRef.current) {

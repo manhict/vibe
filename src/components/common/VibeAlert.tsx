@@ -19,6 +19,7 @@ export default function VibeAlert({
   heading,
   confirmClassName,
   headingClassName,
+  disabled,
 }: {
   className?: string;
   title: string;
@@ -26,11 +27,12 @@ export default function VibeAlert({
   confirmText: string;
   confirmClassName?: string;
   headingClassName?: string;
+  disabled?: boolean;
   action: () => void;
 }) {
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger disabled={disabled} className=" disabled:opacity-50">
         <div
           className={cn(
             "inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 rounded-lg px-3 w-fit text-xs bg-red-600/85 text-white hover:bg-red-600/70",
