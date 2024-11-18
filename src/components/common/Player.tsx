@@ -80,6 +80,10 @@ function MemoPLayer() {
     }
   };
 
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg md:h-full border  border-white/15 flex-grow rounded-xl p-8 md:px-5 flex flex-col items-center justify-center px-4 gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
@@ -110,6 +114,7 @@ function MemoPLayer() {
         <div
           draggable={currentSong ? true : false}
           onDragStart={(e) => handleDragStart(e)}
+          onDragEnd={handleDragEnd}
           className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl"
         >
           <MdOutlineOpenInFull

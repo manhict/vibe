@@ -24,7 +24,8 @@ function QueueListComp({
   handleSelect,
   selectedSongs,
 }: QueueListProps) {
-  const { queue, setQueue, user, setShowDragOptions } = useUserContext();
+  const { queue, setQueue, user, setShowDragOptions, setShowAddDragOptions } =
+    useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -127,12 +128,14 @@ function QueueListComp({
     song: searchResults
   ) => {
     setShowDragOptions(true);
+    setShowAddDragOptions(true);
     e.dataTransfer.setData("application/json", JSON.stringify(song));
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setShowDragOptions(false);
+    setShowAddDragOptions(false);
   };
 
   useEffect(() => {
@@ -166,7 +169,10 @@ function QueueListComp({
             } hover:bg-white/10 rounded-xl items-center justify-between`}
           >
             <div title={String(song?.order)} className="relative">
-              <Avatar className="size-[3.2rem] rounded-md relative group">
+              <Avatar
+                onClick={(e) => handlePlay(e, song)}
+                className="size-[3.2rem] rounded-md relative group"
+              >
                 <AvatarImage
                   loading="lazy"
                   alt={song.name}
@@ -180,7 +186,6 @@ function QueueListComp({
                 <AvatarFallback>SX</AvatarFallback>
                 {currentSong?.id !== song?.id && (
                   <svg
-                    onClick={(e) => handlePlay(e, song)}
                     className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     width="16"
                     height="16"

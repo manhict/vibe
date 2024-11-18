@@ -7,7 +7,7 @@ import { useAudio } from "@/store/AudioContext";
 import { searchResults } from "@/lib/types";
 
 function UpNextSongs() {
-  const { upNextSongs } = useUserContext();
+  const { upNextSongs, setShowAddDragOptions } = useUserContext();
   const { currentSong } = useAudio();
 
   const songVariants = {
@@ -16,6 +16,11 @@ function UpNextSongs() {
   };
   const handleDragStart = (e: any, song: searchResults) => {
     e.dataTransfer.setData("application/json", JSON.stringify(song));
+    setShowAddDragOptions(true);
+  };
+  const handleDragEnd = (e: MouseEvent) => {
+    e.preventDefault();
+    setShowAddDragOptions(false);
   };
 
   return (
@@ -26,6 +31,7 @@ function UpNextSongs() {
             .filter((s) => s.id !== currentSong?.id)
             .map((nextSong) => (
               <motion.div
+                onDragEnd={handleDragEnd}
                 onDragStart={(e) => handleDragStart(e, nextSong)}
                 draggable
                 key={nextSong.id}

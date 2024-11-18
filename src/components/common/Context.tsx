@@ -19,7 +19,16 @@ function Context() {
   }, [roomId, user]);
   return (
     <ContextMenuContent>
-      <ContextMenuItem onClick={() => (window.location.href = "/browse")}>
+      <ContextMenuItem
+        onClick={() => {
+          const confirmLeave = window.confirm(
+            "Are you sure you want to leave this page?"
+          );
+          if (confirmLeave) {
+            window.location.href = "/browse";
+          }
+        }}
+      >
         Your Rooms
       </ContextMenuItem>
       <ContextMenuItem onClick={() => setIsChatOpen((prev) => !prev)}>
