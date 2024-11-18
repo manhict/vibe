@@ -11,7 +11,7 @@ function useAddSong() {
     async (selectedSongs: searchResults[], roomId?: string | null) => {
       if (!roomId) return;
       const uniqueSongs = selectedSongs.filter(
-        (song) => !queue.some((queuedSong) => queuedSong.id === song.id)
+        (song) => !queue.some((queuedSong) => queuedSong?.id === song?.id)
       );
 
       if (uniqueSongs.length === 0) {
