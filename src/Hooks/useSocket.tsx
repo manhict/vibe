@@ -79,6 +79,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     []
   );
   const hiddenTimeRef = useRef<number>(0);
+  const necessaryFetchRef = useRef<boolean>(false);
   const timerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
@@ -183,7 +184,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (!isActive.current) return;
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
     if (total.current && queue.length >= total.current) return;
 
     setLoading(true);
@@ -227,7 +231,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUpdateQueue = useDebounce(updateQueue);
 
   const upNextSong = useCallback(async () => {
-    if (!isActive.current) return;
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
     if (upNextSongControllerRef.current) {
       upNextSongControllerRef.current.abort();
     }
@@ -248,7 +255,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
-    if (!isActive.current) return;
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
     // force update user so that if scrolling then it not reset queue
     setLoading(true);
     if (queueControllerRef.current) {
@@ -339,10 +349,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
 
       isActive.current = true;
-      if (wasAwayForTooLong) {
+      if (wasAwayForTooLong && necessaryFetchRef.current) {
         await updateListeners();
         await UpdateQueue();
         await delay(200);
+        necessaryFetchRef.current = false;
         hiddenTimeRef.current = 0;
         return;
       }
