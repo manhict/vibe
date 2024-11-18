@@ -10,8 +10,12 @@ function useAddSong() {
   const addSong = useCallback(
     async (selectedSongs: searchResults[], roomId?: string | null) => {
       if (!roomId) return;
+      // Create a Set of existing song IDs for fast lookup
+      const queuedSongIds = new Set(queue.map((song) => song.id));
+
+      // Filter unique songs
       const uniqueSongs = selectedSongs.filter(
-        (song) => !queue.some((queuedSong) => queuedSong?.id === song?.id)
+        (song) => !queuedSongIds.has(song.id)
       );
 
       if (uniqueSongs.length === 0) {
