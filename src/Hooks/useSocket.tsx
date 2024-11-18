@@ -80,7 +80,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
   const hiddenTimeRef = useRef<number>(0);
   const timerRef = useRef<number | null>(null);
-  const reconnectTimerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
   const total = useRef<number | null>(null);
@@ -336,10 +335,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current);
-        timerRef.current = null;
-      }
 
       const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
 
@@ -347,9 +342,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       if (wasAwayForTooLong) {
         await updateListeners();
         await UpdateQueue();
-        reconnectTimerRef.current = window.setTimeout(() => {
-          hiddenTimeRef.current = 0;
-        }, 500);
+        hiddenTimeRef.current = 0;
+
         return;
       }
       hiddenTimeRef.current = 0;
@@ -377,9 +371,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (timerRef.current) {
         clearInterval(timerRef.current);
-      }
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current);
       }
       currentSocket.off("connect", onConnect);
       currentSocket.off("disconnect", onDisconnect);
