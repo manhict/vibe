@@ -16,7 +16,6 @@ import { BsPip } from "react-icons/bs";
 import InviteFriends from "./InviteFriends";
 import ProgressBar from "./ProgressBar";
 import Controller from "./Controller";
-import { MdOutlineOpenInFull } from "react-icons/md";
 function MemoPLayer() {
   const { user, showVideo, setShowVideo, isChatOpen, setIsChatOpen } =
     useUserContext();
@@ -62,18 +61,6 @@ function MemoPLayer() {
   }, [isChatOpen, setIsChatOpen]);
   const [pip, setPIP] = useState<boolean>(false);
 
-  function openFullscreen() {
-    const elem = document.documentElement; // Select the whole document or another element
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if ((elem as any).webkitRequestFullscreen) {
-      // For Safari
-      (elem as any).webkitRequestFullscreen();
-    } else if ((elem as any).msRequestFullscreen) {
-      // For IE11
-      (elem as any).msRequestFullscreen();
-    }
-  }
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (currentSong) {
       e.dataTransfer.setData("application/json", JSON.stringify(currentSong));
@@ -117,11 +104,6 @@ function MemoPLayer() {
           onDragEnd={handleDragEnd}
           className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl"
         >
-          <MdOutlineOpenInFull
-            onClick={openFullscreen}
-            className=" hidden absolute  z-10  opacity-70 hover:opacity-100 size-4 bottom-2.5 left-2.5"
-          />
-
           {!currentSong?.video ? (
             <Image
               draggable="false"
