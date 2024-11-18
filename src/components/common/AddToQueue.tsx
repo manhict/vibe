@@ -89,6 +89,7 @@ function AddToQueueComp() {
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
+      setIsDragging(false);
       if (showDragOptions) return;
       const jsonData = e.dataTransfer.getData("application/json");
       if (!jsonData) return;
