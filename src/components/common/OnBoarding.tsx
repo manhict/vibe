@@ -132,7 +132,7 @@ function OnBoarding() {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className=" w-[346px] h-[414px] flex flex-col gap-4 bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50 gradient rounded-[28px] shadow-md"
+          className=" w-[346px] h-[424px] flex flex-col gap-4 bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50 gradient rounded-[28px] shadow-md"
         >
           {user && showOnboarding && (
             <AnimatePresence mode="wait" initial={false}>
