@@ -12,7 +12,7 @@ import VoteIcon from "./VoteIcon";
 import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 import Image from "next/image";
-
+import autoAnimate from "@formkit/auto-animate";
 interface QueueListProps {
   isDeleting?: boolean;
   handleSelect: (song: searchResults, limit: boolean) => void;
@@ -134,6 +134,10 @@ function QueueListComp({
     e.preventDefault();
     setShowDragOptions(false);
   };
+
+  useEffect(() => {
+    containerRef.current && autoAnimate(containerRef.current);
+  }, [containerRef]);
 
   return (
     <div

@@ -91,7 +91,7 @@ function Listeners({ className }: { className?: string }) {
             </div>
             <div className="bg-black/80 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
               {listener?.roomUsers
-                ?.filter((r) => r.userId?._id !== user?._id)
+                ?.filter((r) => r.userId?.username !== user?.username)
                 ?.map((user, j) => (
                   <div key={j} className=" w-full py-2 flex items-center gap-2">
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
