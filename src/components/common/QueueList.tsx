@@ -176,10 +176,10 @@ function QueueListComp({
       }
 
       if (droppedUrl.includes("spotify.com")) {
+        const id = getSpotifyTrackID(droppedUrl);
+        if (!id) return;
         const res = await api.get(
-          `${process.env.SOCKET_URI}/api/spotify/${getSpotifyTrackID(
-            droppedUrl
-          )}`,
+          `${process.env.SOCKET_URI}/api/spotify/${id}`,
           { showErrorToast: false }
         );
         if (res.success) {
