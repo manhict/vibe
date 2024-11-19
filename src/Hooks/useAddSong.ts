@@ -35,7 +35,11 @@ function useAddSong() {
       );
       if (added.success) {
         emitMessage("update", "update");
-        toast.success(`Songs added to  ${check ? "queue" : roomId}`);
+        toast.success(
+          `${selectedSongs.length == 0 ? "Songs" : "Songs"} added to  ${
+            check ? "queue" : roomId
+          }`
+        );
         if (!check) {
           socket.emit("event", roomId);
         }
