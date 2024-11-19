@@ -95,8 +95,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           className=" flex flex-col"
         >
           <a
-            href="/make"
-            className=" hover:bg-zinc-800 transition-all duration-150 p-4 flex flex-col items-center justify-center group cursor-pointer h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[100px] min-w-[100px] group"
+            href="/v"
+            className=" hover:bg-zinc-800 transition-all duration-150 p-4 flex flex-col items-center justify-center group  h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[100px] min-w-[100px] group"
           >
             <motion.svg
               initial={{

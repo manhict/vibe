@@ -3,7 +3,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="border max-xl:w-10/12 max-lg:w-10/12 border-white/15 max-sm:w-full max-md:hidden backdrop-blur-lg  select-none w-7/12 p-3 rounded-xl px-5 z-40 flex items-center justify-between ">
+    <footer className="border max-xl:w-11/12 max-lg:w-11/12 border-white/15 max-sm:w-full max-md:hidden backdrop-blur-lg  select-none w-7/12 p-3 rounded-xl px-5 z-40 flex items-center justify-between ">
       <div className=" flex -ml-1 text-2xl font-semibold gap-2">
         <p className=" mt-2">Just</p>{" "}
         <span>
@@ -25,7 +25,7 @@ function Footer() {
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            babyo7_
+            Tanmay
           </a>
         </p>
         <p>
@@ -35,7 +35,7 @@ function Footer() {
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            Ajay Sharma
+            Ajay
           </a>
         </p>
       </div>

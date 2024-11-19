@@ -17,7 +17,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
-import { useRouter } from "next/navigation";
+import { BACKGROUND_APP_TIMEOUT, delay } from "@/utils/utils";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -29,7 +29,7 @@ export interface Message {
 interface SocketContextType {
   isConnected: boolean;
   loading: boolean;
-  total: number | null;
+  total: React.MutableRefObject<number | null>;
   transport: string;
   messages: messages[];
   handleUpdateQueue: () => void;
@@ -38,6 +38,7 @@ interface SocketContextType {
   setLikEffectUser: React.Dispatch<
     React.SetStateAction<{ imageUrl: string }[]>
   >;
+  hiddenTimeRef: React.RefObject<number>;
   setPage: React.Dispatch<SetStateAction<number | null>>;
 }
 
@@ -66,7 +67,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setUpNextSongs,
     setUser,
     roomId,
+    isAdminOnline,
   } = useUserContext();
+
+  const isActive = useRef<boolean>(true);
   const { seek, play } = useAudio();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
@@ -74,15 +78,17 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [likEffectUser, setLikEffectUser] = useState<{ imageUrl: string }[]>(
     []
   );
+  const hiddenTimeRef = useRef<number>(0);
+  const necessaryFetchRef = useRef<boolean>(false);
+  const timerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
-  const [total, setTotal] = useState<number | null>(null);
+  const total = useRef<number | null>(null);
   const socketRef = useRef(socket);
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
   const upNextSongControllerRef = useRef<AbortController | null>(null);
-  const router = useRouter();
-  // Memoized connect and disconnect functions
+
   const onConnect = useCallback((): void => {
     setIsConnected(true);
     toast.dismiss("connecting");
@@ -112,6 +118,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, []);
 
   const updateListeners = useCallback(async () => {
+    if (!isActive.current) return;
     if (listenerControllerRef.current) {
       listenerControllerRef.current.abort();
     }
@@ -149,7 +156,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserLeftRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (user.username == loggedInUser?.username) return;
+      if (
+        user.username == loggedInUser?.username ||
+        user.username === "@someone"
+      )
+        return;
       updateListeners();
       toast.info(`${user?.username} has left`, {
         style: { background: "#e94625" },
@@ -161,7 +172,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserJoinedRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (user.username == loggedInUser?.username) return;
+      if (
+        user.username == loggedInUser?.username ||
+        user.username === "@someone"
+      )
+        return;
       updateListeners();
       toast.info(`${user?.username} has Joined`);
     },
@@ -169,7 +184,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   );
 
   const updateQueue = useCallback(async () => {
-    if (total && queue.length >= total) return;
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
+    if (total.current && queue.length >= total.current) return;
+
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -203,14 +223,18 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
 
-      setTotal(value?.total);
+      total.current = value?.total - 1;
       setPage(value?.start + 1);
     }
     setLoading(false);
   }, [setQueue, page, queue, total, roomId]);
-  const handleUpdateQueue = useDebounce(updateQueue, 0);
+  const handleUpdateQueue = useDebounce(updateQueue);
 
   const upNextSong = useCallback(async () => {
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
     if (upNextSongControllerRef.current) {
       upNextSongControllerRef.current.abort();
     }
@@ -231,6 +255,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const getUpNextSong = useDebounce(upNextSong);
 
   const UpdateQueue = useCallback(async () => {
+    if (!isActive.current) {
+      necessaryFetchRef.current = true;
+      return;
+    }
+    // force update user so that if scrolling then it not reset queue
     setLoading(true);
     if (queueControllerRef.current) {
       queueControllerRef.current.abort();
@@ -238,7 +267,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     const controller = new AbortController();
     queueControllerRef.current = controller;
     const data = await api.get(
-      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${queue.length}&name`,
+      `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${
+        queue.length > 70 ? queue.length : 70
+      }&name`,
       {
         headers: {
           nocache: "no-cache",
@@ -250,14 +281,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const value = data.data as data;
       setQueue(value.results); // Replace the queue with the full result
 
-      setTotal(value?.total);
+      total.current = value?.total;
       setPage(1);
       getUpNextSong();
     }
     setLoading(false);
   }, [setQueue, queue, roomId, getUpNextSong]);
 
-  const forceUpdateQueue = useDebounce(UpdateQueue, 0);
+  const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(
     async (data: any) => {
       const value = decrypt(data) as {
@@ -273,13 +304,16 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           return user;
         });
       }
-      router.push(`/v?room=${roomId}`);
+      const resetUrl = setTimeout(() => {
+        window.history.replaceState(null, "", `/v?room=${roomId}`);
+      }, 40000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       toast.info("Joined successfully");
       updateListeners();
       handleUpdateQueue();
       upNextSong();
+      return () => clearTimeout(resetUrl);
     },
     [
       handleUpdateQueue,
@@ -289,11 +323,43 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       loggedInUser,
       setUser,
       roomId,
-      router,
     ]
   );
 
-  // Centralized event listeners setup and cleanup
+  const handleVisibilityChange = useCallback(async () => {
+    if (!window.location.pathname.startsWith("/v")) return;
+    if (document.hidden) {
+      const startTime = Date.now();
+      timerRef.current = window.setInterval(() => {
+        hiddenTimeRef.current = Date.now() - startTime;
+        // console.log(hiddenTimeRef.current);
+        if (
+          hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT &&
+          isActive.current
+        ) {
+          isActive.current = false;
+        }
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+
+      const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
+
+      isActive.current = true;
+      if (wasAwayForTooLong && necessaryFetchRef.current) {
+        await updateListeners();
+        await UpdateQueue();
+        await delay(200);
+        necessaryFetchRef.current = false;
+        hiddenTimeRef.current = 0;
+        return;
+      }
+      hiddenTimeRef.current = 0;
+    }
+  }, [updateListeners, UpdateQueue]);
   useEffect(() => {
     const currentSocket = socketRef.current;
     currentSocket.on("connect", onConnect);
@@ -306,13 +372,17 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
     currentSocket.on("update", forceUpdateQueue);
-    currentSocket.on(
-      "isplaying",
-      (d) => d && document.visibilityState == "visible" && play(decrypt(d))
-    );
+    currentSocket.on("seekable", (r) => (isAdminOnline.current = r));
+    currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
     currentSocket.on("play", (d) => d && play(decrypt(d)));
     currentSocket.on("seek", seek);
+    currentSocket.on("profile", updateListeners);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
       currentSocket.off("connect", onConnect);
       currentSocket.off("disconnect", onDisconnect);
       currentSocket.off("message", handleMessage);
@@ -323,9 +393,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("userJoinedRoom", handleUserJoinedRoom);
       currentSocket.off("update", forceUpdateQueue);
       currentSocket.off("joined", handleJoined);
+      currentSocket.off("seekable");
       currentSocket.off("isplaying");
       currentSocket.off("play");
       currentSocket.off("seek", seek);
+      currentSocket.off("profile", updateListeners);
     };
   }, [
     handleUserLeftRoom,
@@ -340,6 +412,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     forceUpdateQueue,
     play,
     seek,
+    isAdminOnline,
+    updateListeners,
+    handleVisibilityChange,
   ]);
 
   return (
@@ -355,6 +430,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         loading,
         handleUpdateQueue,
         setPage,
+        hiddenTimeRef,
       }}
     >
       {children}

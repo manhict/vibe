@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
     if (url.pathname == "/") {
       const isLoggedIn = await fetch(`${process.env.SOCKET_URI}/api/@me`, {
         headers: {
-          cookie: `vibeIdR=${vibeId}`,
+          Authorization: `Bearer ${vibeId}`,
         },
       });
       if (isLoggedIn.ok) {
@@ -27,7 +27,7 @@ export default async function middleware(req: NextRequest) {
       if (!room) {
         const newRoomId = generateRoomId();
         const res = NextResponse.redirect(
-          new URL(`${url.pathname}?room=${newRoomId}`, req.url)
+          new URL(`${url.pathname}?room=${newRoomId}&new=true`, req.url)
         );
         res.cookies.set("room", newRoomId, { path: "/", httpOnly: true });
         return res;

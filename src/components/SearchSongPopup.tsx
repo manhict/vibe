@@ -26,6 +26,7 @@ import { GrYoutube } from "react-icons/gr";
 import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
+import useAddSong from "@/Hooks/useAddSong";
 
 function SearchSongPopup({
   isAddToQueue = false,
@@ -38,48 +39,53 @@ function SearchSongPopup({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView();
-  const { roomId, user, setQueue } = useUserContext();
+  const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
-
+  const { addSong } = useAddSong();
   const search = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      const value = e.target.value.trim();
-      setQuery(value);
-      if (value.length <= 0) {
-        setSongs(null);
-        setLoading(false);
-        return;
-      }
-
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-      const url = youtube
-        ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(value)}`
-        : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
-
-      setPage(0); // Reset page on a new search
-      setLoading(true);
-      const res = await api.get(url, { signal: controller.signal });
-      if (res.success) {
-        if (youtube) {
-          const tracks = res.data as searchResults[];
-          setSongs({
-            success: true,
-            data: {
-              total: tracks.length,
-              start: 0,
-              results: tracks,
-            },
-          });
-        } else {
-          setSongs((res?.data as searchSongResult) || []);
+      try {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
         }
+        const value = e.target.value.trim();
+        setQuery(value);
+        if (value.length <= 0) {
+          setSongs(null);
+          return;
+        }
+
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+        const url = youtube
+          ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(
+              value
+            )}`
+          : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
+
+        setPage(0); // Reset page on a new search
+        setLoading(true);
+        const res = await api.get(url, { signal: controller.signal });
+        if (res.success) {
+          if (youtube) {
+            const tracks = res.data as searchResults[];
+            setSongs({
+              success: true,
+              data: {
+                total: tracks.length,
+                start: 0,
+                results: tracks,
+              },
+            });
+          } else {
+            setSongs((res?.data as searchSongResult) || []);
+          }
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [youtube]
   );
@@ -119,41 +125,16 @@ function SearchSongPopup({
   }, [inView, loading, searchMoreSongs]);
 
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
-  const handlePlay = useCallback(async () => {
+  const handleAdd = useCallback(async () => {
+    if (selectedSongs.length == 0) return;
     if (!user)
-      return toast.error("Login required to add song in queue", {
+      return toast.error("Login to add song in queue", {
         style: { background: "#e94625" },
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
-    toast.loading("Adding songs to queue", { id: "adding" });
-    const added = await api.post(
-      `${process.env.SOCKET_URI}/api/add?room=${roomId}`,
-      selectedSongs,
-      { credentials: "include" }
-    );
-    if (added.success) {
-      await setQueue((prev) => {
-        // Create a Set with IDs from the previous queue to track unique songs
-        const songIds = new Set(prev.map((song) => song.id));
-
-        // Filter new results to include only songs not already in the queue
-        const uniqueNewSongs = (selectedSongs || []).filter((song) => {
-          if (!songIds.has(song.id)) {
-            songIds.add(song.id); // Add new song ID to Set
-            return true;
-          }
-          return false;
-        });
-
-        // Update the queue with only unique songs
-        return [...prev, ...uniqueNewSongs];
-      });
-      emitMessage("update", "update");
-      toast.success("Songs added to queue");
-    }
+    await addSong(selectedSongs, roomId);
     setSelectedSongs([]);
-    toast.dismiss("adding");
-  }, [setSelectedSongs, selectedSongs, user, roomId, setQueue]);
+  }, [setSelectedSongs, selectedSongs, user, roomId, addSong]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
@@ -247,14 +228,14 @@ function SearchSongPopup({
           )}
         </>
       )}
-      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-sm">
+      <DialogContent className="flex bg-transparent flex-col w-full overflow-hidden rounded-2xl gap-0 p-0 border-none max-w-2xl max-md:max-w-[95dvw]">
         <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className="bg-black rounded-t-xl flex items-center justify-between p-2.5 px-5">
+        <div className=" rounded-t-xl flex items-center justify-between p-2.5 px-5 bg-[#1D192B]">
           <DialogClose>
-            <ArrowLeft className="text-zinc-500 cursor-pointer" />
+            <ArrowLeft className="text-zinc-500 " />
           </DialogClose>
           <Input
             autoFocus
@@ -270,7 +251,7 @@ function SearchSongPopup({
             {loading ? (
               <Loader2Icon className="text-zinc-500 animate-spin" />
             ) : (
-              <X className="text-zinc-500 cursor-pointer" />
+              <X className="text-zinc-500 " />
             )}
           </DialogClose>
         </div>
@@ -279,7 +260,7 @@ function SearchSongPopup({
             {Array.from(Array(6)).map((_, i) => (
               <div
                 key={i}
-                className="flex gap-2  rounded-none text-start cursor-pointer border-b border-white/20 p-2.5 px-4 items-center "
+                className="flex gap-2  rounded-none text-start  border-b border-white/20 p-2.5 px-4 items-center "
               >
                 <Skeleton className="h-14 w-14  rounded-none" />
                 <div className="text-sm space-y-1 font-medium w-10/12 truncate">
@@ -304,7 +285,7 @@ function SearchSongPopup({
                 title={`${parse(song.name)} (${
                   formatArtistName(song?.artists?.primary) || "Unknown"
                 })`}
-                className={`flex gap-2 px-2.5 text-start cursor-pointer hover:bg-zinc-800/20 ${
+                className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
                   i != songs.data.results.length - 1 && "border-b"
                 }  border-white/20 p-2.5 items-center`}
               >
@@ -339,7 +320,7 @@ function SearchSongPopup({
                     name={song?.id}
                     id={song?.id}
                     type="checkbox"
-                    className="peer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                    className="peer appearance-none w-5 h-5 border border-gray-400 inset-0 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
                   />
                   <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
                 </div>
@@ -360,7 +341,7 @@ function SearchSongPopup({
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
               <div className="flex overflow-x-scroll items-center gap-2.5">
-                {selectedSongs.map((song) => (
+                {selectedSongs?.map((song) => (
                   <div
                     key={song?.id}
                     className=" gap-1 bg-[#8D50F9]/20 p-1 rounded-lg border-zinc-600 border text-xs px-2 py-1.5 flex items-center"
@@ -383,7 +364,7 @@ function SearchSongPopup({
                       title={`${parse(song.name)} (${
                         formatArtistName(song?.artists?.primary) || "Unknown"
                       })`}
-                      className=" flex flex-col cursor-pointer leading-tight"
+                      className=" flex flex-col  leading-tight"
                     >
                       <p className=" w-24 font-semibold truncate">
                         {parse(song.name)}
@@ -398,7 +379,7 @@ function SearchSongPopup({
                           prev.filter((r) => r.id !== song.id)
                         )
                       }
-                      className=" cursor-pointer hover:text-zinc-400 transition-all duration-300 size-5"
+                      className="  hover:text-zinc-400 transition-all duration-300 size-5"
                     />
                   </div>
                 ))}
@@ -406,8 +387,9 @@ function SearchSongPopup({
             </div>
             <DialogFooter className=" p-2.5 px-4 pb-4 bg-black/80 ">
               <DialogClose
-                onClick={handlePlay}
-                className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
+                disabled={selectedSongs.length == 0}
+                onClick={handleAdd}
+                className=" py-3 w-full disabled:bg-purple/50 rounded-xl bg-purple/80 font-semibold text-sm"
               >
                 <p className="w-full text-center">Add song</p>
               </DialogClose>
@@ -422,7 +404,7 @@ function SearchSongPopup({
             <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
               <DialogClose
                 onClick={handleAddAll}
-                className=" py-3 w-full  rounded-xl bg-purple/80 font-semibold text-sm"
+                className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
               >
                 <p className="w-full text-center">Add All</p>
               </DialogClose>

@@ -5,7 +5,7 @@ import HomeFooter from "@/components/common/HomeFooter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import useDebounce from "@/Hooks/useDebounce";
 import Login from "@/components/common/Login";
@@ -13,6 +13,7 @@ function Page() {
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [roomName, setRoomName] = useState<string>("");
+  const roomNameRef = useRef<AbortController | null>(null);
   const checkRoom = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const roomName = e.target.value;
@@ -34,10 +35,16 @@ function Page() {
       return;
     }
     setLoader(true);
+    if (roomNameRef.current) {
+      roomNameRef.current.abort();
+    }
+    const controller = new AbortController();
+    roomNameRef.current = controller;
     const res = await api.get(
       `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
       {
         showErrorToast: false,
+        signal: controller.signal,
       }
     );
     setLoader(false);
@@ -65,9 +72,14 @@ function Page() {
       return;
     }
     setLoader(true);
+    if (roomNameRef.current) {
+      roomNameRef.current.abort();
+    }
+    const controller = new AbortController();
+    roomNameRef.current = controller;
     const res = await api.get(
       `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
-      { showErrorToast: false }
+      { showErrorToast: false, signal: controller.signal }
     );
     if (res.success) {
       window.location.href = `/${roomName}`;
@@ -81,7 +93,7 @@ function Page() {
   };
   const handleCheckRoom = useDebounce(checkRoom, 200);
   return (
-    <div className="  bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
+    <main className="  bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
       <Blur className=" blur-2xl bg-transparent" />
       <motion.div
         initial={{
@@ -122,11 +134,11 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="w-[335px] h-[52px] pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
             >
-              <div className="w-[164px] h-5 relative">
+              <div className="flex items-center relative">
                 <div
-                  className={`left-0 top-0 absolute ${
+                  className={` ${
                     roomName.length == 0 ? "text-white" : "text-white/60"
                   } transition-all duration-150  text-sm font-semibold leading-tight tracking-tight`}
                 >
@@ -137,18 +149,17 @@ function Page() {
                   autoFocus
                   maxLength={11}
                   max={11}
+                  value={roomName}
                   onInput={(e) => setRoomName(e.currentTarget.value)}
                   onChange={handleCheckRoom}
-                  placeholder="claim your vibe"
-                  className="left-[68px] placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0 absolute text-white text-sm font-medium leading-tight tracking-tight"
+                  placeholder="enter party name"
+                  className="placeholder:animate-pulse placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
                 />
               </div>
               <Button
-                disabled={
-                  loader || typeof error === "string" || roomName.length === 0
-                }
+                disabled={loader || typeof error === "string"}
                 type="submit"
-                className="h-10 w-20 bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
+                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
               >
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
@@ -157,8 +168,7 @@ function Page() {
             <p className="h-4 text-red-500 font-normal text-xs -mt-2 px-1">
               {error}
             </p>
-            {typeof window !== "undefined" &&
-              !window.location.pathname.includes("/make") && <Login footer />}
+            <Login footer />
           </div>
           <div className=" w-1/2  max-md:w-full">
             <video
@@ -174,7 +184,7 @@ function Page() {
         </div>
         <HomeFooter />
       </motion.div>
-    </div>
+    </main>
   );
 }
 

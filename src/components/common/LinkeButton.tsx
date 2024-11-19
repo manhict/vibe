@@ -128,7 +128,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     <Heart
       ref={heartRef}
       onClick={handleEmit}
-      className="size-[1.27rem] text-zinc-100 hover:fill-red-500 hover:text-red-500 hover:opacity-100 opacity-40 transition-all hover:scale-125 active:scale-75 duration-100 cursor-pointer"
+      className="size-[1.27rem] text-zinc-100 hover:fill-red-500 hover:text-red-500 hover:opacity-100 opacity-40 transition-all hover:scale-125 active:scale-75 duration-100 "
     />
   );
 };

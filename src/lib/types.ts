@@ -23,6 +23,7 @@ export interface searchResults {
   topVoters?: TUser[];
   isVoted?: boolean;
   order?: number;
+  video?: boolean;
 }
 export interface downloadUrl {
   quality: string;
@@ -50,6 +51,7 @@ export interface TUser {
   imageUrl: string;
   role?: "admin" | "listener" | string;
   token?: string;
+  imageDelUrl?: string;
 }
 
 export interface listener {
@@ -105,6 +107,7 @@ export interface spotifyTrack {
 
 export interface spotifyUser {
   display_name: string;
+  id: string;
   email: string;
   images: [
     {
@@ -114,7 +117,6 @@ export interface spotifyUser {
 }
 
 export interface roomsData {
-  users: [{ image: string }];
   roomId: string;
   name: [string];
   background: string;

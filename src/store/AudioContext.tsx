@@ -16,7 +16,8 @@ import { useUserContext } from "./userStore";
 import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
 import getURL from "@/utils/utils";
-
+import { toast } from "sonner";
+const MAX_SKIP_LIMIT = 3;
 interface AudioContextType {
   play: (song: searchResults) => void;
   pause: () => void;
@@ -58,9 +59,7 @@ interface AudioProviderProps {
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-  const audioRef = useRef<HTMLAudioElement>(
-    typeof window !== "undefined" ? new Audio() : null
-  );
+  const audioRef = useRef<HTMLVideoElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -74,7 +73,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const progress = useMemo(() => currentProgress, [currentProgress]);
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
-  const { user } = useUserContext();
+  const skipCountRef = useRef(0); // Ref to track skipped songs
+  const { user, isAdminOnline } = useUserContext();
   // play
   const play = useCallback(async (song: searchResults) => {
     setCurrentSong(song);
@@ -96,6 +96,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
+          // Reset skip count on successful play
+          skipCountRef.current = 0;
           if (videoRef.current) {
             videoRef.current?.play();
           }
@@ -104,8 +106,21 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           }
           setIsPlaying(true);
         })
-        .catch(() => {
-          console.error("Error playing audio");
+        .catch((e) => {
+          if (e.message.startsWith("Failed to load because no supported")) {
+            skipCountRef.current += 1;
+            if (skipCountRef.current >= MAX_SKIP_LIMIT) {
+              toast.error("Maximum skip limit reached. Unable to play song.", {
+                style: { background: "#e94625" },
+              });
+            } else {
+              emitMessage("songEnded", "songEnded");
+              toast.error("Song not available. Skipping", {
+                style: { background: "#e94625" },
+              });
+            }
+          }
+          console.error("Error playing audio", e.message);
         });
     }
   }, []);
@@ -115,6 +130,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
+    socket.emit("status", false);
     setIsPlaying(false);
   }, []);
 
@@ -124,6 +140,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
+          socket.emit("status", true);
           setIsPlaying(true);
         })
         .catch((error) => {
@@ -198,7 +215,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       emitMessage("playPrev", "playPrev");
     }
   }, []);
-
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {
     const handleBlock = () => {
@@ -251,8 +267,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 5) {
-        socket.emit("progress", currentTime);
+      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
         lastEmitted.current = currentTime;
         // Sync video progress with audio progress
         if (videoRef.current) {
@@ -270,6 +285,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      if (
+        isAdminOnline.current &&
+        audioRef.current &&
+        !audioRef.current.paused
+      ) {
+        socket.emit("progress", audioRef.current?.currentTime);
+      }
+    }, 2000);
+    return () => clearInterval(t);
+  }, [isAdminOnline]);
 
   useEffect(() => {
     const handlePlay = () => {
@@ -298,7 +326,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
     };
     const handleEnd = () => {
-      emitMessage("songEnded", "songEnded");
+      if (isAdminOnline.current) {
+        emitMessage("songEnded", "songEnded");
+      }
     };
 
     const audioElement = audioRef.current;
@@ -308,7 +338,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
-
       return () => {
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);
@@ -316,13 +345,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("canplay", handleCanPlay);
       };
     }
-  }, [setMediaSession, lastEmitted, lastEmittedTime, updateProgress]);
-
-  // useEffect(() => {
-  //   if (!currentSong && queue.length > 0 && audioRef.current) {
-  //     setCurrentSong(queue[0]);
-  //   }
-  // }, [queue, currentSong]);
+  }, [
+    setMediaSession,
+    lastEmitted,
+    lastEmittedTime,
+    updateProgress,
+    isAdminOnline,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -336,17 +365,24 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         e.preventDefault();
         togglePlayPause();
       }
+      if ((e.ctrlKey || e.altKey) && e.key === "ArrowRight") {
+        e.preventDefault();
+        playNext();
+      } else if ((e.ctrlKey || e.altKey) && e.key === "ArrowLeft") {
+        e.preventDefault();
+        playPrev();
+      }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     const volume = localStorage.getItem("volume");
     if (volume && audioRef.current && audioRef?.current.volume !== 0) {
       handleVolumeChange(Number(volume));
     }
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [togglePlayPause]);
+  }, [togglePlayPause, playNext, playPrev]);
 
   const value = useMemo(
     () => ({
@@ -395,6 +431,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     ]
   );
   return (
-    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
+    <AudioContext.Provider value={value}>
+      {children}
+      <video ref={audioRef} hidden preload="true"></video>
+    </AudioContext.Provider>
   );
 };

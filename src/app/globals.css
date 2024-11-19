@@ -56,19 +56,19 @@
     --chart-5: 340 75% 55%;
   }
 }
+
 @layer base {
   * {
+    cursor: url("/cursor.svg"), auto;
     @apply border-border;
   }
   body {
-    cursor: url("/cursor.svg"), auto;
-
     @apply bg-background text-foreground;
   }
 }
 /* WebKit scrollbar styles (for Chrome, Safari) */
 ::-webkit-scrollbar {
-  width: 1.5px; /* Initially hide the scrollbar */
+  width: 2px; /* Initially hide the scrollbar */
   height: 1.5px; /* Initially hide the horizontal scrollbar */
 }
 

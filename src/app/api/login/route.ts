@@ -1,39 +1,20 @@
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { spotifyUser } from "@/lib/types";
-
-const jwt_secret = process.env.JWT_SECRET || "";
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
-    const data: spotifyUser = await req.json();
+    const { token: accessToken } = await req.json();
+    if (accessToken) {
+      const response = NextResponse.json({ success: true });
 
-    const isAlready = await User.findOne({ email: data.email });
-    if (isAlready) {
-      const user = await User.findOneAndUpdate(
-        { email: data.email },
-        { imageUrl: data.images[0].url, name: data.display_name },
-        { new: true }
-      );
-      return proceed(isAlready, user);
-    } else {
-      const user = await User.create({
-        username: data.email
-          ?.split("@gmail.com")[0]
-          ?.replace(/[^a-zA-Z0-9]/g, ""),
-        name: data.display_name,
-        email: data.email,
-        imageUrl: data.images[0].url,
+      response.cookies.set("vibeId", accessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        path: "/",
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
-
-      if (user) {
-        return proceed(user);
-      }
+      return response;
     }
-
     return NextResponse.json({ success: false, data: {} }, { status: 500 });
   } catch (error: any) {
     console.log(error.message);
@@ -45,20 +26,4 @@ export async function POST(req: NextRequest) {
   }
 }
 
-const proceed = (saved: any, user?: any) => {
-  const accessToken = jwt.sign({ userId: saved._id }, jwt_secret, {
-    expiresIn: "7d",
-  });
-
-  // Create a response and set the cookie
-  const response = NextResponse.json({ success: true, data: user || saved });
-
-  response.cookies.set("vibeId", accessToken, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: true,
-    path: "/",
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Current date + 7 days
-  });
-  return response;
-};
+export const runtime = "edge";

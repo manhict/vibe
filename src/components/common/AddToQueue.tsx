@@ -4,7 +4,7 @@ import { Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
@@ -16,14 +16,16 @@ import { data, searchResults } from "@/lib/types";
 import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
+import VibeAlert from "./VibeAlert";
+import useAddSong from "@/Hooks/useAddSong";
 
-function AddToQueue() {
-  const { queue, roomId, user, setQueue } = useUserContext();
+function AddToQueueComp() {
+  const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
   const { total } = useSocket();
-
+  const { addSong } = useAddSong();
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
+  const [isDragging, setIsDragging] = useState(false);
   useEffect(() => {
     if (queue.length <= 1) {
       setIsDeleting(false);
@@ -86,9 +88,44 @@ function AddToQueue() {
     setQueue([]);
     setSelectedSongs([]);
   };
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      if (showDragOptions) return;
+      const jsonData = e.dataTransfer.getData("application/json");
+      if (!jsonData) return;
+      const song = JSON.parse(jsonData);
+      if (!song) return;
+      await addSong([song], roomId);
+    },
+    [roomId, showDragOptions, addSong]
+  );
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
 
   return (
-    <div className=" select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full border-white/15 w-[45%] rounded-xl p-3 pr-0">
+    <div
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
+        isDragging ? "border-white/70" : "border-white/15"
+      } rounded-xl p-3 pr-0`}
+    >
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
           <motion.div
@@ -117,7 +154,8 @@ function AddToQueue() {
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className="md:text-lg max-md:pl-1.5 text-base font-semibold"
           >
-            In Queue {total && total > 0 && `(${total})`}
+            In Queue{" "}
+            {total.current && total.current > 0 && `(${total.current})`}
           </motion.p>
         )}
         <div className=" flex items-center gap-1">
@@ -162,20 +200,23 @@ function AddToQueue() {
           }}
           className=" flex hide-scrollbar overflow-x-scroll py-1 -mb-1 mt-2 items-center gap-1"
         >
-          <Button
-            onClick={handleBulkDelete}
-            size={"sm"}
-            className=" w-fit text-xs bg-purple text-white hover:bg-purple/80"
-          >
-            Remove Selected {selectedSongs.length}
-          </Button>
-          <Button
-            onClick={handleRemoveALL}
-            size={"sm"}
-            className=" w-fit text-xs bg-red-600/85 text-white hover:bg-red-600/70"
-          >
-            Delete all
-          </Button>
+          <VibeAlert
+            disabled={selectedSongs.length == 0}
+            className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 rounded-lg px-3 w-fit text-xs bg-purple text-white hover:bg-purple/80"
+            title={`Remove Selected ${selectedSongs.length}`}
+            headingClassName="md:w-8/12 w-[80vw] "
+            confirmText="Yes, delete selected"
+            heading="Are you sure you want to delete selected songs?"
+            action={handleBulkDelete}
+          />
+
+          <VibeAlert
+            title="Delete all"
+            headingClassName=" md:w-8/12 w-[80vw] "
+            confirmText="Yes, delete all"
+            heading="Are you sure you want to delete all songs?"
+            action={handleRemoveALL}
+          />
         </motion.div>
       )}
       <div className="h-full hide-scrollbar transition-all z-50 overflow-y-scroll">
@@ -204,5 +245,5 @@ function AddToQueue() {
     </div>
   );
 }
-
+const AddToQueue = React.memo(AddToQueueComp);
 export default AddToQueue;

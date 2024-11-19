@@ -10,16 +10,17 @@ function Background() {
 
   return (
     <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center w-full">
-      {currentSong?.source == "youtube" ? (
+      {currentSong?.video ? (
         <>
           <video
-            style={{ opacity: showVideo ? 1 : 0 }}
+            style={{ display: showVideo ? "block" : "none" }}
             ref={backgroundVideoRef}
             muted
             playsInline
             title={currentSong?.name || ""}
             height={300}
             width={300}
+            preload="none" // Prevents auto-loading
             onError={() => {
               setShowVideo(false);
             }}

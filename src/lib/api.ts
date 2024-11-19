@@ -87,7 +87,7 @@ const handleError = (
   return {
     success: false,
     status: 0, // Indicate that this is a client-side error without a response status
-    error: errorMessage,
+    error: error.name == "AbortError" ? "" : errorMessage,
   };
 };
 
@@ -97,7 +97,10 @@ const api = {
   request: async <T>(
     url: string,
     method: string,
-    options: RequestInit & { showErrorToast?: boolean } = {}
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<ApiResponse<T>> => {
     const { showErrorToast = true, ...fetchOptions } = options;
 
@@ -111,14 +114,14 @@ const api = {
       }
 
       // Set Authorization header if authToken is available
-      if (authToken) {
+      if (authToken && !fetchOptions.headers?.Authorization) {
         headers.set("Authorization", `Bearer ${authToken}`);
       }
 
       const response = await fetch(url, {
         method,
         ...fetchOptions,
-        credentials: "include",
+        // credentials: "include",
         next: { revalidate: 10 },
         headers,
       });
@@ -131,7 +134,10 @@ const api = {
 
   get: async <T>(
     url: string,
-    options: RequestInit & { showErrorToast?: boolean } = {}
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "GET", options);
   },
@@ -139,7 +145,10 @@ const api = {
   post: async <T>(
     url: string,
     data: any,
-    options: RequestInit & { showErrorToast?: boolean } = {}
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "POST", {
       ...options,
@@ -150,7 +159,10 @@ const api = {
   put: async <T>(
     url: string,
     data: any,
-    options: RequestInit & { showErrorToast?: boolean } = {}
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "PUT", {
       ...options,
@@ -160,7 +172,10 @@ const api = {
 
   delete: async <T>(
     url: string,
-    options: RequestInit & { showErrorToast?: boolean } = {}
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "DELETE", options);
   },
