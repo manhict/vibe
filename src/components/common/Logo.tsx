@@ -14,10 +14,7 @@ function Logo({ className }: { className?: string }) {
         }
       }}
       src={"/logo.svg"}
-      className={cn(
-        `size-12 max-md:size-10 ${!user && "cursor-pointer"}`,
-        className
-      )}
+      className={cn(`size-12 max-md:size-10 ${!user && ""}`, className)}
       alt="logo"
       height={500}
       width={500}

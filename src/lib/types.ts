@@ -117,7 +117,6 @@ export interface spotifyUser {
 }
 
 export interface roomsData {
-  users: [{ image: string }];
   roomId: string;
   name: [string];
   background: string;

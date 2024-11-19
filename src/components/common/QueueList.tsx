@@ -1,8 +1,7 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 import { formatArtistName } from "@/utils/utils";
-import { Trash } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -13,19 +12,20 @@ import VoteIcon from "./VoteIcon";
 import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 import Image from "next/image";
-
+import autoAnimate from "@formkit/auto-animate";
 interface QueueListProps {
   isDeleting?: boolean;
   handleSelect: (song: searchResults, limit: boolean) => void;
   selectedSongs: searchResults[];
 }
 
-function QueueList({
+function QueueListComp({
   isDeleting = false,
   handleSelect,
   selectedSongs,
 }: QueueListProps) {
-  const { queue, setQueue, user } = useUserContext();
+  const { queue, setQueue, user, setShowDragOptions, setShowAddDragOptions } =
+    useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -33,20 +33,6 @@ function QueueList({
   const upVote = useCallback((song: searchResults) => {
     emitMessage("upvote", { queueId: song?.queueId });
   }, []);
-
-  const handleDelete = useCallback(
-    (song: searchResults) => {
-      if (isDeleting) return;
-      emitMessage("deleteSong", {
-        queueId: song?.queueId,
-        addedBy: song?.addedBy,
-      });
-      if (user?.role === "admin" || song.addedBy === user?._id) {
-        setQueue((prev) => prev.filter((s) => s.id !== song.id));
-      }
-    },
-    [setQueue, user, isDeleting]
-  );
 
   const handleUpVote = useDebounce(upVote);
 
@@ -130,7 +116,6 @@ function QueueList({
   useEffect(() => {
     const container = containerRef.current;
 
-    // Attach scroll event listener
     container?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -138,13 +123,35 @@ function QueueList({
     };
   }, [handleScroll]);
 
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    song: searchResults
+  ) => {
+    setShowDragOptions(true);
+    setShowAddDragOptions(true);
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOptions(false);
+    setShowAddDragOptions(false);
+  };
+
+  useEffect(() => {
+    containerRef.current && autoAnimate(containerRef.current);
+  }, [containerRef]);
+
   return (
     <div
       ref={containerRef}
-      className="py-2 pr-2 max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
+      className="py-2 pr-2  max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
     >
       {queue?.map((song, i) => (
         <div
+          onDragEnd={handleDragEnd}
+          onDragStart={(e) => handleDragStart(e, song)}
+          draggable
           title={
             song.addedByUser && song.addedByUser.username !== user?.username
               ? `Added by ${song.addedByUser.name} (${song.addedByUser.username})`
@@ -154,12 +161,13 @@ function QueueList({
         >
           {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
           <label
+            onClick={(e) => handlePlay(e, song)}
             htmlFor={song?.id + i}
             className={`flex gap-2 ${
               i !== queue.length && " border-white/5"
             } py-2 pl-2 ${
               currentSong?.id == song?.id && "bg-white/15"
-            } hover:bg-white/10 cursor-pointer rounded-xl items-center justify-between`}
+            } hover:bg-white/10 rounded-xl items-center justify-between`}
           >
             <div title={String(song?.order)} className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -174,14 +182,23 @@ function QueueList({
                   src={song.image[song.image.length - 1].url}
                 />
                 <AvatarFallback>SX</AvatarFallback>
-                {!isDeleting && (
-                  <Trash
-                    onClick={() => handleDelete(song)}
-                    className="absolute group-hover:z-20 cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  />
+                {currentSong?.id !== song?.id && (
+                  <svg
+                    className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.8324 9.66406C15.0735 9.47748 15.2686 9.23818 15.4029 8.9645C15.5371 8.69082 15.6069 8.39004 15.6069 8.0852C15.6069 7.78036 15.5371 7.47957 15.4029 7.20589C15.2686 6.93221 15.0735 6.69291 14.8324 6.50634C11.7106 4.09079 8.22476 2.18684 4.50523 0.86576L3.82515 0.624141C2.5254 0.162771 1.15171 1.04177 0.9757 2.38422C0.484012 6.16897 0.484012 10.0014 0.9757 13.7862C1.15275 15.1286 2.5254 16.0076 3.82515 15.5463L4.50523 15.3046C8.22476 13.9836 11.7106 12.0796 14.8324 9.66406Z"
+                      fill="white"
+                    />
+                  </svg>
                 )}
                 {currentSong?.id == song.id && (
-                  <div className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
+                  <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300">
                     {isPlaying ? (
                       <Image
                         height={100}
@@ -207,14 +224,9 @@ function QueueList({
                 )}
               </Avatar>
             </div>
-            <div
-              onClick={(e) => handlePlay(e, song)}
-              className="flex flex-col gap-1 flex-grow text-sm w-6/12"
-            >
+            <div className="flex flex-col gap-1 flex-grow text-sm w-6/12">
               <div className=" text-start w-11/12">
-                <p className="cursor-pointer font-semibold truncate">
-                  {parse(song.name)}
-                </p>
+                <p className=" font-semibold truncate">{parse(song.name)}</p>
               </div>
               <p className="text-[#D0BCFF] opacity-75 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
@@ -229,7 +241,7 @@ function QueueList({
                   name={song?.id + i}
                   id={song?.id + i}
                   type="checkbox"
-                  className="peer cursor-pointer appearance-none w-5 h-5 border-2 rounded-[2px] border-gray-400 checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  className="peer  appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
                 />
                 <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
               </div>
@@ -246,5 +258,5 @@ function QueueList({
     </div>
   );
 }
-
+const QueueList = React.memo(QueueListComp);
 export default QueueList;

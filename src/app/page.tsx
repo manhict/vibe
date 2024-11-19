@@ -93,7 +93,7 @@ function Page() {
   };
   const handleCheckRoom = useDebounce(checkRoom, 200);
   return (
-    <div className="  bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
+    <main className="  bg-[url('/mask.svg')] bg-no-repeat bg-cover ">
       <Blur className=" blur-2xl bg-transparent" />
       <motion.div
         initial={{
@@ -184,7 +184,7 @@ function Page() {
         </div>
         <HomeFooter />
       </motion.div>
-    </div>
+    </main>
   );
 }
 

@@ -115,11 +115,12 @@ export default function RootLayout({
             <AudioProvider>
               <SocketProvider>
                 <Toaster
-                  position="bottom-left"
+                  position="bottom-right"
                   visibleToasts={2}
                   toastOptions={{
                     style: { background: "#6750A4" },
-                    className: "rounded-xl w-fit text-white border-none",
+                    className:
+                      "rounded-xl w-fit right-0 text-white border-none",
                   }}
                 />
                 {children}

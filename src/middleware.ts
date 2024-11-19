@@ -12,7 +12,6 @@ export default async function middleware(req: NextRequest) {
         headers: {
           Authorization: `Bearer ${vibeId}`,
         },
-        cache: "no-cache",
       });
       if (isLoggedIn.ok) {
         return NextResponse.redirect(new URL("/browse", req.nextUrl.origin));
@@ -28,7 +27,7 @@ export default async function middleware(req: NextRequest) {
       if (!room) {
         const newRoomId = generateRoomId();
         const res = NextResponse.redirect(
-          new URL(`${url.pathname}?room=${newRoomId}`, req.url)
+          new URL(`${url.pathname}?room=${newRoomId}&new=true`, req.url)
         );
         res.cookies.set("room", newRoomId, { path: "/", httpOnly: true });
         return res;

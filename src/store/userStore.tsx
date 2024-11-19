@@ -24,6 +24,12 @@ interface UserContextType {
   showVideo: boolean | null;
   setShowVideo: React.Dispatch<SetStateAction<boolean | null>>;
   isAdminOnline: React.MutableRefObject<boolean>;
+  isChatOpen: boolean;
+  setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
+  showDragOptions: boolean;
+  setShowDragOptions: React.Dispatch<SetStateAction<boolean>>;
+  showAddDragOptions: boolean;
+  setShowAddDragOptions: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -34,6 +40,10 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [upNextSongs, setUpNextSongs] = React.useState<searchResults[]>([]);
   const [user, setUser] = React.useState<TUser | null>(null);
   const isAdminOnline = React.useRef<boolean>(true);
+  const [isChatOpen, setIsChatOpen] = React.useState<boolean>(false);
+  const [showDragOptions, setShowDragOptions] = React.useState<boolean>(false);
+  const [showAddDragOptions, setShowAddDragOptions] =
+    React.useState<boolean>(false);
   const [listener, setListener] = React.useState<listener | null>(null);
   const [showVideo, setShowVideo] = React.useState<boolean | null>(() => {
     const data =
@@ -59,8 +69,25 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setUpNextSongs,
       upNextSongs,
       isAdminOnline,
+      isChatOpen,
+      setIsChatOpen,
+      showDragOptions,
+      setShowDragOptions,
+      showAddDragOptions,
+      setShowAddDragOptions,
     }),
-    [listener, queue, roomId, user, upNextSongs, showVideo, isAdminOnline]
+    [
+      listener,
+      queue,
+      roomId,
+      user,
+      upNextSongs,
+      showVideo,
+      isAdminOnline,
+      isChatOpen,
+      showDragOptions,
+      showAddDragOptions,
+    ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

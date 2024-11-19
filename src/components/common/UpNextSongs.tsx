@@ -4,14 +4,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatArtistName } from "@/utils/utils";
 import { motion } from "framer-motion";
 import { useAudio } from "@/store/AudioContext";
+import { searchResults } from "@/lib/types";
 
 function UpNextSongs() {
-  const { upNextSongs } = useUserContext();
+  const { upNextSongs, setShowAddDragOptions } = useUserContext();
   const { currentSong } = useAudio();
-  // Define animation variants
+
   const songVariants = {
     hidden: { opacity: 0, y: 17 },
     visible: { opacity: 1, y: 0 },
+  };
+  const handleDragStart = (e: any, song: searchResults) => {
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
+    setShowAddDragOptions(true);
+  };
+  const handleDragEnd = (e: MouseEvent) => {
+    e.preventDefault();
+    setShowAddDragOptions(false);
   };
 
   return (
@@ -22,6 +31,9 @@ function UpNextSongs() {
             .filter((s) => s.id !== currentSong?.id)
             .map((nextSong) => (
               <motion.div
+                onDragEnd={handleDragEnd}
+                onDragStart={(e) => handleDragStart(e, nextSong)}
+                draggable
                 key={nextSong.id}
                 initial="hidden"
                 animate="visible"
@@ -32,6 +44,7 @@ function UpNextSongs() {
               >
                 <Avatar className="size-9 rounded-sm">
                   <AvatarImage
+                    draggable="false"
                     loading="lazy"
                     alt={nextSong?.name}
                     height={500}
@@ -48,7 +61,7 @@ function UpNextSongs() {
                   title={`${parse(nextSong?.name)} (${
                     formatArtistName(nextSong?.artists?.primary) || "Unknown"
                   })`}
-                  className="flex flex-col cursor-pointer leading-tight"
+                  className="flex flex-col  leading-tight"
                 >
                   <p className="w-24 mb-0.5 font-semibold truncate">
                     {parse(nextSong?.name)}

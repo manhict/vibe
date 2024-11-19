@@ -72,7 +72,7 @@ function Chat({
             <svg
               onClick={playPrev}
               aria-label="play prev"
-              className="cursor-pointer size-5 rotate-180"
+              className=" size-5 rotate-180"
               width="21"
               height="16"
               viewBox="0 0 21 16"
@@ -93,7 +93,7 @@ function Chat({
             <svg
               onClick={playNext}
               aria-label="play next"
-              className=" cursor-pointer size-5"
+              className="  size-5"
               width="21"
               height="16"
               viewBox="0 0 21 16"
@@ -118,7 +118,7 @@ function Chat({
         <p>Chat</p>
         <div className=" flex items-center">
           {listener?.roomUsers
-            ?.filter((r) => r.userId?._id !== user?._id)
+            ?.filter((r) => r.userId?.username !== user?.username)
             ?.map((roomUser, i) => (
               <div
                 title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
@@ -138,7 +138,7 @@ function Chat({
                 </div>
               </div>
             ))}
-          {listener && listener?.totalUsers > 5 && (
+          {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
                 <AvatarFallback>
@@ -149,7 +149,7 @@ function Chat({
             </div>
           )}
         </div>
-        <X onClick={() => setIsChatOpen(false)} className=" cursor-pointer" />
+        <X onClick={() => setIsChatOpen(false)} className=" " />
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
         <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">

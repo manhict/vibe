@@ -1,4 +1,5 @@
 import { artists, CachedVideo, searchResults } from "@/lib/types";
+
 import { decrypt, encrypt } from "tanmayo7lock";
 
 export const formatArtistName = (artists: artists[]) => {
@@ -83,9 +84,9 @@ export const pauseVariants = {
 };
 
 export const slideInVariants = {
-  hidden: { y: "-100%", opacity: 0 },
+  hidden: { y: "-20%", opacity: 0 },
   visible: { y: 0, opacity: 1 },
-  exit: { y: "-100%", opacity: 0 },
+  exit: { y: "-20%", opacity: 0 },
 };
 
 export function containsOnlyEmojis(text: string): boolean {
@@ -248,16 +249,36 @@ export async function checkIsCached(id: string): Promise<string> {
   });
 }
 
-export function encryptObjectValues(obj: any[]) {
+export function encryptObjectValues(obj: any) {
   return Object.keys(obj).reduce((acc, key) => {
     acc[key] = encrypt(obj[key as any]); // Apply decrypt to each value
     return acc;
   }, {} as Record<string, string>);
 }
 
-export function decryptObjectValues(obj: any[]) {
+export function decryptObjectValues(obj: any) {
   return Object.keys(obj).reduce((acc, key) => {
     acc[key] = decrypt(obj[key as any]); // Apply decrypt to each value
     return acc;
   }, {} as Record<string, string>);
 }
+
+export const BACKGROUND_APP_TIMEOUT = 150000;
+
+export const getInviteLink = (roomId?: string, username?: string) => {
+  if (username) {
+    return `${window.location.origin}/v?room=${roomId}&ref=${username}&new=true`;
+  }
+  return `${window.location.origin}/v?room=${roomId}&new=true`;
+};
+
+export function getRandom(emojis: { msg: string; gif: string }[]): {
+  msg: string;
+  gif: string;
+} {
+  const randomIndex = Math.floor(Math.random() * emojis.length);
+  return emojis[randomIndex];
+}
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

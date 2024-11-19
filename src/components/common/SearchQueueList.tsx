@@ -136,9 +136,9 @@ function SearchQueueList({
                 key={i}
                 className={`flex gap-2 ${
                   i !== queue.length && " border-white/5"
-                } py-2 pl-2 hover:bg-white/15  cursor-pointer items-center justify-between ${
+                } py-2 pl-2 hover:bg-white/15   items-center justify-between ${
                   currentSong?.id == song?.id && "bg-white/10"
-                } hover:bg-white/10 cursor-pointer rounded-xl`}
+                } hover:bg-white/10  rounded-xl`}
               >
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -155,10 +155,10 @@ function SearchQueueList({
                     <AvatarFallback>SX</AvatarFallback>
                     <Trash
                       onClick={() => handleDelete(song)}
-                      className="absolute group-hover:z-20 cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     />
                     {currentSong?.id == song.id && (
-                      <div className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
+                      <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 transition-opacity duration-300">
                         {isPlaying ? (
                           <Image
                             height={100}
@@ -189,7 +189,7 @@ function SearchQueueList({
                   className="flex flex-col flex-grow text-sm w-6/12"
                 >
                   <div className=" w-auto text-start">
-                    <p className="cursor-pointer font-semibold truncate">
+                    <p className=" font-semibold truncate">
                       {parse(song.name)}
                     </p>
                   </div>
@@ -206,7 +206,7 @@ function SearchQueueList({
                       name={song?.id + i}
                       id={song?.id + i}
                       type="checkbox"
-                      className="peer cursor-pointer appearance-none w-5 h-5 rounded-[2px] border-2 border-gray-400  checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                      className="peer  appearance-none w-5 h-5 border border-gray-400 rounded-[2px]checked:bg-purple-700 checked:border-purple checked:bg-purple"
                     />
                     <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
                   </div>
