@@ -27,10 +27,8 @@ export interface Message {
 
 // Define the shape of the context state
 interface SocketContextType {
-  isConnected: boolean;
   loading: boolean;
   total: React.MutableRefObject<number | null>;
-  transport: string;
   messages: messages[];
   handleUpdateQueue: () => void;
   setMessages: React.Dispatch<React.SetStateAction<messages[]>>;
@@ -72,8 +70,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const isActive = useRef<boolean>(true);
   const { seek, play } = useAudio();
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [transport, setTransport] = useState<string>("N/A");
   const [messages, setMessages] = useState<messages[]>([]);
   const [likEffectUser, setLikEffectUser] = useState<{ imageUrl: string }[]>(
     []
@@ -90,17 +86,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const upNextSongControllerRef = useRef<AbortController | null>(null);
 
   const onConnect = useCallback((): void => {
-    setIsConnected(true);
     toast.dismiss("connecting");
-    setTransport(socketRef.current.io.engine.transport.name);
-    socketRef.current.io.engine.on("upgrade", (transport) => {
-      setTransport(transport.name);
-    });
-  }, []);
-
-  const onDisconnect = useCallback((): void => {
-    setIsConnected(false);
-    setTransport("N/A");
   }, []);
 
   const handleMessage = useCallback((data: any): void => {
@@ -288,7 +274,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, queue, roomId, getUpNextSong]);
 
-  const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(
     async (data: any) => {
       const value = decrypt(data) as {
@@ -363,7 +348,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   useEffect(() => {
     const currentSocket = socketRef.current;
     currentSocket.on("connect", onConnect);
-    currentSocket.on("disconnect", onDisconnect);
     currentSocket.on("heart", handleHeart);
     currentSocket.on("error", handleError);
     currentSocket.on("connect_error", handleConnectError);
@@ -371,7 +355,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("userLeftRoom", handleUserLeftRoom);
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
-    currentSocket.on("update", forceUpdateQueue);
+    currentSocket.on("update", UpdateQueue);
     currentSocket.on("seekable", (r) => (isAdminOnline.current = r));
     currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
     currentSocket.on("play", (d) => d && play(decrypt(d)));
@@ -384,14 +368,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         clearInterval(timerRef.current);
       }
       currentSocket.off("connect", onConnect);
-      currentSocket.off("disconnect", onDisconnect);
       currentSocket.off("message", handleMessage);
       currentSocket.off("heart", handleHeart);
       currentSocket.off("error", handleError);
       currentSocket.off("connect_error", handleConnectError);
       currentSocket.off("userLeftRoom", handleUserLeftRoom);
       currentSocket.off("userJoinedRoom", handleUserJoinedRoom);
-      currentSocket.off("update", forceUpdateQueue);
+      currentSocket.off("update", UpdateQueue);
       currentSocket.off("joined", handleJoined);
       currentSocket.off("seekable");
       currentSocket.off("isplaying");
@@ -403,13 +386,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     handleUserLeftRoom,
     onConnect,
     handleJoined,
-    onDisconnect,
     handleMessage,
     handleHeart,
     handleError,
     handleConnectError,
     handleUserJoinedRoom,
-    forceUpdateQueue,
+    UpdateQueue,
     play,
     seek,
     isAdminOnline,
@@ -420,8 +402,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   return (
     <SocketContext.Provider
       value={{
-        isConnected,
-        transport,
         messages,
         likEffectUser,
         setMessages,

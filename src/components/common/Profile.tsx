@@ -27,7 +27,7 @@ import { Input } from "../ui/input";
 import { AtSign, LoaderCircle, Mail, Sun } from "lucide-react";
 import { encryptObjectValues } from "@/utils/utils";
 import VibeAlert from "./VibeAlert";
-function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
+function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser, user: LoggedInUser } = useUserContext();
 
   useEffect(() => {
@@ -365,5 +365,5 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     </>
   );
 }
-
+const Profile = React.memo(ProfileComp);
 export default Profile;

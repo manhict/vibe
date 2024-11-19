@@ -28,7 +28,7 @@ import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAddSong from "@/Hooks/useAddSong";
 
-function SearchSongPopup({
+function SearchSongPopupComp({
   isAddToQueue = false,
   youtube = false,
 }: {
@@ -192,7 +192,7 @@ function SearchSongPopup({
   return (
     <Dialog key={"songs"}>
       {youtube ? (
-        <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
+        <DialogTrigger className=" items-center justify-center flex t h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
           <GrYoutube className="size-4" />
         </DialogTrigger>
       ) : (
@@ -414,5 +414,5 @@ function SearchSongPopup({
     </Dialog>
   );
 }
-
+const SearchSongPopup = React.memo(SearchSongPopupComp);
 export default SearchSongPopup;

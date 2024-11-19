@@ -1,7 +1,7 @@
 "use client";
 import Listeners from "./Listeners";
 import Youtube from "./Youtube";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { toast } from "sonner";
 import { useUserContext } from "@/store/userStore";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { getInviteLink } from "@/utils/utils";
-function InviteFriends({ className }: { className?: string }) {
+function InviteFriendsComp({ className }: { className?: string }) {
   const { roomId, user } = useUserContext();
   const handleShare = useCallback(async () => {
     if (!roomId) return;
@@ -126,5 +126,5 @@ function InviteFriends({ className }: { className?: string }) {
     </div>
   );
 }
-
+const InviteFriends = React.memo(InviteFriendsComp);
 export default InviteFriends;

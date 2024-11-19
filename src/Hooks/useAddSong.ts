@@ -1,3 +1,4 @@
+import { socket } from "@/app/socket";
 import api from "@/lib/api";
 import { emitMessage } from "@/lib/customEmits";
 import { searchResults } from "@/lib/types";
@@ -35,6 +36,9 @@ function useAddSong() {
       if (added.success) {
         emitMessage("update", "update");
         toast.success(`Songs added to  ${check ? "queue" : roomId}`);
+        if (!check) {
+          socket.emit("event", roomId);
+        }
       }
       toast.dismiss("adding");
     },

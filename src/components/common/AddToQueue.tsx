@@ -4,7 +4,7 @@ import { Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
@@ -17,15 +17,13 @@ import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
-import useAddSong from "@/Hooks/useAddSong";
 
 function AddToQueueComp() {
-  const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
+  const { queue, roomId, user, setQueue } = useUserContext();
   const { total } = useSocket();
-  const { addSong } = useAddSong();
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isDragging, setIsDragging] = useState(false);
+
   useEffect(() => {
     if (queue.length <= 1) {
       setIsDeleting(false);
@@ -88,41 +86,11 @@ function AddToQueueComp() {
     setQueue([]);
     setSelectedSongs([]);
   };
-  const handleDrop = useCallback(
-    async (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragging(false);
-      if (showDragOptions) return;
-      const jsonData = e.dataTransfer.getData("application/json");
-      if (!jsonData) return;
-      const song = JSON.parse(jsonData);
-      if (!song) return;
-      await addSong([song], roomId);
-    },
-    [roomId, showDragOptions, addSong]
-  );
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
     <div
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
+      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
         isDragging ? "border-white/70" : "border-white/15"
       } rounded-xl p-3 pr-0`}
     >
@@ -231,6 +199,7 @@ function AddToQueueComp() {
               />
             )}
             <QueueList
+              setIsDragging={setIsDragging}
               handleSelect={handleSelect}
               selectedSongs={selectedSongs}
               isDeleting={isDeleting}

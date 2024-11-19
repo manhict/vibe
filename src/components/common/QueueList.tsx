@@ -1,7 +1,7 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import { formatArtistName } from "@/utils/utils";
-import React, { useCallback, useEffect, useRef } from "react";
+import { formatArtistName, getSpotifyTrackID } from "@/utils/utils";
+import React, { SetStateAction, useCallback, useEffect, useRef } from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -13,21 +13,33 @@ import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 import Image from "next/image";
 import autoAnimate from "@formkit/auto-animate";
+import useAddSong from "@/Hooks/useAddSong";
+import api from "@/lib/api";
 interface QueueListProps {
   isDeleting?: boolean;
   handleSelect: (song: searchResults, limit: boolean) => void;
   selectedSongs: searchResults[];
+  setIsDragging: React.Dispatch<SetStateAction<boolean>>;
 }
 
 function QueueListComp({
   isDeleting = false,
   handleSelect,
   selectedSongs,
+  setIsDragging,
 }: QueueListProps) {
-  const { queue, setQueue, user, setShowDragOptions, setShowAddDragOptions } =
-    useUserContext();
+  const {
+    queue,
+    setQueue,
+    roomId,
+    user,
+    showDragOptions,
+    setShowDragOptions,
+    setShowAddDragOptions,
+  } = useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
+  const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const upVote = useCallback((song: searchResults) => {
@@ -141,9 +153,73 @@ function QueueListComp({
   useEffect(() => {
     containerRef.current && autoAnimate(containerRef.current);
   }, [containerRef]);
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      const droppedUrl = e.dataTransfer.getData("text/plain");
 
+      if (droppedUrl.includes("youtube.com")) {
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/search/?name=${droppedUrl}&page=0`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          }
+        }
+        return;
+      }
+
+      if (droppedUrl.includes("spotify.com")) {
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/spotify/${getSpotifyTrackID(
+            droppedUrl
+          )}`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          }
+        }
+        return;
+      }
+
+      setIsDragging(false);
+      if (showDragOptions) return;
+      const jsonData = e.dataTransfer.getData("application/json");
+      if (!jsonData) return;
+      const song = JSON.parse(jsonData);
+      if (!song) return;
+      await addSong([song], roomId);
+    },
+    [roomId, showDragOptions, addSong, setIsDragging]
+  );
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
   return (
     <div
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       ref={containerRef}
       className="py-2 pr-2  max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
     >
