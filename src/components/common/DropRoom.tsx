@@ -137,9 +137,9 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                       width={500}
                       src={room.background}
                       alt={room.name[0]}
-                      className="w-full opacity-80 h-full object-cover"
+                      className="w-full opacity-75 h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center"></div>
+                    <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"></div>
                     <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
                       {room.name[0]}
                     </div>

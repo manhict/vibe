@@ -248,8 +248,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
-            <div className="  w-[416px] h-[414px]  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
+            <div className=" h-[414px]  flex items-center justify-center">
+              <div className="flex backdrop-blur-lg flex-col overflow-hidden p-7 items-center justify-center w-[20rem] border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
                 <Avatar
                   className="size-28 relative"
                   onClick={handleAvatarClick}
@@ -346,8 +346,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   </Button>
                 </form>
                 <Button
-                  variant={"default"}
-                  className=" w-full mt-2.5"
+                  variant={"outline"}
+                  className=" w-full bg-transparent mt-2.5"
                   onClick={async () => {
                     const res = await api.get("/api/logout");
                     if (res.success) {
