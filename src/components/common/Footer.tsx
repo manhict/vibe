@@ -25,7 +25,7 @@ function Footer() {
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            babyo7_
+            Tanmay
           </a>
         </p>
         <p>
@@ -35,7 +35,7 @@ function Footer() {
             target="_blank"
             className="underline-offset-2 hover:underline"
           >
-            Ajay Sharma
+            Ajay
           </a>
         </p>
       </div>
