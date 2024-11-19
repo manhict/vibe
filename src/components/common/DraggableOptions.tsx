@@ -144,7 +144,7 @@ export default function DraggableOptions() {
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
             <Card
-              className={`fixed  left-5 bottom-5 w-60 h-36 transition-all duration-200 ease-in-out ${
+              className={`fixed  hidden left-5 bottom-5 w-60 h-36 transition-all duration-200 ease-in-out ${
                 isDraggingToAdd ? "scale-95" : "scale-100"
               }`}
               onDragLeave={(e) => handleDragLeave(e, "add")}
