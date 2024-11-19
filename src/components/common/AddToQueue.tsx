@@ -4,7 +4,7 @@ import { Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
 import { slideInVariants } from "@/utils/utils";
@@ -31,24 +31,42 @@ function AddToQueueComp() {
   }, [queue]);
   const queueControllerRef = useRef<AbortController | null>(null);
   const [searchQu, setSearchQu] = useState<searchResults[]>([]);
-  const search = async (e?: React.ChangeEvent<HTMLInputElement>) => {
-    if (queueControllerRef.current) {
-      queueControllerRef.current.abort();
-    }
-    const controller = new AbortController();
-    queueControllerRef.current = controller;
-    const data = await api.get(
-      `${process.env.SOCKET_URI}/api/queue?page=1&limit=4&room=${roomId}&name=${
-        e?.target?.value || ""
-      }`,
-      {
-        signal: controller.signal,
+  const search = useCallback(
+    async (e?: React.ChangeEvent<HTMLInputElement>) => {
+      const query = e?.target.value || "";
+      console.log(query);
+
+      const localSearch = queue.filter((s) => {
+        const songName = s?.name.toLowerCase();
+        const primaryArtistName = s?.artists?.primary?.[0]?.name.toLowerCase();
+        return (
+          songName.includes(query.toLowerCase()) ||
+          primaryArtistName.includes(query.toLowerCase())
+        );
+      });
+      console.log("Local Search Results:", localSearch);
+      if (localSearch.length > 0) {
+        setSearchQu(localSearch);
+        return;
       }
-    );
-    if (data.success) {
-      setSearchQu((data.data as data).results);
-    }
-  };
+
+      if (queueControllerRef.current) {
+        queueControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      queueControllerRef.current = controller;
+      const data = await api.get(
+        `${process.env.SOCKET_URI}/api/queue?page=1&limit=4&room=${roomId}&name=${query}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      if (data.success) {
+        setSearchQu((data.data as data).results);
+      }
+    },
+    [queue, roomId]
+  );
 
   const handleSearch = useDebounce(search);
   const handleToggleSearch = () => {

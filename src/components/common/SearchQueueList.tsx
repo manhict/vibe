@@ -24,7 +24,7 @@ function SearchQueueList({
   selectedSongs: searchResults[];
 }) {
   const [queue, setQueue] = useState<searchResults[]>(searchQu || []);
-  const { user } = useUserContext();
+  const { user, setShowDragOptions, setShowAddDragOptions } = useUserContext();
   const { currentSong, isPlaying } = useAudio();
 
   const upVote = useCallback((song: searchResults) => {
@@ -116,6 +116,19 @@ function SearchQueueList({
       setQueue(searchQu);
     }
   }, [searchQu]);
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    song: searchResults
+  ) => {
+    setShowDragOptions(true);
+    setShowAddDragOptions(true);
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
+  };
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOptions(false);
+    setShowAddDragOptions(false);
+  };
   return (
     <>
       {queue?.length > 0 ? (
@@ -123,6 +136,9 @@ function SearchQueueList({
           <p className=" font-medium">Search Results</p>
           {queue?.map((song, i) => (
             <div
+              onDragEnd={handleDragEnd}
+              draggable
+              onDragStart={(e) => handleDragStart(e, song)}
               title={
                 song.addedByUser && song.addedByUser.username !== user?.username
                   ? `Added by ${song.addedByUser.name} (${song.addedByUser.username})`
@@ -143,6 +159,7 @@ function SearchQueueList({
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">
                     <AvatarImage
+                      draggable="false"
                       loading="lazy"
                       alt={song.name}
                       height={500}

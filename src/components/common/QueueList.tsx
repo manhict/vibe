@@ -156,6 +156,8 @@ function QueueListComp({
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
+      setIsDragging(false);
+      if (showDragOptions) return;
       const droppedUrl = e.dataTransfer.getData("text/plain");
 
       if (droppedUrl.includes("youtube.com")) {
@@ -190,8 +192,6 @@ function QueueListComp({
         return;
       }
 
-      setIsDragging(false);
-      if (showDragOptions) return;
       const jsonData = e.dataTransfer.getData("application/json");
       if (!jsonData) return;
       const song = JSON.parse(jsonData);
@@ -248,6 +248,7 @@ function QueueListComp({
             <div title={String(song?.order)} className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
                 <AvatarImage
+                  draggable="false"
                   loading="lazy"
                   alt={song.name}
                   height={500}
