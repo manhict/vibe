@@ -85,17 +85,17 @@ export default function DraggableOptions() {
   );
 
   useEffect(() => {
+    if (!user) return;
     api
       .get(`${process.env.SOCKET_URI}/api/rooms/browse`, {
         showErrorToast: false,
-        credentials: "include",
       })
       .then((response) => {
         if (response.success) {
           setRooms(response.data as any);
         }
       });
-  }, []);
+  }, [user]);
   return (
     <div className="fixed z-50  w-full">
       <AnimatePresence>
