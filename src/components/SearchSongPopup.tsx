@@ -328,7 +328,7 @@ function SearchSongPopup({
                     name={song?.id}
                     id={song?.id}
                     type="checkbox"
-                    className="peer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                    className="peer appearance-none border-2 w-5 h-5 border-gray-400 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
                   />
                   <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
                 </div>

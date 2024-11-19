@@ -229,7 +229,7 @@ function QueueList({
                   name={song?.id + i}
                   id={song?.id + i}
                   type="checkbox"
-                  className="peer cursor-pointer appearance-none w-5 h-5 border border-gray-400 rounded-none checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  className="peer cursor-pointer appearance-none w-5 h-5 border-2 rounded-[2px] border-gray-400 checked:bg-purple-700 checked:border-purple checked:bg-purple"
                 />
                 <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
               </div>
