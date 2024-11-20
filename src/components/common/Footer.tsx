@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="border max-md:border-none max-xl:w-11/12 max-lg:w-11/12 border-white/15 max-sm:w-full backdrop-blur-lg  select-none w-7/12 p-3 rounded-xl px-5 z-40 flex items-center justify-between ">
+    <footer className="border max-md:border-none max-xl:w-11/12 max-lg:w-11/12 border-white/15 max-sm:w-full backdrop-blur-lg  max-md:w-full select-none w-7/12 p-3 rounded-xl px-5 z-40 flex items-center justify-between ">
       <div className=" flex -ml-1 max-md:text-base text-xl items-center font-medium gap-2">
         <p className=" ">Built by </p>{" "}
         <span>

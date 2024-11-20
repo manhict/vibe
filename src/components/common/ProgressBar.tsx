@@ -85,7 +85,7 @@ function ProgressBar({ className }: { className?: string }) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [audioRef, backgroundVideoRef, videoRef]);
+  }, []);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -106,7 +106,7 @@ function ProgressBar({ className }: { className?: string }) {
         audioElement.removeEventListener("canplay", canPlay);
       };
     }
-  }, [audioRef, updateProgress]);
+  }, []);
   return (
     <div
       className={cn(

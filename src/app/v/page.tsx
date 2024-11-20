@@ -62,6 +62,6 @@ export async function generateMetadata({
     },
   };
 }
-export default async function page() {
+export default function page() {
   return <Home />;
 }

@@ -1,3 +1,4 @@
+"use client";
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 import React, { useCallback, useState } from "react";
@@ -22,8 +23,22 @@ function PLayerCoverComp() {
     },
     [videoRef]
   );
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (currentSong) {
+      e.dataTransfer.setData("application/json", JSON.stringify(currentSong));
+    }
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
   return (
-    <>
+    <div
+      onDragStart={(e) => handleDragStart(e)}
+      onDragEnd={handleDragEnd}
+      className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl"
+    >
       {!currentSong?.video ? (
         <Image
           draggable="false"
@@ -106,7 +121,12 @@ function PLayerCoverComp() {
           />
         </div>
       )}
-    </>
+      {currentSong?.source !== "youtube" && (
+        <p className=" absolute bottom-2 right-2 text-xl mt-1 text-[#a176eb]">
+          ☆
+        </p>
+      )}
+    </div>
   );
 }
 const PLayerCover = React.memo(PLayerCoverComp);

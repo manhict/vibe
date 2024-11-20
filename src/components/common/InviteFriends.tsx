@@ -1,7 +1,7 @@
 "use client";
 import Listeners from "./Listeners";
 import Youtube from "./Youtube";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useUserContext } from "@/store/userStore";
 import { cn } from "@/lib/utils";
@@ -20,20 +20,20 @@ import { QRCode } from "react-qrcode-logo";
 
 function InviteFriendsComp({ className }: { className?: string }) {
   const { roomId, user } = useUserContext();
+  const [inviteLink] = useState(
+    getInviteLink(roomId ? roomId : user?.username)
+  );
   const handleShare = useCallback(async () => {
-    if (!roomId) return;
-    const shareUrl = getInviteLink(roomId, user?.username);
-
     try {
       if (navigator.share) {
-        await navigator.share({ url: shareUrl });
+        await navigator.share({ url: inviteLink });
         toast.success("Shared the link successfully!");
       } else {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(inviteLink);
         toast.success("Link copied to clipboard!");
       }
     } catch (error: any) {}
-  }, [roomId, user]);
+  }, [inviteLink]);
   return (
     <div className={cn(" flex items-center justify-between pr-4", className)}>
       <Listeners className=" max-md:hidden" />
@@ -77,7 +77,7 @@ function InviteFriendsComp({ className }: { className?: string }) {
                     marginBottom: "0.7rem",
                   }}
                   logoPadding={5}
-                  value={getInviteLink(roomId ? roomId : user?.username)}
+                  value={inviteLink}
                   qrStyle="dots"
                 />
                 <p className=" font-semibold text-2xl text-[#EADDFF]">
@@ -98,11 +98,7 @@ function InviteFriendsComp({ className }: { className?: string }) {
                       toast.success("Link copied to clipboard!");
                     }}
                     className="pr-7 py-5 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
-                    value={
-                      typeof window != "undefined"
-                        ? getInviteLink(roomId ? roomId : user?.username)
-                        : ""
-                    }
+                    value={inviteLink}
                   />
                   <svg
                     className="absolute   top-1/2 right-2 transform -translate-y-1/2 pointer-events-none"
