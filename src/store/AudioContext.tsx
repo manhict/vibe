@@ -77,7 +77,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
   const skipCountRef = useRef(0); // Ref to track skipped songs
-  const { user, isAdminOnline } = useUserContext();
+  const { user, isAdminOnline, queue } = useUserContext();
   // play
   const play = useCallback(async (song: searchResults) => {
     setCurrentSong(song);
@@ -382,6 +382,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
   }, [togglePlayPause, playNext, playPrev]);
 
+  useEffect(() => {
+    if (!currentSong && queue.length == 1) {
+      play(queue[0]);
+    }
+  }, [currentSong, queue, play]);
   const value = useMemo(
     () => ({
       play,

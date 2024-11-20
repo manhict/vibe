@@ -209,7 +209,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
 
-      total.current = value?.total - 1;
+      total.current = value?.total;
       setPage(value?.start + 1);
     }
     setLoading(false);
