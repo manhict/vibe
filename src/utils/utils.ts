@@ -266,6 +266,7 @@ export function decryptObjectValues(obj: any) {
 export const BACKGROUND_APP_TIMEOUT = 150000;
 
 export const getInviteLink = (roomId?: string, username?: string) => {
+  if (typeof window == "undefined") return "";
   if (username) {
     return `${window.location.origin}/v?room=${roomId}&ref=${username}&new=true`;
   }

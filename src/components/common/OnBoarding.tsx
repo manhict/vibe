@@ -59,7 +59,7 @@ function OnBoarding() {
       // }
 
       setLoader(true);
-      const res = await api.put(
+      const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
         encryptObjectValues(payload)
       );

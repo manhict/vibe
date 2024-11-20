@@ -59,7 +59,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
         payload[key] = value;
       });
       setLoader(true);
-      const res = await api.put(
+      const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
         encryptObjectValues(payload)
       );
@@ -143,7 +143,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
         if (res.success) {
           const imageUrl = (res.data as any)?.data?.direct_url;
           const imageDelUrl = (res.data as any)?.data?.deletion_url;
-          const update = await api.put(
+          const update = await api.patch(
             `${process.env.SOCKET_URI}/api/dp`,
             encryptObjectValues({
               imageUrl,
