@@ -91,15 +91,19 @@ function ProgressBar({ className }: { className?: string }) {
     const audioElement = audioRef.current;
     const handlePlay = () => {
       requestAnimationFrame(updateProgress);
+    };
+
+    const canPlay = () => {
       if (audioRef.current) {
         setDuration(audioRef.current.duration);
       }
     };
-
     if (audioElement) {
       audioElement.addEventListener("play", handlePlay);
+      audioElement.addEventListener("canplay", canPlay);
       return () => {
         audioElement.removeEventListener("play", handlePlay);
+        audioElement.removeEventListener("canplay", canPlay);
       };
     }
   }, [audioRef, updateProgress]);
