@@ -433,7 +433,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   return (
     <AudioContext.Provider value={value}>
       {children}
-      <video ref={audioRef} hidden preload="true"></video>
+      <video ref={audioRef} playsInline hidden preload="true"></video>
     </AudioContext.Provider>
   );
 };
