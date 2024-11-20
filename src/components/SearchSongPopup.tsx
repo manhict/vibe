@@ -26,6 +26,7 @@ import { useUserContext } from "@/store/userStore";
 import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAddSong from "@/Hooks/useAddSong";
+import { useAudio } from "@/store/AudioContext";
 
 function SearchSongPopupComp({
   isAddToQueue = false,
@@ -38,7 +39,8 @@ function SearchSongPopupComp({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { roomId, user } = useUserContext();
+  const { roomId, user, queue } = useUserContext();
+  const { currentSong } = useAudio();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const { addSong } = useAddSong();
@@ -151,8 +153,22 @@ function SearchSongPopupComp({
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
     await addSong(selectedSongs, roomId);
+    if (!currentSong && queue.length == 0 && user.role == "admin") {
+      emitMessage("play", {
+        ...selectedSongs[0],
+        currentQueueId: selectedSongs[0]?.queueId,
+      });
+    }
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user, roomId, addSong]);
+  }, [
+    setSelectedSongs,
+    selectedSongs,
+    user,
+    roomId,
+    addSong,
+    currentSong,
+    queue,
+  ]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
