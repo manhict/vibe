@@ -171,7 +171,7 @@ function QueueListComp({
           if (song?.results && song?.results.length > 0) {
             await addSong(song.results, roomId);
           } else {
-            toast.error("No song found 😭");
+            toast.error("No track found 😭");
           }
         }
         return;
@@ -179,7 +179,10 @@ function QueueListComp({
 
       if (droppedUrl.includes("spotify.com")) {
         const id = getSpotifyTrackID(droppedUrl);
-        if (!id) return;
+        if (!id) {
+          toast.error("No track found 😭");
+          return;
+        }
         const res = await api.get(
           `${process.env.SOCKET_URI}/api/spotify/${id}`,
           { showErrorToast: false }
@@ -190,7 +193,7 @@ function QueueListComp({
           if (song?.results && song?.results.length > 0) {
             await addSong(song.results, roomId);
           } else {
-            toast.error("No song found 😭");
+            toast.error("No track found 😭");
           }
         }
         return;
