@@ -36,7 +36,7 @@ function useAddSong() {
       if (added.success) {
         emitMessage("update", "update");
         toast.success(
-          `${selectedSongs.length == 0 ? "Songs" : "Songs"} added to  ${
+          `${selectedSongs.length == 1 ? "Song" : "Songs"} added to  ${
             check ? "queue" : roomId
           }`
         );
