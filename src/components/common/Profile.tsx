@@ -46,7 +46,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
     return () => {
       socket.disconnect();
     };
-  }, [user, setUser, roomId]);
+  }, []);
   const [inputValue, setInputValue] = useState(user?.username);
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
