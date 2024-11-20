@@ -32,13 +32,13 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/browse", req.nextUrl.origin));
       }
     }
-    if (room) {
-      const res = NextResponse.next();
-      res.cookies.set("room", room, { path: "/", httpOnly: true });
-      return res;
-    }
 
     if (url.pathname.startsWith("/v")) {
+      if (room) {
+        const res = NextResponse.next();
+        res.cookies.set("room", room, { path: "/", httpOnly: true });
+        return res;
+      }
       if (!room) {
         const newRoomId = generateRoomId();
         const res = NextResponse.redirect(
