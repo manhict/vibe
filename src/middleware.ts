@@ -34,7 +34,7 @@ export default async function middleware(req: NextRequest) {
     }
     if (room) {
       const res = NextResponse.next();
-      res.cookies.set("room", room, { path: "/", httpOnly: true });
+      res.cookies.set("room", room, { path: "/" });
       return res;
     }
 
