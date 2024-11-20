@@ -87,9 +87,7 @@ function Login({ footer = false }: { footer?: boolean }) {
                 {loader ? "Signing in..." : "Continue with Google"}
               </Button>
               <Link
-                href={
-                  "https://discord.com/oauth2/authorize?client_id=1294367228212547658&response_type=token&redirect_uri=https%3A%2F%2Fvibe-backend-3.onrender.com%2Fapi%2Fauth%2Fdiscord&scope=identify+email"
-                }
+                href={`${process.env.SOCKET_URI}/api/auth/discord?login=true`}
                 className=" w-full"
               >
                 <Button className=" gap-1.5 w-full items-center shadow-none px-7 py-5">
