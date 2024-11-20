@@ -7,7 +7,6 @@ import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
 import { extractPlaylistID, formatArtistName } from "@/utils/utils";
-import { useInView } from "react-intersection-observer";
 import { Dialog } from "@radix-ui/react-dialog";
 import {
   DialogClose,
@@ -38,7 +37,7 @@ function SearchSongPopupComp({
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const { ref, inView } = useInView();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const { roomId, user } = useUserContext();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -118,11 +117,30 @@ function SearchSongPopupComp({
     setLoading(false);
   }, [query, page, songs]);
 
-  useEffect(() => {
-    if (inView && !loading) {
+  const scroll = () => {
+    if (!containerRef.current) return;
+
+    const { scrollTop, scrollHeight } = containerRef.current;
+
+    // Calculate the current scroll position and the halfway point
+    const isAtHalfway = scrollTop >= scrollHeight / 2;
+
+    // Trigger data fetching when both conditions are met
+    if (isAtHalfway && !loading) {
       searchMoreSongs();
     }
-  }, [inView, loading, searchMoreSongs]);
+  };
+
+  const handleScroll = useDebounce(scroll);
+  useEffect(() => {
+    const container = containerRef.current;
+
+    container?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
   const handleAdd = useCallback(async () => {
@@ -276,67 +294,68 @@ function SearchSongPopupComp({
             ))}
           </div>
         )}
-        {songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll">
-            {songs?.data.results.map((song, i) => (
-              <label
-                htmlFor={song?.id}
-                key={i}
-                title={`${parse(song.name)} (${
-                  formatArtistName(song?.artists?.primary) || "Unknown"
-                })`}
-                className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
-                  i != songs.data.results.length - 1 && "border-b"
-                }  border-white/20 p-2.5 items-center`}
-              >
-                <Avatar className=" h-14 w-14 rounded-none">
-                  <AvatarImage
-                    loading="lazy"
-                    alt={song?.name}
-                    height={500}
-                    width={500}
-                    className=" h-full w-full"
-                    src={
-                      song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
-                    }
-                  />
-                  <AvatarFallback>SX</AvatarFallback>
-                </Avatar>
-                <div className="text-sm font-medium w-10/12 truncate">
-                  <p className="font-semibold truncate w-11/12">
-                    {parse(song.name)}
-                  </p>
-                  <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
-                    {formatArtistName(song.artists.primary)}
-                  </p>
-                  {song?.source !== "youtube" && (
-                    <p className=" text-xs text-[#a176eb]">☆</p>
-                  )}
-                </div>
-                <div className=" relative ">
-                  <input
-                    onChange={() => handleSelect(song, true)}
-                    checked={selectedSongs.includes(song)}
-                    name={song?.id}
-                    id={song?.id}
-                    type="checkbox"
-                    className="peer appearance-none w-5 h-5 border border-gray-400 inset-0 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
-                  />
-                  <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
-                </div>
-              </label>
-            ))}
+        <div
+          ref={containerRef}
+          className={`flex border-zinc-500 ${
+            songs && "border-t"
+          }  flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll`}
+        >
+          {songs?.data.results.map((song, i) => (
+            <label
+              htmlFor={song?.id}
+              key={i}
+              title={`${parse(song.name)} (${
+                formatArtistName(song?.artists?.primary) || "Unknown"
+              })`}
+              className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
+                i != songs.data.results.length - 1 && "border-b"
+              }  border-white/20 p-2.5 items-center`}
+            >
+              <Avatar className=" h-14 w-14 rounded-none">
+                <AvatarImage
+                  loading="lazy"
+                  alt={song?.name}
+                  height={500}
+                  width={500}
+                  className=" h-full w-full"
+                  src={
+                    song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
+                  }
+                />
+                <AvatarFallback>SX</AvatarFallback>
+              </Avatar>
+              <div className="text-sm font-medium w-10/12 truncate">
+                <p className="font-semibold truncate w-11/12">
+                  {parse(song.name)}
+                </p>
+                <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
+                  {formatArtistName(song.artists.primary)}
+                </p>
+                {song?.source !== "youtube" && (
+                  <p className=" text-xs text-[#a176eb]">☆</p>
+                )}
+              </div>
+              <div className=" relative ">
+                <input
+                  onChange={() => handleSelect(song, true)}
+                  checked={selectedSongs.includes(song)}
+                  name={song?.id}
+                  id={song?.id}
+                  type="checkbox"
+                  className="peer appearance-none w-5 h-5 border border-gray-400 inset-0 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                />
+                <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
+              </div>
+            </label>
+          ))}
+          {loading && (
+            <p className="text-center text-zinc-500 py-4">Loading..</p>
+          )}
+          {songs?.data.results.length === 0 && !loading && (
+            <p className="text-center text-zinc-500 py-4">No songs found.</p>
+          )}
+        </div>
 
-            {/* Infinite Scroll Trigger */}
-            <div ref={ref} className="h-1"></div>
-            {loading && (
-              <p className="text-center text-zinc-500 py-4">Loading..</p>
-            )}
-            {songs?.data.results.length === 0 && !loading && (
-              <p className="text-center text-zinc-500 py-4">No songs found.</p>
-            )}
-          </div>
-        )}
         {selectedSongs.length > 0 && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">

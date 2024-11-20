@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
-import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -22,8 +21,7 @@ import { FaSpotify } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { setUser, user } = useUserContext();
-
+  const { user } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -37,7 +35,7 @@ function Login({ footer = false }: { footer?: boolean }) {
         });
         if (res.success) {
           await api.post(`/api/login`, { token: (res.data as any)?.token });
-          setUser((res.data as any).data as TUser);
+          await signOut(auth);
           window.location.reload();
         }
       }
@@ -47,7 +45,6 @@ function Login({ footer = false }: { footer?: boolean }) {
       setLoader(false);
     }
   };
-
   return (
     <Dialog
       key={"user Login"}
@@ -89,13 +86,17 @@ function Login({ footer = false }: { footer?: boolean }) {
                 <FcGoogle className=" size-5 " />
                 {loader ? "Signing in..." : "Continue with Google"}
               </Button>
-              <Button
-                disabled
-                className=" gap-1.5 w-full items-center shadow-none px-7 py-5"
+              <Link
+                href={
+                  "https://discord.com/oauth2/authorize?client_id=1294367228212547658&response_type=token&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauth%2Fdiscord&scope=identify+email"
+                }
+                className=" w-full"
               >
-                <BsDiscord className=" size-5" />
-                Continue with Discord
-              </Button>
+                <Button className=" gap-1.5 w-full items-center shadow-none px-7 py-5">
+                  <BsDiscord className=" size-5" />
+                  Continue with Discord
+                </Button>
+              </Link>
               {typeof window !== "undefined" &&
                 window.navigator.userAgent.includes("Electron") && (
                   <Link
