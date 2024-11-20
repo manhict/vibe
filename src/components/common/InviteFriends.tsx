@@ -60,8 +60,8 @@ function InviteFriendsComp({ className }: { className?: string }) {
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
-            <div className="  w-[416px] h-[414px]  flex items-center justify-center">
-              <div className="flex flex-col bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50  p-5 items-center justify-center w-[20rem] rounded-2xl">
+            <div className="   flex items-center justify-center">
+              <div className="flex backdrop-blur-lg flex-col overflow-hidden p-7 items-center justify-center h-full w-[20rem] border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
                 <p className=" font-semibold text-2xl text-[#EADDFF]">
                   Invite Friends
                 </p>
@@ -79,7 +79,7 @@ function InviteFriendsComp({ className }: { className?: string }) {
                       );
                       toast.success("Link copied to clipboard!");
                     }}
-                    className="pr-7 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
+                    className="pr-7 py-5 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
                     value={
                       typeof window != "undefined"
                         ? getInviteLink(roomId ? roomId : user?.username)
