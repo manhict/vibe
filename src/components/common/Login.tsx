@@ -74,7 +74,7 @@ function Login({ footer = false }: { footer?: boolean }) {
             <div className=" space-y-2">
               <h1 className=" font-semibold text-3xl mb-2">Login Or SignUp</h1>
               <p className=" text-zinc-300 text-2xl">
-                let&apos;s get to know <br /> each other.
+                Let&apos;s get to know <br /> each other.
               </p>
             </div>
             <div className="w-full flex flex-col items-center gap-2 justify-center">
