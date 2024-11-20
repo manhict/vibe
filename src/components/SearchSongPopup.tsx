@@ -160,15 +160,7 @@ function SearchSongPopupComp({
       });
     }
     setSelectedSongs([]);
-  }, [
-    setSelectedSongs,
-    selectedSongs,
-    user,
-    roomId,
-    addSong,
-    currentSong,
-    queue,
-  ]);
+  }, [setSelectedSongs, selectedSongs, user, roomId, addSong]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {

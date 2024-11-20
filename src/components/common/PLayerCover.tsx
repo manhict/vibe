@@ -1,12 +1,27 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { BsPip } from "react-icons/bs";
 import Image from "next/image";
 function PLayerCoverComp() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { currentSong, videoRef } = useAudio();
   const [pip, setPIP] = useState<boolean>(false);
+  const handleClick = useCallback(() => {
+    if (localStorage.getItem("v")) {
+      setShowVideo(null);
+      localStorage.removeItem("v");
+      return;
+    }
+    setShowVideo(true), localStorage.setItem("v", "true");
+  }, [setShowVideo]);
+  const handlePip = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      videoRef?.current && videoRef?.current?.requestPictureInPicture().catch();
+    },
+    [videoRef]
+  );
   return (
     <>
       {!currentSong?.video ? (
@@ -31,24 +46,10 @@ function PLayerCoverComp() {
           }
         />
       ) : (
-        <div
-          onClick={() => {
-            if (localStorage.getItem("v")) {
-              setShowVideo(null);
-              localStorage.removeItem("v");
-              return;
-            }
-            setShowVideo(true), localStorage.setItem("v", "true");
-          }}
-          className=" relative"
-        >
+        <div onClick={handleClick} className=" relative">
           {pip && showVideo && (
             <BsPip
-              onClick={(e) => {
-                e.stopPropagation();
-                videoRef?.current &&
-                  videoRef?.current?.requestPictureInPicture().catch();
-              }}
+              onClick={handlePip}
               className=" absolute  z-10  opacity-70 hover:opacity-100 size-5 top-2.5 right-2.5"
             />
           )}

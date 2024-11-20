@@ -17,7 +17,7 @@ import { socket } from "@/app/socket";
 import { emitMessage } from "@/lib/customEmits";
 import getURL from "@/utils/utils";
 import { toast } from "sonner";
-const MAX_SKIP_LIMIT = 3;
+
 interface AudioContextType {
   play: (song: searchResults) => void;
   pause: () => void;
@@ -112,7 +112,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         .catch((e) => {
           if (e.message.startsWith("Failed to load because no supported")) {
             skipCountRef.current += 1;
-            if (skipCountRef.current >= MAX_SKIP_LIMIT) {
+            if (skipCountRef.current >= 3) {
               toast.error("Maximum skip limit reached. Unable to play song.", {
                 style: { background: "#e94625" },
               });

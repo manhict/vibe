@@ -118,12 +118,12 @@ const LikeButtonComp: React.FC<LikeButtonProps> = ({
     }
   }, 400);
 
-  const handleEmit = () => {
+  const handleEmit = useCallback(() => {
     if (user?.imageUrl) {
       setLikEffectUser([{ imageUrl: user.imageUrl }]);
       emitHeart();
     }
-  };
+  }, [user, setLikEffectUser, emitHeart]);
   return (
     <Heart
       ref={heartRef}
