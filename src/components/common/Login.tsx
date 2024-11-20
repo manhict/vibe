@@ -88,7 +88,7 @@ function Login({ footer = false }: { footer?: boolean }) {
               </Button>
               <Link
                 href={
-                  "https://discord.com/oauth2/authorize?client_id=1294367228212547658&response_type=token&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauth%2Fdiscord&scope=identify+email"
+                  "https://discord.com/oauth2/authorize?client_id=1294367228212547658&response_type=token&redirect_uri=https%3A%2F%2Fvibe-backend-3.onrender.com%2Fapi%2Fauth%2Fdiscord&scope=identify+email"
                 }
                 className=" w-full"
               >
