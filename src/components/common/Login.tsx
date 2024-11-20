@@ -17,7 +17,6 @@ import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import { FaSpotify } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
@@ -95,21 +94,6 @@ function Login({ footer = false }: { footer?: boolean }) {
                   Continue with Discord
                 </Button>
               </Link>
-              {typeof window !== "undefined" &&
-                window.navigator.userAgent.includes("Electron") && (
-                  <Link
-                    href={`https://accounts.spotify.com/en/authorize?client_id=${
-                      process.env.SPOTIFY_CLIENT_ID
-                    }&scope=user-read-private%20user-read-email&response_type=token&redirect_uri=${encodeURIComponent(
-                      process.env.SPOTIFY_REDIRECT_URL || ""
-                    )}&show_dialog=true`}
-                  >
-                    <Button className=" gap-1.5 items-center shadow-none px-7 py-5">
-                      <FaSpotify className=" size-5" />
-                      Continue with Spotify
-                    </Button>
-                  </Link>
-                )}
             </div>
           </div>
         </div>
