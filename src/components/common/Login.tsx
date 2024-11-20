@@ -21,7 +21,7 @@ import { FaSpotify } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { user } = useUserContext();
+  const { user, roomId } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -87,7 +87,7 @@ function Login({ footer = false }: { footer?: boolean }) {
                 {loader ? "Signing in..." : "Continue with Google"}
               </Button>
               <Link
-                href={`${process.env.SOCKET_URI}/api/auth/discord?login=true`}
+                href={`${process.env.SOCKET_URI}/api/auth/discord?login=${roomId}`}
                 className=" w-full"
               >
                 <Button className=" gap-1.5 w-full items-center shadow-none px-7 py-5">
