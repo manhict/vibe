@@ -12,7 +12,7 @@ export default async function middleware(req: NextRequest) {
         new URL(`${url.pathname}?room=${room}`, req.url) // Redirect to the same URL with the room
       );
 
-      response.cookies.set("vibeId", accessToken, {
+      await response.cookies.set("vibeId", accessToken, {
         httpOnly: true,
         sameSite: "strict",
         secure: true,
@@ -34,7 +34,7 @@ export default async function middleware(req: NextRequest) {
     }
     if (room) {
       const res = NextResponse.next();
-      res.cookies.set("room", room, { path: "/" });
+      res.cookies.set("room", room, { path: "/", httpOnly: true });
       return res;
     }
 
