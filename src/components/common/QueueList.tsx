@@ -171,7 +171,7 @@ function QueueListComp({
           if (song?.results && song?.results.length > 0) {
             await addSong(song.results, roomId);
           } else {
-            toast.error("No song found in the URL");
+            toast.error("No song found 😭");
           }
         }
         return;
@@ -190,7 +190,7 @@ function QueueListComp({
           if (song?.results && song?.results.length > 0) {
             await addSong(song.results, roomId);
           } else {
-            toast.error("No song found in the URL");
+            toast.error("No song found 😭");
           }
         }
         return;
