@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
     const accessToken = url.searchParams.get("vibe_token");
     if (accessToken) {
       const response = NextResponse.redirect(
-        new URL(`${url.pathname}/${room}`, req.url) // Redirect to the same URL with the room
+        new URL(`${room}`, req.url) // Redirect to the same URL with the room
       );
 
       await response.cookies.set("vibeId", accessToken, {
