@@ -42,6 +42,7 @@ interface AudioContextType {
   setShuffled: React.Dispatch<SetStateAction<boolean>>;
   videoRef: React.RefObject<HTMLVideoElement> | undefined;
   backgroundVideoRef: React.RefObject<HTMLVideoElement> | undefined;
+  audioRef: React.RefObject<HTMLAudioElement>;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -59,14 +60,16 @@ interface AudioProviderProps {
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-  const audioRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(
+    typeof window !== "undefined" ? new Audio() : null
+  );
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
   const [currentProgress, setProgress] = useState<number>(0);
-  const [currentDuration, setDuration] = useState<number>(0);
+  const [currentDuration] = useState<number>(0);
   const [currentVolume, setVolume] = useState<number>(1);
   const [isLooped, setLoop] = useState<boolean>(false);
   const [shuffled, setShuffled] = useState<boolean>(false);
@@ -251,40 +254,40 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Debounced function to emit progress
 
-  const lastEmittedTime = useRef(0);
-  const lastEmitted = useRef(0);
+  // const lastEmittedTime = useRef(0);
+  // const lastEmitted = useRef(0);
 
-  const updateProgress = useCallback(() => {
-    if (audioRef.current) {
-      const currentTime = audioRef.current.currentTime;
+  // const updateProgress = useCallback(() => {
+  //   if (audioRef.current) {
+  //     const currentTime = audioRef.current.currentTime;
 
-      // Update the visual progress every second
-      if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
-        setProgress(currentTime);
+  //     // // Update the visual progress every second
+  //     // if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
+  //     //   // setProgress(currentTime);
 
-        // Update the last emitted time for progress
-        lastEmittedTime.current = currentTime;
-      }
+  //     //   // Update the last emitted time for progress
+  //     //   lastEmittedTime.current = currentTime;
+  //     // }
 
-      // Emit progress to the server every 5 seconds
-      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
-        lastEmitted.current = currentTime;
-        // Sync video progress with audio progress
-        if (videoRef.current) {
-          videoRef.current.currentTime = currentTime;
-        }
+  //     // Emit progress to the server every 5 seconds
+  //     if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
+  //       lastEmitted.current = currentTime;
+  //       // Sync video progress with audio progress
+  //       if (videoRef.current) {
+  //         videoRef.current.currentTime = currentTime;
+  //       }
 
-        if (backgroundVideoRef.current) {
-          backgroundVideoRef.current.currentTime = currentTime;
-        }
-      }
+  //       if (backgroundVideoRef.current) {
+  //         backgroundVideoRef.current.currentTime = currentTime;
+  //       }
+  //     }
 
-      // If audio is not paused, keep updating progress
-      if (!audioRef.current.paused) {
-        requestAnimationFrame(updateProgress);
-      }
-    }
-  }, []);
+  //     // If audio is not paused, keep updating progress
+  //     if (!audioRef.current.paused) {
+  //       requestAnimationFrame(updateProgress);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -301,7 +304,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const handlePlay = () => {
-      requestAnimationFrame(updateProgress), setIsPlaying(true);
+      // requestAnimationFrame(updateProgress),
+      setIsPlaying(true);
       if (videoRef.current) {
         videoRef.current?.play();
       }
@@ -321,9 +325,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const handleCanPlay = () => {
       setMediaSession();
 
-      if (audioRef.current) {
-        setDuration(audioRef.current.duration);
-      }
+      // if (audioRef.current) {
+      //   setDuration(audioRef.current.duration);
+      // }
     };
     const handleEnd = () => {
       if (isAdminOnline.current) {
@@ -345,13 +349,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("canplay", handleCanPlay);
       };
     }
-  }, [
-    setMediaSession,
-    lastEmitted,
-    lastEmittedTime,
-    updateProgress,
-    isAdminOnline,
-  ]);
+  }, [setMediaSession, isAdminOnline]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -409,6 +407,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       setShuffled,
       videoRef,
       backgroundVideoRef,
+      audioRef,
     }),
     [
       play,
@@ -431,9 +430,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     ]
   );
   return (
-    <AudioContext.Provider value={value}>
-      {children}
-      <video ref={audioRef} playsInline hidden preload="true"></video>
-    </AudioContext.Provider>
+    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
   );
 };

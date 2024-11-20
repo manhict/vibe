@@ -5,14 +5,14 @@ import useDebounce from "@/Hooks/useDebounce";
 import { useSocket } from "@/Hooks/useSocket";
 import { emitMessage } from "@/lib/customEmits";
 import { Heart } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
 interface LikeButtonProps {
   hearts?: string[]; // Array of heart emojis or icons
   maxSize?: number; // Maximum size for the images/hearts
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({
+const LikeButtonComp: React.FC<LikeButtonProps> = ({
   hearts = [],
   maxSize = 40,
 }) => {
@@ -132,5 +132,5 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     />
   );
 };
-
+const LikeButton = React.memo(LikeButtonComp);
 export default LikeButton;
