@@ -16,6 +16,8 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { getInviteLink } from "@/utils/utils";
+import { QRCode } from "react-qrcode-logo";
+
 function InviteFriendsComp({ className }: { className?: string }) {
   const { roomId, user } = useUserContext();
   const handleShare = useCallback(async () => {
@@ -60,8 +62,24 @@ function InviteFriendsComp({ className }: { className?: string }) {
               <DialogTitle className=" w-fit" />
               <DialogDescription />
             </DialogHeader>
-            <div className="   flex items-center justify-center">
+            <div className="  flex items-center justify-center">
               <div className="flex backdrop-blur-lg flex-col overflow-hidden p-7 items-center justify-center h-full w-[20rem] border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
+                <QRCode
+                  logoImage="/favicon.png"
+                  ecLevel="M"
+                  removeQrCodeBehindLogo
+                  style={{
+                    borderRadius: "28px",
+                    padding: "7px",
+                    height: "270px",
+                    width: "270px",
+
+                    marginBottom: "0.7rem",
+                  }}
+                  logoPadding={5}
+                  value={getInviteLink(roomId ? roomId : user?.username)}
+                  qrStyle="dots"
+                />
                 <p className=" font-semibold text-2xl text-[#EADDFF]">
                   Invite Friends
                 </p>
