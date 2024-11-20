@@ -12,7 +12,6 @@ export async function getLoggedInUser() {
         Authorization: `Bearer ${vibeId}`,
         cookie: `room=${room} `,
       },
-      cache: "no-cache",
     });
     if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
     const data = await res.json();

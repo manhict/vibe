@@ -97,9 +97,9 @@ function ProgressBar({ className }: { className?: string }) {
     };
 
     if (audioElement) {
-      audioElement.addEventListener("canplay", handlePlay);
+      audioElement.addEventListener("play", handlePlay);
       return () => {
-        audioElement.removeEventListener("canplay", handlePlay);
+        audioElement.removeEventListener("play", handlePlay);
       };
     }
   }, [audioRef, updateProgress]);

@@ -14,7 +14,7 @@ import Changelog from "./Changelog";
 export default function Home() {
   return (
     <ContextMenu>
-      <ContextMenuTrigger>
+      <ContextMenuTrigger className="max-md:hidden">
         <Background />
         <InviteFriendsToast />
         <Blur />
