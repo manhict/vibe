@@ -6,7 +6,7 @@ import { useState } from "react";
 const message = [
   {
     msg: "Welcome back",
-    gif: "https://media.tenor.com/s3x-q943K-MAAAPo/omori-basil.mp4",
+    gif: "https://media.tenor.com/1Us4pAnPJhMAAAPo/cat-fail.mp4",
   },
   {
     msg: "Missed you",
