@@ -29,7 +29,7 @@ export default function Home({
       <AnimatePresence>
         {!socketRef.current?.connected && (
           <motion.div
-            className="w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black backdrop-blur-sm z-[100] absolute flex items-center flex-col justify-center font-semibold text-2xl"
+            className="w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/70 backdrop-blur-xl z-[100] absolute flex items-center flex-col justify-center font-semibold text-2xl"
             initial="hidden"
             animate="visible"
             exit="exit"
