@@ -9,6 +9,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useUserContext } from "@/store/userStore";
 import Popups from "./Popups";
 import HyperText from "../ui/hyper-text";
+import React, { useEffect } from "react";
+import api from "@/lib/api";
+import { toast } from "sonner";
+import { getSpotifyTrackID } from "@/utils/utils";
+import useAddSong from "@/Hooks/useAddSong";
 export default function Home({
   user,
   roomId,
@@ -22,7 +27,57 @@ export default function Home({
     visible: { opacity: 1, transition: { duration: 0.5 } },
     exit: { opacity: 0, transition: { duration: 0.5 } },
   };
+  const { addSong } = useAddSong();
+  useEffect(() => {
+    const handlePaste = async (event: ClipboardEvent) => {
+      const droppedUrl = event?.clipboardData?.getData("text");
+      if (!droppedUrl) return;
+      if (droppedUrl.includes("youtube.com")) {
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/search/?name=${droppedUrl}&page=0`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          } else {
+            toast.error("No track found 😭");
+          }
+        }
+        return;
+      }
 
+      if (droppedUrl.includes("spotify.com")) {
+        const id = getSpotifyTrackID(droppedUrl);
+        if (!id) {
+          toast.error("No track found 😭");
+          return;
+        }
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/spotify/${id}`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          } else {
+            toast.error("No track found 😭");
+          }
+        }
+        return;
+      }
+    };
+
+    document.addEventListener("paste", handlePaste);
+
+    return () => {
+      document.removeEventListener("paste", handlePaste);
+    };
+  }, [addSong, roomId]);
   return (
     <>
       <Popups />
