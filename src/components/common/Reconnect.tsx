@@ -26,7 +26,7 @@ function Reconnect() {
   if (hiddenTimeRef.current < BACKGROUND_APP_TIMEOUT) return;
   return (
     <div className=" w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/40 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-2xl">
-      <p>{emotion.msg}</p>
+      {/* <p>{emotion.msg}</p> */}
       <div className=" my-4 rounded-xl overflow-hidden">
         <Image alt={emotion.msg} src={emotion.gif} height={280} width={280} />
       </div>
