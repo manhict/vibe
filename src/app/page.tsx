@@ -159,7 +159,7 @@ function Page() {
               <Button
                 disabled={loader || typeof error === "string"}
                 type="submit"
-                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
+                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2"
               >
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
