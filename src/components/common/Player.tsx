@@ -9,7 +9,6 @@ import LikeButton from "./LinkeButton";
 import parse from "html-react-parser";
 import UpvotedBy from "./UpvotedBy";
 import UpNextSongs from "./UpNextSongs";
-import InviteFriends from "./InviteFriends";
 import ProgressBar from "./ProgressBar";
 import Controller from "./Controller";
 import PLayerCover from "./PLayerCover";
@@ -89,10 +88,8 @@ function MemoPLayer() {
 
         <LikeButton setIsChatOpen={setIsChatOpen} />
         <UpNextSongs />
-        <div className=" flex items-center w-full justify-between">
-          <Listeners className=" max-md:flex hidden " />
-          <InviteFriends className="md:hidden  pr-0" />
-        </div>
+
+        <Listeners className=" max-md:flex hidden " />
       </div>
     </div>
   );
