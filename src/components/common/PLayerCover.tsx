@@ -4,6 +4,7 @@ import { useUserContext } from "@/store/userStore";
 import React, { useCallback, useState } from "react";
 import { BsPip } from "react-icons/bs";
 import Image from "next/image";
+import UpvotedBy from "./UpvotedBy";
 function PLayerCoverComp() {
   const { user, showVideo, setShowVideo } = useUserContext();
   const { currentSong, videoRef } = useAudio();
@@ -127,6 +128,7 @@ function PLayerCoverComp() {
           ☆
         </p>
       )} */}
+      <UpvotedBy />
     </div>
   );
 }
