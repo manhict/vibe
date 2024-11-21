@@ -318,21 +318,24 @@ function QueueListComp({
               <p className="text-[#D0BCFF] flex gap-2 items-center opacity-95 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
                 <span>
-                  <Avatar
-                    onClick={(e) => e.stopPropagation()}
-                    className=" size-4 relative group"
-                  >
-                    <AvatarImage
-                      draggable="false"
-                      loading="lazy"
-                      alt={song.name}
-                      height={500}
-                      width={500}
-                      className="object-cover"
-                      src={song.addedByUser?.imageUrl}
-                    />
-                    <AvatarFallback>SX</AvatarFallback>
-                  </Avatar>
+                  {song.addedByUser &&
+                    song.addedByUser.username !== user?.username && (
+                      <Avatar
+                        onClick={(e) => e.stopPropagation()}
+                        className=" size-4 relative group"
+                      >
+                        <AvatarImage
+                          draggable="false"
+                          loading="lazy"
+                          alt={song.name}
+                          height={500}
+                          width={500}
+                          className="object-cover"
+                          src={song.addedByUser?.imageUrl}
+                        />
+                        <AvatarFallback>SX</AvatarFallback>
+                      </Avatar>
+                    )}
                 </span>
               </p>
             </div>
