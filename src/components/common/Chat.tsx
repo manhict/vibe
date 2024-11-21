@@ -3,7 +3,13 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
-import React, { SetStateAction, useCallback, useState } from "react";
+import React, {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/store/AudioContext";
 import {
@@ -16,19 +22,19 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 
 function Chat({
-  messagesEndRef,
   setIsChatOpen,
+  isChatOpen,
 }: {
+  isChatOpen: boolean;
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
 }) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
-  const { user, listener } = useUserContext();
+  const { user, listener, emitMessage, setSeen } = useUserContext();
   const { messages } = useSocket();
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,8 +44,24 @@ function Chat({
       emitMessage("message", message);
       setMessage("");
     },
-    [message]
+    [message, emitMessage]
   );
+
+  useEffect(() => {
+    if (isChatOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setSeen(true);
+    } else {
+      if (messagesEndRef.current) {
+        setSeen(true);
+      }
+    }
+  }, [messages, isChatOpen, setSeen]);
+  useEffect(() => {
+    if (messages.length > 0) {
+      setSeen(false);
+    }
+  }, [messages, setSeen]);
 
   return (
     <>
@@ -117,27 +139,25 @@ function Chat({
       <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/10 w-full justify-between items-center">
         <p>Chat</p>
         <div className=" flex items-center">
-          {listener?.roomUsers
-            ?.filter((r) => r.userId?.username !== user?.username)
-            ?.map((roomUser, i) => (
-              <div
-                title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
-                key={roomUser?._id}
-              >
-                <div className={` ${i !== 0 && "-ml-2"} size-7`}>
-                  <Avatar className=" size-7 border border-white">
-                    <AvatarImage
-                      loading="lazy"
-                      alt={roomUser?.userId?.name}
-                      height={200}
-                      width={200}
-                      className=" rounded-full"
-                      src={roomUser?.userId?.imageUrl}
-                    />
-                  </Avatar>
-                </div>
+          {listener?.roomUsers?.map((roomUser, i) => (
+            <div
+              title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
+              key={roomUser?._id}
+            >
+              <div className={` ${i !== 0 && "-ml-2"} size-7`}>
+                <Avatar className=" size-7 border border-white">
+                  <AvatarImage
+                    loading="lazy"
+                    alt={roomUser?.userId?.name}
+                    height={200}
+                    width={200}
+                    className=" rounded-full"
+                    src={roomUser?.userId?.imageUrl}
+                  />
+                </Avatar>
               </div>
-            ))}
+            </div>
+          ))}
           {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">

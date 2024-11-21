@@ -9,7 +9,6 @@ import React, {
   ReactNode,
   SetStateAction,
 } from "react";
-import { socket } from "@/app/socket";
 import { toast } from "sonner";
 import { data, listener, messages, searchResults, TUser } from "@/lib/types";
 import { decrypt } from "@/utils/lock";
@@ -27,17 +26,11 @@ export interface Message {
 
 // Define the shape of the context state
 interface SocketContextType {
-  isConnected: boolean;
   loading: boolean;
   total: React.MutableRefObject<number | null>;
-  transport: string;
   messages: messages[];
   handleUpdateQueue: () => void;
   setMessages: React.Dispatch<React.SetStateAction<messages[]>>;
-  likEffectUser: { imageUrl: string }[];
-  setLikEffectUser: React.Dispatch<
-    React.SetStateAction<{ imageUrl: string }[]>
-  >;
   hiddenTimeRef: React.RefObject<number>;
   setPage: React.Dispatch<SetStateAction<number | null>>;
 }
@@ -63,44 +56,30 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setQueue,
     queue,
     setListener,
-    user: loggedInUser,
     setUpNextSongs,
     setUser,
     roomId,
     isAdminOnline,
+    socketRef,
   } = useUserContext();
 
   const isActive = useRef<boolean>(true);
   const { seek, play } = useAudio();
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [transport, setTransport] = useState<string>("N/A");
   const [messages, setMessages] = useState<messages[]>([]);
-  const [likEffectUser, setLikEffectUser] = useState<{ imageUrl: string }[]>(
-    []
-  );
+
   const hiddenTimeRef = useRef<number>(0);
   const necessaryFetchRef = useRef<boolean>(false);
   const timerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
   const total = useRef<number | null>(null);
-  const socketRef = useRef(socket);
+
   const listenerControllerRef = useRef<AbortController | null>(null);
   const queueControllerRef = useRef<AbortController | null>(null);
   const upNextSongControllerRef = useRef<AbortController | null>(null);
 
   const onConnect = useCallback((): void => {
-    setIsConnected(true);
     toast.dismiss("connecting");
-    setTransport(socketRef.current.io.engine.transport.name);
-    socketRef.current.io.engine.on("upgrade", (transport) => {
-      setTransport(transport.name);
-    });
-  }, []);
-
-  const onDisconnect = useCallback((): void => {
-    setIsConnected(false);
-    setTransport("N/A");
   }, []);
 
   const handleMessage = useCallback((data: any): void => {
@@ -134,13 +113,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
   }, [setListener, roomId]);
 
-  const handleHeart = useCallback((data: any) => {
-    const value = decrypt(data) as { imageUrl: string };
-    if (value?.imageUrl) {
-      setLikEffectUser([value]);
-    }
-  }, []);
-
   const handleError = useCallback((message: string): void => {
     toast.dismiss("connecting");
     toast.error(decrypt(message), { style: { background: "#e94625" } });
@@ -156,31 +128,23 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const handleUserLeftRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (
-        user.username == loggedInUser?.username ||
-        user.username === "@someone"
-      )
-        return;
+      if (user.username === "@someone") return;
       updateListeners();
       toast.info(`${user?.username} has left`, {
         style: { background: "#e94625" },
       });
     },
-    [updateListeners, loggedInUser]
+    [updateListeners]
   );
 
   const handleUserJoinedRoom = useCallback(
     async (data: any) => {
       const user = decrypt(data) as TUser;
-      if (
-        user.username == loggedInUser?.username ||
-        user.username === "@someone"
-      )
-        return;
+      if (user.username === "@someone") return;
       updateListeners();
       toast.info(`${user?.username} has Joined`);
     },
-    [updateListeners, loggedInUser]
+    [updateListeners]
   );
 
   const updateQueue = useCallback(async () => {
@@ -223,7 +187,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         });
       }
 
-      total.current = value?.total - 1;
+      total.current = value?.total;
       setPage(value?.start + 1);
     }
     setLoading(false);
@@ -288,7 +252,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     setLoading(false);
   }, [setQueue, queue, roomId, getUpNextSong]);
 
-  const forceUpdateQueue = useDebounce(UpdateQueue);
   const handleJoined = useCallback(
     async (data: any) => {
       const value = decrypt(data) as {
@@ -297,9 +260,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         progress: number;
         role: string;
       };
-      if (value?.role && loggedInUser) {
-        setUser(() => {
-          const user = { ...loggedInUser };
+      if (value?.role) {
+        setUser((prev): any => {
+          const user = { ...prev };
           user.role = value.role;
           return user;
         });
@@ -315,15 +278,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       upNextSong();
       return () => clearTimeout(resetUrl);
     },
-    [
-      handleUpdateQueue,
-      seek,
-      updateListeners,
-      upNextSong,
-      loggedInUser,
-      setUser,
-      roomId,
-    ]
+    [handleUpdateQueue, seek, updateListeners, upNextSong, setUser, roomId]
   );
 
   const handleVisibilityChange = useCallback(async () => {
@@ -360,21 +315,36 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       hiddenTimeRef.current = 0;
     }
   }, [updateListeners, UpdateQueue]);
+
   useEffect(() => {
     const currentSocket = socketRef.current;
+    const handleSeekable = (value: boolean) => {
+      isAdminOnline.current = value;
+    };
+
+    const handleIsPlaying = (data: any) => {
+      if (data) {
+        play(decrypt(data));
+      }
+    };
+
+    const handlePlay = (data: any) => {
+      if (data) {
+        play(decrypt(data));
+      }
+    };
     currentSocket.on("connect", onConnect);
-    currentSocket.on("disconnect", onDisconnect);
-    currentSocket.on("heart", handleHeart);
+
     currentSocket.on("error", handleError);
     currentSocket.on("connect_error", handleConnectError);
     currentSocket.on("message", handleMessage);
     currentSocket.on("userLeftRoom", handleUserLeftRoom);
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
-    currentSocket.on("update", forceUpdateQueue);
-    currentSocket.on("seekable", (r) => (isAdminOnline.current = r));
-    currentSocket.on("isplaying", (d) => d && play(decrypt(d)));
-    currentSocket.on("play", (d) => d && play(decrypt(d)));
+    currentSocket.on("update", UpdateQueue);
+    currentSocket.on("seekable", handleSeekable);
+    currentSocket.on("isplaying", handleIsPlaying);
+    currentSocket.on("play", handlePlay);
     currentSocket.on("seek", seek);
     currentSocket.on("profile", updateListeners);
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -384,18 +354,17 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         clearInterval(timerRef.current);
       }
       currentSocket.off("connect", onConnect);
-      currentSocket.off("disconnect", onDisconnect);
       currentSocket.off("message", handleMessage);
-      currentSocket.off("heart", handleHeart);
+
       currentSocket.off("error", handleError);
       currentSocket.off("connect_error", handleConnectError);
       currentSocket.off("userLeftRoom", handleUserLeftRoom);
       currentSocket.off("userJoinedRoom", handleUserJoinedRoom);
-      currentSocket.off("update", forceUpdateQueue);
+      currentSocket.off("update", UpdateQueue);
       currentSocket.off("joined", handleJoined);
-      currentSocket.off("seekable");
-      currentSocket.off("isplaying");
-      currentSocket.off("play");
+      currentSocket.off("seekable", handleSeekable);
+      currentSocket.off("isplaying", handleIsPlaying);
+      currentSocket.off("play", handlePlay);
       currentSocket.off("seek", seek);
       currentSocket.off("profile", updateListeners);
     };
@@ -403,14 +372,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     handleUserLeftRoom,
     onConnect,
     handleJoined,
-    onDisconnect,
     handleMessage,
-    handleHeart,
     handleError,
     handleConnectError,
     handleUserJoinedRoom,
-    forceUpdateQueue,
+    UpdateQueue,
     play,
+    socketRef,
     seek,
     isAdminOnline,
     updateListeners,
@@ -420,12 +388,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   return (
     <SocketContext.Provider
       value={{
-        isConnected,
-        transport,
         messages,
-        likEffectUser,
         setMessages,
-        setLikEffectUser,
         total,
         loading,
         handleUpdateQueue,

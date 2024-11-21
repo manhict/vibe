@@ -16,10 +16,9 @@ import { Input } from "../ui/input";
 import { encryptObjectValues } from "@/utils/utils";
 import api from "@/lib/api";
 import { AtSign, LoaderCircle, Sun } from "lucide-react";
-import { socket } from "@/app/socket";
-
+import confetti from "canvas-confetti";
 function OnBoarding() {
-  const { user, setUser } = useUserContext();
+  const { user, setUser, socketRef } = useUserContext();
   const [inputValue, setInputValue] = useState(user?.username);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(() => {
@@ -59,7 +58,7 @@ function OnBoarding() {
       // }
 
       setLoader(true);
-      const res = await api.put(
+      const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
         encryptObjectValues(payload)
       );
@@ -67,7 +66,7 @@ function OnBoarding() {
         setError(res.error);
       }
       if (res.success) {
-        socket.emit("profile");
+        socketRef.current.emit("profile");
         setError(null);
         setCurrentStep((prev) => prev + 1);
         if (user) {
@@ -80,45 +79,26 @@ function OnBoarding() {
       }
       setLoader(false);
     },
-    [user, setUser]
+    [user, setUser, socketRef]
   );
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      transition: {
-        duration: 0.2,
-        ease: "easeIn",
-      },
-    },
-  };
+  // Animation variants text
 
+  //Onboarding video
   const contentVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 100 : -100,
+    enter: () => ({
       opacity: 0,
+      filter: "blur(10px)",
     }),
     center: {
-      x: 0,
       opacity: 1,
+      filter: "blur(0px)",
     },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 100 : -100,
+    exit: () => ({
       opacity: 0,
+      filter: "blur(0px)",
     }),
   };
-
   return (
     <Dialog key="user Login" open={showOnboarding || false}>
       <DialogTrigger className="absolute h-0 w-0 p-0" />
@@ -127,206 +107,291 @@ function OnBoarding() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className=" w-[346px] h-[424px] flex flex-col gap-4 bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50 gradient rounded-[28px] shadow-md"
-        >
-          {user && showOnboarding && (
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={currentStep}
-                custom={currentStep}
-                variants={contentVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-                className="flex flex-col h-full"
-              >
-                <div
-                  className={`${
-                    currentStep == 4
-                      ? "h-1/3 mb-2"
-                      : currentStep == 0
-                      ? ""
-                      : "bg-black h-1/2 "
-                  } `}
+        <div className="  h-[414px]  flex items-center justify-center">
+          <motion.div className="flex backdrop-blur-lg flex-col overflow-hidden p-0 items-center justify-center h-full w-[20rem] border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
+            {user && showOnboarding && (
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={currentStep}
+                  custom={currentStep}
+                  variants={contentVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    delay: 0.1,
+                    duration: 0.4,
+                  }}
+                  className="flex flex-col h-full"
                 >
-                  {currentStep == 4 ? (
-                    <motion.div
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.2 }}
-                      className="p-7 pb-0"
-                    >
-                      <Avatar className="size-32 ">
-                        <AvatarImage
-                          width={500}
-                          height={500}
-                          alt="Profile"
-                          className="rounded-full object-cover"
-                          src={
-                            user?.imageUrl ||
-                            "https://imagedump.vercel.app/notFound.jpg"
-                          }
-                        />
-                        <AvatarFallback>SX</AvatarFallback>
-                      </Avatar>
-                    </motion.div>
-                  ) : (
-                    <>
-                      {currentStep !== 0 && (
-                        <video
-                          preload="true"
-                          playsInline
-                          src={onBoarding[currentStep].src}
-                          className="h-full w-full object-cover"
-                          muted
-                          loop
-                          autoPlay
-                        />
-                      )}
-                    </>
-                  )}
-                </div>
-
-                <div className="flex flex-col justify-between flex-grow">
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="px-7 mt-5"
+                  <div
+                    className={`${
+                      currentStep == 4
+                        ? "h-1/3 mb-2"
+                        : currentStep == 0
+                        ? ""
+                        : "bg-black h-1/2 "
+                    } `}
                   >
-                    <p className="font-semibold text-3xl pb-1">
-                      {currentStep == 4
-                        ? `${user.name.split(" ")[0]}, Set your vibe`
-                        : onBoarding[currentStep].heading}
-                    </p>
-                    <p className="text-sm text-zinc-400">
-                      {onBoarding[currentStep].description}
-                    </p>
-                    {currentStep == 0 && (
-                      <form
-                        ref={formRef}
-                        onChange={() => error && setError(null)}
-                        onSubmit={handleUpdate}
-                        className="w-full space-y-3 my-5"
+                    {currentStep == 4 ? (
+                      <motion.div
+                        key={currentStep}
+                        custom={currentStep}
+                        variants={contentVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                          delay: 0.1,
+                          duration: 0.4,
+                        }}
+                        className="p-7 pb-0"
                       >
-                        <motion.div
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ delay: 0.4 }}
-                        >
-                          <div className=" relative flex items-center">
-                            <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
-                            <Input
-                              maxLength={15}
-                              max={15}
-                              min={4}
-                              placeholder="name"
-                              name="name"
-                              className="py-5 pl-7"
-                              defaultValue={user?.name}
-                            />
-                          </div>
-                        </motion.div>
-
-                        <motion.div
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ delay: 0.5 }}
-                        >
-                          <div className=" relative flex items-center">
-                            <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
-                            <Input
-                              maxLength={15}
-                              max={15}
-                              min={4}
-                              value={inputValue}
-                              onChange={(e) =>
-                                setInputValue(e.target.value.toLowerCase())
-                              }
-                              placeholder="username"
-                              name="username"
-                              className="py-5 pl-7"
-                              defaultValue={user?.username}
-                            />
-                          </div>
-                        </motion.div>
-
-                        {error && (
-                          <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-xs p-0.5 text-red-400"
-                          >
-                            {error}
-                          </motion.p>
+                        <Avatar className="size-32 ">
+                          <AvatarImage
+                            width={500}
+                            height={500}
+                            alt="Profile"
+                            className="rounded-full object-cover"
+                            src={
+                              user?.imageUrl ||
+                              "https://imagedump.vercel.app/notFound.jpg"
+                            }
+                          />
+                          <AvatarFallback>SX</AvatarFallback>
+                        </Avatar>
+                      </motion.div>
+                    ) : (
+                      <>
+                        {currentStep !== 0 && (
+                          <video
+                            preload="true"
+                            playsInline
+                            src={onBoarding[currentStep].src}
+                            className="h-full w-full object-cover"
+                            muted
+                            loop
+                            autoPlay
+                          />
                         )}
-                      </form>
+                      </>
                     )}
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    className="flex w-full items-center justify-between p-7"
-                  >
-                    {currentStep == 1 && (
-                      <p
-                        onClick={() => setCurrentStep((prev) => prev - 1)}
-                        className="text-zinc-400 text-base "
-                      >
-                        Back
-                      </p>
-                    )}
-                    {currentStep !== 4 && (
-                      <p
-                        onClick={() => {
-                          localStorage.setItem("o", "false");
-                          setShowOnboarding(false);
+                  <div className="flex flex-col justify-between flex-grow">
+                    <motion.div className="px-7 mt-5">
+                      <motion.p
+                        initial={{
+                          y: 15,
+                          opacity: 0,
+                          filter: "blur(10px)",
                         }}
-                        style={{
-                          opacity: currentStep == 0 || currentStep == 1 ? 0 : 1,
+                        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                        transition={{
+                          delay: 0.2,
+                          duration: 0.4,
                         }}
-                        className="text-zinc-300 text-base "
+                        className="font-semibold text-2xl pb-1"
                       >
-                        Skip
-                      </p>
-                    )}
+                        {currentStep == 4
+                          ? `${user.name.split(" ")[0]}, Set your vibe`
+                          : onBoarding[currentStep].heading}
+                      </motion.p>
+                      <motion.p
+                        initial={{
+                          y: 15,
+                          opacity: 0,
+                          filter: "blur(10px)",
+                        }}
+                        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                        transition={{
+                          delay: 0.25,
+                          duration: 0.4,
+                        }}
+                        className="text-sm text-zinc-400"
+                      >
+                        {onBoarding[currentStep].description}
+                      </motion.p>
+                      {currentStep == 0 && (
+                        <form
+                          ref={formRef}
+                          onChange={() => error && setError(null)}
+                          onSubmit={handleUpdate}
+                          className="w-full space-y-3 my-5"
+                        >
+                          <motion.div
+                            initial={{
+                              y: 15,
+                              opacity: 0,
+                              filter: "blur(10px)",
+                            }}
+                            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                            transition={{
+                              delay: 0.5,
+                              duration: 0.4,
+                            }}
+                          >
+                            <div className=" relative flex items-center">
+                              <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
+                              <Input
+                                maxLength={15}
+                                max={15}
+                                min={4}
+                                placeholder="name"
+                                name="name"
+                                className="py-5 pl-7"
+                                defaultValue={user?.name}
+                              />
+                            </div>
+                          </motion.div>
 
-                    <Button
-                      disabled={loader}
-                      className={`${
-                        currentStep == 4
-                          ? "w-full bg-[#9747FF] py-5 hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
-                          : ""
-                      }`}
-                      onClick={handleOnboarding}
-                      size={"lg"}
-                    >
-                      {loader ? (
-                        <LoaderCircle className="animate-spin" />
-                      ) : (
-                        onBoarding[currentStep].ctaText
+                          <motion.div
+                            initial={{
+                              y: 15,
+                              opacity: 0,
+                              filter: "blur(10px)",
+                            }}
+                            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                            transition={{
+                              delay: 0.6,
+                              duration: 0.4,
+                            }}
+                          >
+                            <div className=" relative flex items-center">
+                              <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
+                              <Input
+                                maxLength={15}
+                                max={15}
+                                min={4}
+                                value={inputValue}
+                                onChange={(e) =>
+                                  setInputValue(e.target.value.toLowerCase())
+                                }
+                                placeholder="username"
+                                name="username"
+                                className="py-5 pl-7"
+                                defaultValue={user?.username}
+                              />
+                            </div>
+                          </motion.div>
+
+                          {error && (
+                            <motion.p
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="text-xs p-0.5 text-red-400"
+                            >
+                              {error}
+                            </motion.p>
+                          )}
+                        </form>
                       )}
-                    </Button>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          )}
-        </motion.div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        delay: 0.4,
+                        duration: 0.5,
+                        ease: "easeInOut",
+                      }}
+                      className="flex w-full items-center justify-between p-7"
+                    >
+                      {currentStep == 1 && (
+                        <p
+                          onClick={() => setCurrentStep((prev) => prev - 1)}
+                          className="text-zinc-400 text-base "
+                        >
+                          Back
+                        </p>
+                      )}
+                      {currentStep !== 4 && (
+                        <p
+                          onClick={() => {
+                            localStorage.setItem("o", "false");
+                            setShowOnboarding(false);
+                          }}
+                          style={{
+                            opacity:
+                              currentStep == 0 || currentStep == 1 ? 0 : 1,
+                          }}
+                          className="text-zinc-300 text-base "
+                        >
+                          Skip
+                        </p>
+                      )}
+                      <div
+                        onClick={handleOnboarding}
+                        className=" flex w-full items-end justify-end"
+                      >
+                        {currentStep !== 3 && (
+                          <Button
+                            disabled={loader}
+                            className={`${
+                              currentStep == 4
+                                ? " w-full bg-[#9747FF] py-5 hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
+                                : ""
+                            }`}
+                          >
+                            {loader ? (
+                              <LoaderCircle className="animate-spin" />
+                            ) : (
+                              onBoarding[currentStep].ctaText
+                            )}
+                          </Button>
+                        )}
+                        {currentStep == 3 && (
+                          <ConfettiSideCannons currentStep={currentStep} />
+                        )}
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </motion.div>
+        </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ConfettiSideCannons({ currentStep }: { currentStep: number }) {
+  const handleClick = () => {
+    const end = Date.now() + 1.5 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#fac800"];
+
+    const frame = async () => {
+      if (Date.now() > end) return;
+
+      confetti({
+        particleCount: 4,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 4,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      });
+
+      requestAnimationFrame(frame);
+    };
+
+    frame();
+  };
+
+  return (
+    <div className="relative">
+      <Button onClick={handleClick}>{onBoarding[currentStep].ctaText}</Button>
+    </div>
   );
 }
 

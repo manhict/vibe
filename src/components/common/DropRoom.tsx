@@ -102,6 +102,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
       >
         {rooms
           ?.filter((r) => r.roomId !== roomId)
+          ?.slice(0, 3)
           ?.map((room, index) => (
             <motion.div
               key={room.roomId}
@@ -126,7 +127,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
               >
                 <CardContent className="p-0 h-full">
                   <div
-                    className={`relative w-full h-full border border-dashed rounded-lg overflow-hidden ${
+                    className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
                       draggingStates[room.roomId]
                         ? "border-primary"
                         : "border-muted"
@@ -137,9 +138,9 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                       width={500}
                       src={room.background}
                       alt={room.name[0]}
-                      className="w-full opacity-80 h-full object-cover"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center"></div>
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
                     <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
                       {room.name[0]}
                     </div>

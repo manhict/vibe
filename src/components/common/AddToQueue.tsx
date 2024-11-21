@@ -13,19 +13,16 @@ import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
 import api from "@/lib/api";
 import { data, searchResults } from "@/lib/types";
-import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
-import useAddSong from "@/Hooks/useAddSong";
 
 function AddToQueueComp() {
-  const { queue, roomId, user, setQueue, showDragOptions } = useUserContext();
+  const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
   const { total } = useSocket();
-  const { addSong } = useAddSong();
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isDragging, setIsDragging] = useState(false);
+
   useEffect(() => {
     if (queue.length <= 1) {
       setIsDeleting(false);
@@ -33,24 +30,42 @@ function AddToQueueComp() {
   }, [queue]);
   const queueControllerRef = useRef<AbortController | null>(null);
   const [searchQu, setSearchQu] = useState<searchResults[]>([]);
-  const search = async (e?: React.ChangeEvent<HTMLInputElement>) => {
-    if (queueControllerRef.current) {
-      queueControllerRef.current.abort();
-    }
-    const controller = new AbortController();
-    queueControllerRef.current = controller;
-    const data = await api.get(
-      `${process.env.SOCKET_URI}/api/queue?page=1&limit=4&room=${roomId}&name=${
-        e?.target?.value || ""
-      }`,
-      {
-        signal: controller.signal,
+  const search = useCallback(
+    async (e?: React.ChangeEvent<HTMLInputElement>) => {
+      const query = e?.target.value || "";
+      console.log(query);
+
+      const localSearch = queue.filter((s) => {
+        const songName = s?.name.toLowerCase();
+        const primaryArtistName = s?.artists?.primary?.[0]?.name.toLowerCase();
+        return (
+          songName.includes(query.toLowerCase()) ||
+          primaryArtistName.includes(query.toLowerCase())
+        );
+      });
+      console.log("Local Search Results:", localSearch);
+      if (localSearch.length > 0) {
+        setSearchQu(localSearch);
+        return;
       }
-    );
-    if (data.success) {
-      setSearchQu((data.data as data).results);
-    }
-  };
+
+      if (queueControllerRef.current) {
+        queueControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      queueControllerRef.current = controller;
+      const data = await api.get(
+        `${process.env.SOCKET_URI}/api/queue?page=1&limit=4&room=${roomId}&name=${query}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      if (data.success) {
+        setSearchQu((data.data as data).results);
+      }
+    },
+    [queue, roomId]
+  );
 
   const handleSearch = useDebounce(search);
   const handleToggleSearch = () => {
@@ -88,41 +103,11 @@ function AddToQueueComp() {
     setQueue([]);
     setSelectedSongs([]);
   };
-  const handleDrop = useCallback(
-    async (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragging(false);
-      if (showDragOptions) return;
-      const jsonData = e.dataTransfer.getData("application/json");
-      if (!jsonData) return;
-      const song = JSON.parse(jsonData);
-      if (!song) return;
-      await addSong([song], roomId);
-    },
-    [roomId, showDragOptions, addSong]
-  );
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
     <div
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg  max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
+      className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
         isDragging ? "border-white/70" : "border-white/15"
       } rounded-xl p-3 pr-0`}
     >
@@ -231,6 +216,7 @@ function AddToQueueComp() {
               />
             )}
             <QueueList
+              setIsDragging={setIsDragging}
               handleSelect={handleSelect}
               selectedSongs={selectedSongs}
               isDeleting={isDeleting}

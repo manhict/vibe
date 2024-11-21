@@ -1,10 +1,8 @@
-import { cookies } from "next/headers";
+"use client";
+import { TUser } from "@/lib/types";
 import Profile from "./common/Profile";
-import { getLoggedInUser } from "@/app/actions/getLoggedInUser";
 
-async function Userprofile() {
-  const user = await getLoggedInUser();
-  const roomId = cookies().get("room")?.value;
+function Userprofile({ user, roomId }: { user: TUser; roomId?: string }) {
   return <Profile user={user} roomId={roomId} />;
 }
 

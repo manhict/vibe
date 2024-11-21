@@ -266,6 +266,7 @@ export function decryptObjectValues(obj: any) {
 export const BACKGROUND_APP_TIMEOUT = 150000;
 
 export const getInviteLink = (roomId?: string, username?: string) => {
+  if (typeof window == "undefined") return "";
   if (username) {
     return `${window.location.origin}/v?room=${roomId}&ref=${username}&new=true`;
   }
@@ -282,3 +283,8 @@ export function getRandom(emojis: { msg: string; gif: string }[]): {
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export function getSpotifyTrackID(url: string) {
+  const match = url.match(/\/track\/([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
+}

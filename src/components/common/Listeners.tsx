@@ -17,26 +17,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import InviteButton from "./inviteButton";
+import Youtube from "./Youtube";
 function Listeners({ className }: { className?: string }) {
-  const { listener, user } = useUserContext();
+  const { listener } = useUserContext();
 
   return (
-    <Dialog>
-      <DialogTrigger
-        disabled={listener?.totalUsers === 0}
-        className={cn(
-          " max-md:w-full flex items-center text-sm font-medium justify-between",
-          className
-        )}
-      >
-        <div className=" flex items-center gap-1">
-          <p>Listening</p>
+    <div className=" flex items-center w-full justify-between">
+      <Dialog>
+        <DialogTrigger
+          disabled={listener?.totalUsers === 0}
+          className={cn(
+            " max-md:w-full flex items-center text-sm font-medium justify-between",
+            className
+          )}
+        >
+          <div className=" flex items-center gap-1">
+            <p>Listening</p>
 
-          <div className=" flex items-center">
-            {listener?.roomUsers
-              ?.filter((r) => r.userId?.username !== user?.username)
-              ?.slice(0, 5)
-              ?.map((roomUser, i) => (
+            <div className=" flex items-center">
+              {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
                 <TooltipProvider key={i}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -62,37 +62,37 @@ function Listeners({ className }: { className?: string }) {
                   </Tooltip>
                 </TooltipProvider>
               ))}
-            {listener && listener?.totalUsers >= 5 && (
-              <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
-                <Avatar className=" size-6 border-white border">
-                  <AvatarFallback>
-                    {" "}
-                    +
-                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-            )}
-          </div>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-md:max-w-[95dvw] flex-col max-md:w-full  border flex justify-center items-center bg-transparent border-none">
-        <DialogHeader className=" h-0">
-          <DialogTitle />
-          <DialogDescription />
-        </DialogHeader>
-        <div className="w-full flex items-center justify-center">
-          <div className="flex flex-col w-full overflow-hidden rounded-2xl">
-            <div className="bg-black/80 w-full p-2.5 px-4">
-              <p className=" font-semibold flex w-full justify-between">
-                <span>Vibing with</span>{" "}
-                {listener && `${listener?.totalUsers - 1}`}
-              </p>
+              {listener && listener?.totalUsers >= 5 && (
+                <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
+                  <Avatar className=" size-6 border-white border">
+                    <AvatarFallback>
+                      {" "}
+                      +
+                      {listener?.totalUsers > 100
+                        ? 99
+                        : listener?.totalUsers - 5}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
             </div>
-            <div className="bg-black/80 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
-              {listener?.roomUsers
-                ?.filter((r) => r.userId?.username !== user?.username)
-                ?.map((user, j) => (
+          </div>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl max-md:max-w-[95dvw] flex-col max-md:w-full  border flex justify-center items-center bg-transparent border-none">
+          <DialogHeader className=" h-0">
+            <DialogTitle />
+            <DialogDescription />
+          </DialogHeader>
+          <div className="flex w-full backdrop-blur-lg flex-col overflow-hidden p-0 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
+            <div className="flex flex-col w-full overflow-hidden rounded-2xl">
+              <div className="bg-black/80 w-full p-2.5 px-4">
+                <p className=" font-semibold flex w-full justify-between">
+                  <span>Vibing with</span>{" "}
+                  {listener && `${listener?.totalUsers}`}
+                </p>
+              </div>
+              <div className="bg-black/80 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
+                {listener?.roomUsers?.map((user, j) => (
                   <div key={j} className=" w-full py-2 flex items-center gap-2">
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
@@ -101,11 +101,16 @@ function Listeners({ className }: { className?: string }) {
                     </div>
                   </div>
                 ))}
+              </div>
             </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+      <div className=" md:hidden flex items-center gap-1">
+        <InviteButton />
+        <Youtube />
+      </div>
+    </div>
   );
 }
 
@@ -124,7 +129,7 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
           <DialogDescription />
         </DialogHeader>
         <div className=" w-full flex items-center justify-center">
-          <Avatar className=" size-60">
+          <Avatar className=" size-56  border border-white/15">
             <AvatarImage loading="lazy" src={imageUrl} />
             <AvatarFallback>SX</AvatarFallback>
           </Avatar>

@@ -3,8 +3,9 @@
 import { cn } from "@/lib/utils";
 import { useUserContext } from "@/store/userStore";
 import Image from "next/image";
+import React from "react";
 
-function Logo({ className }: { className?: string }) {
+function LogoComp({ className }: { className?: string }) {
   const { user } = useUserContext();
   return (
     <Image
@@ -21,5 +22,5 @@ function Logo({ className }: { className?: string }) {
     />
   );
 }
-
+const Logo = React.memo(LogoComp);
 export default Logo;

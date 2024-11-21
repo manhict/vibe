@@ -1,9 +1,12 @@
-import { useAudio } from "@/store/AudioContext";
 import { Slider } from "../ui/slider";
 
-export const VolumeControl: React.FC = () => {
-  const { volume, setVolume } = useAudio();
-
+export function VolumeControl({
+  volume,
+  setVolume,
+}: {
+  volume: any;
+  setVolume: any;
+}) {
   return (
     <Slider
       aria-label="volume"
@@ -14,6 +17,6 @@ export const VolumeControl: React.FC = () => {
       onValueChange={(e) => setVolume(e[0], true)}
     />
   );
-};
+}
 
 export default VolumeControl;

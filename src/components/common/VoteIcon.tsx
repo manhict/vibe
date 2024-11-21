@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import TopVotes from "./TopVotes";
 import { motion } from "framer-motion";
 
-const VoteIcon = ({
+const VoteIconComp = ({
   song,
   triggerUpVote,
 }: {
@@ -97,5 +97,5 @@ const VoteIcon = ({
     </div>
   );
 };
-
+const VoteIcon = React.memo(VoteIconComp);
 export default VoteIcon;

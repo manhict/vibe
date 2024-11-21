@@ -1,4 +1,5 @@
 "use client";
+import { socket } from "@/app/socket";
 import { listener, searchResults, TUser } from "@/lib/types";
 import { generateRoomId } from "@/utils/utils";
 import { useSearchParams } from "next/navigation";
@@ -6,9 +7,12 @@ import React, {
   createContext,
   ReactNode,
   SetStateAction,
+  useCallback,
   useContext,
   useMemo,
 } from "react";
+import { Socket } from "socket.io-client";
+import { encrypt } from "tanmayo7lock";
 
 interface UserContextType {
   queue: searchResults[];
@@ -30,9 +34,21 @@ interface UserContextType {
   setShowDragOptions: React.Dispatch<SetStateAction<boolean>>;
   showAddDragOptions: boolean;
   setShowAddDragOptions: React.Dispatch<SetStateAction<boolean>>;
+  socketRef: React.MutableRefObject<Socket>;
+  emitMessage: (emit: string, message: any) => void;
+  seen: boolean;
+  setSeen: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
+
+const useUserContext = (): UserContextType => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useUserContext must be used within a UserProvider");
+  }
+  return context;
+};
 
 const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const search = useSearchParams();
@@ -53,10 +69,17 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [roomId, setRoomId] = React.useState<string>(
     () => search.get("room") || generateRoomId()
   );
-
+  const socketRef = React.useRef(socket);
+  const emitMessage = useCallback((emit: string, message: any) => {
+    socketRef.current.emit(emit, encrypt(message));
+  }, []);
+  const [seen, setSeen] = React.useState<boolean>(true);
   const value = useMemo(
     () => ({
       queue,
+      setSeen,
+      seen,
+      socketRef,
       setQueue,
       roomId,
       setRoomId,
@@ -75,8 +98,11 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setShowDragOptions,
       showAddDragOptions,
       setShowAddDragOptions,
+      emitMessage,
     }),
     [
+      seen,
+      emitMessage,
       listener,
       queue,
       roomId,
@@ -90,14 +116,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-};
-
-const useUserContext = (): UserContextType => {
-  const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error("useUserContext must be used within a UserProvider");
-  }
-  return context;
 };
 
 export { UserProvider, useUserContext };

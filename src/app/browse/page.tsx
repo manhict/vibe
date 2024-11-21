@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export async function generateMetadata() {
   return {
-    title: `Vibe Rooms`,
+    title: `Your Rooms`,
     description: `Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!`,
 
     icons: { icon: "/favicon.png" },

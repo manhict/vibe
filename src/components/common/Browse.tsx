@@ -127,7 +127,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           </p>
         </motion.div>
       </div>
-      <motion.p
+      {/* <motion.p
         initial={{
           y: isDesktop ? "5dvh" : 0,
           opacity: 0,
@@ -143,7 +143,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         className=" my-5 max-md:text-xl max-md:hidden text-[3.5vw] tracking-normal font-medium text-zinc-100/20"
       >
         Tough Choice, isn&apos;t it?
-      </motion.p>
+      </motion.p> */}
     </motion.div>
   );
 }

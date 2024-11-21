@@ -169,6 +169,19 @@ const api = {
       body: data,
     });
   },
+  patch: async <T>(
+    url: string,
+    data: any,
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
+  ): Promise<ApiResponse<T>> => {
+    return api.request<T>(url, "PATCH", {
+      ...options,
+      body: data,
+    });
+  },
 
   delete: async <T>(
     url: string,

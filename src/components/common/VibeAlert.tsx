@@ -47,26 +47,28 @@ export default function VibeAlert({
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div
-          className={cn(
-            " p-5 marker: text-center flex flex-col gap-4 bg-gradient-to-t to-zinc-800/60  overflow-hidden from-zinc-600/50 gradient rounded-[28px] shadow-md text-xl font-semibold",
-            headingClassName
-          )}
-        >
-          <p>{heading}</p>
-          <DialogClose className="gap-2 flex flex-col items-center">
-            <Button
-              variant={"purple"}
-              className={cn(
-                " bg-red-600/85 text-white hover:bg-red-600/70",
-                confirmClassName
-              )}
-              onClick={action}
-            >
-              {confirmText}
-            </Button>
-            <Button className="w-full">Cancel</Button>
-          </DialogClose>
+        <div className=" h-[414px]  flex items-center justify-center">
+          <div
+            className={cn(
+              "flex backdrop-blur-lg flex-col overflow-hidden p-7 items-center justify-between space-y-5 text-center w-[20rem] border-2 border-white/15 bg-gradient-to-br from-black/45 text-2xl to-black/25 rounded-[24px] font-semibold",
+              headingClassName
+            )}
+          >
+            <p>{heading}</p>
+            <DialogClose className="gap-2 w-full flex flex-col items-center">
+              <Button
+                variant={"purple"}
+                className={cn(
+                  " bg-red-600/85 w-full text-white hover:bg-red-600/70",
+                  confirmClassName
+                )}
+                onClick={action}
+              >
+                {confirmText}
+              </Button>
+              <Button className="w-full">Cancel</Button>
+            </DialogClose>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
