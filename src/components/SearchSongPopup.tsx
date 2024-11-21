@@ -290,7 +290,7 @@ function SearchSongPopupComp({
           </DialogClose>
         </div>
         {loading && !songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
+          <div className="flex border-zinc-500 border-t flex-col overflow-hidden backdrop-blur-xl bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
             {Array.from(Array(6)).map((_, i) => (
               <div
                 key={i}
@@ -314,7 +314,7 @@ function SearchSongPopupComp({
           ref={containerRef}
           className={`flex border-zinc-500 ${
             songs && "border-t"
-          }  flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll`}
+          }  flex-col overflow-hidden backdrop-blur-xl bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll`}
         >
           {songs?.data.results.map((song, i) => (
             <label
