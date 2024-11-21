@@ -61,7 +61,7 @@ function Changelog() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className="h-[70dvh] flex items-center justify-center">
+        <div className="h-[90dvh] flex items-center justify-center">
           <div className="flex backdrop-blur-xl flex-col  overflow-hidden p-0 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45 to-black/25 rounded-[24px]">
             <div className="overflow-y-auto hide-scrollbar p-6 w-full h-full text-white">
               <div
