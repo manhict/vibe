@@ -37,9 +37,9 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
     setUser(user);
     const socket = socketRef.current;
     if (!roomId) toast.error("Room ID is required");
-    socket.io.opts.extraHeaders = {
-      Authorization: user?.token || "",
-      Room: roomId || "",
+    socket.io.opts.query = {
+      authorization: user?.token || "",
+      room: roomId || "",
     };
     api.setAuthToken(user?.token || null);
 
