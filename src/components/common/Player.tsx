@@ -7,7 +7,6 @@ import Chat from "./Chat";
 import Listeners from "./Listeners";
 import LikeButton from "./LinkeButton";
 import parse from "html-react-parser";
-import UpvotedBy from "./UpvotedBy";
 import UpNextSongs from "./UpNextSongs";
 import ProgressBar from "./ProgressBar";
 import Controller from "./Controller";
@@ -64,8 +63,6 @@ function MemoPLayer() {
         className="w-full h-full flex flex-col items-center justify-center gap-[2.5dvh]"
       >
         <PLayerCover />
-
-        <UpvotedBy />
 
         <div className=" text-center w-full -mt-2 items-center justify-center flex flex-col text-sm">
           <p
