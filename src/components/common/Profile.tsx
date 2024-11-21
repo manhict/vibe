@@ -42,9 +42,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
       room: roomId || "",
     };
     api.setAuthToken(user?.token || null);
-    toast.loading("Joining... ", {
-      id: "connecting",
-    });
+
     socket.connect();
     return () => {
       socket.disconnect();
