@@ -21,7 +21,7 @@ function useAddSong() {
         );
 
         if (uniqueSongs.length === 0) {
-          toast.info("No new songs to add to the queue.");
+          toast.info("No new songs to add.");
           return;
         }
       }
