@@ -50,18 +50,13 @@ function Chat({
   useEffect(() => {
     if (isChatOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      setSeen(false);
+      setSeen(true);
     } else {
       if (messagesEndRef.current) {
-        setSeen(true);
+        setSeen(false);
       }
     }
   }, [messages, isChatOpen, setSeen]);
-  useEffect(() => {
-    if (messages.length > 0) {
-      setSeen(false);
-    }
-  }, [messages, setSeen]);
 
   return (
     <>
