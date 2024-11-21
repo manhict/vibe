@@ -22,7 +22,7 @@ const changelogContent = `
 
 ### ✨ New Features
 
-- 🚀 **Copy-Paste to add song**: Copy song url from popular platforms like **YouTube** and **Spotify** and paste.
+- 🔖 **Copy-Paste to add song**: Copy song url from popular platforms like **YouTube** and **Spotify** and paste.
 - 🚀 **Drag-drop to add song**: Drag and drop songs from popular platforms like **YouTube** and **Spotify**.
 - 🧹 **Drag-drop to add and delete**: Easily drag and drop to add songs to another room or delete them.
 
