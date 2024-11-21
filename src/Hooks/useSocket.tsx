@@ -255,12 +255,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }, 40000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
-      updateListeners();
-      handleUpdateQueue();
-      upNextSong();
       return () => clearTimeout(resetUrl);
     },
-    [handleUpdateQueue, seek, updateListeners, upNextSong, setUser, roomId]
+    [seek, setUser, roomId]
   );
 
   const handleVisibilityChange = useCallback(async () => {
@@ -318,7 +315,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("connect", onConnect);
     currentSocket.on("error", handleError);
     currentSocket.on("connect_error", handleConnectError);
-
     currentSocket.on("userLeftRoom", handleUserLeftRoom);
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
