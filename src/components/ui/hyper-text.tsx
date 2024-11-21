@@ -19,7 +19,7 @@ const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
 export default function HyperText({
   text,
-  duration = 400,
+  duration = 500,
   framerProps = {
     initial: { opacity: 0, y: -10 },
     animate: { opacity: 1, y: 0 },
@@ -74,7 +74,7 @@ export default function HyperText({
         {displayText.map((letter, i) => (
           <motion.h1
             key={i}
-            className={cn("font-mono", letter === " " ? "w-3" : "", className)}
+            className={cn(letter === " " ? "w-3" : "", className)}
             {...framerProps}
           >
             {letter.toUpperCase()}
