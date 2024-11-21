@@ -328,9 +328,7 @@ function QueueListComp({
                       alt={song.name}
                       height={500}
                       width={500}
-                      className={`object-cover ${
-                        currentSong?.id == song.id && "opacity-70"
-                      }`}
+                      className="object-cover"
                       src={song.addedByUser?.imageUrl}
                     />
                     <AvatarFallback>SX</AvatarFallback>
