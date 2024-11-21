@@ -52,7 +52,7 @@ function Chat({
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       setSeen(true);
     } else {
-      if (messagesEndRef.current) {
+      if (messagesEndRef.current && messages.length > 0) {
         setSeen(false);
       }
     }
