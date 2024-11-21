@@ -134,7 +134,7 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center flex"
             >
               <div className="flex items-center relative">
                 <div
