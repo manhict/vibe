@@ -107,6 +107,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
             <motion.div
               key={room.roomId}
               onDragEnter={(e) => handleDragEnter(e, room.roomId)}
+              onDragOver={(e) => handleDragEnter(e, room.roomId)}
               onDragLeave={(e) => handleDragLeave(e, room.roomId)}
               onDrop={(e) => handleDrop(e, room.roomId)}
               onDragEnd={handleDragEnd}
