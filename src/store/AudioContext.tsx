@@ -88,12 +88,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           videoRef.current.src = "";
         }
         audioRef.current.src = "";
-        const currentVideoUrl = window.navigator.userAgent.includes("Electron")
-          ? "http://localhost:7777/stream"
-          : getURL(song).replace(
-              process.env.VIDEO_STREAM_URI || "",
-              process.env.STREAM_URL || ""
-            );
+        const currentVideoUrl = getURL(song).replace(
+          process.env.VIDEO_STREAM_URI || "",
+          window.navigator.userAgent.includes("Electron")
+            ? "http://localhost:7777/stream"
+            : process.env.STREAM_URL || ""
+        );
 
         audioRef.current.src = currentVideoUrl;
 
