@@ -122,11 +122,11 @@ function PLayerCoverComp() {
           />
         </div>
       )}
-      {currentSong?.source !== "youtube" && (
+      {/* {currentSong?.source !== "youtube" && (
         <p className=" absolute bottom-2 right-2 text-xl mt-1 text-[#a176eb]">
           ☆
         </p>
-      )}
+      )} */}
     </div>
   );
 }
