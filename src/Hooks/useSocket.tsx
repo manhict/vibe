@@ -272,7 +272,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }, 40000);
       seek(value?.progress || 0);
       toast.dismiss("connecting");
-      toast.info("Joined successfully");
+      toast.info("Joined ⚡️");
       updateListeners();
       handleUpdateQueue();
       upNextSong();
