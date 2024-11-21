@@ -10,7 +10,7 @@ import React, {
   SetStateAction,
 } from "react";
 import { toast } from "sonner";
-import { data, listener, messages, searchResults, TUser } from "@/lib/types";
+import { data, listener, searchResults, TUser } from "@/lib/types";
 import { decrypt } from "@/utils/lock";
 import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
@@ -28,9 +28,7 @@ export interface Message {
 interface SocketContextType {
   loading: boolean;
   total: React.MutableRefObject<number | null>;
-  messages: messages[];
   handleUpdateQueue: () => void;
-  setMessages: React.Dispatch<React.SetStateAction<messages[]>>;
   hiddenTimeRef: React.RefObject<number>;
   setPage: React.Dispatch<SetStateAction<number | null>>;
 }
@@ -65,7 +63,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const isActive = useRef<boolean>(true);
   const { seek, play } = useAudio();
-  const [messages, setMessages] = useState<messages[]>([]);
 
   const hiddenTimeRef = useRef<number>(0);
   const necessaryFetchRef = useRef<boolean>(false);
@@ -80,20 +77,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const onConnect = useCallback((): void => {
     toast.dismiss("connecting");
-  }, []);
-
-  const handleMessage = useCallback((data: any): void => {
-    const message = decrypt(data) as messages;
-    setMessages((prev) => [...prev, message]);
-    const audio = new Audio(
-      "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
-    );
-    if (document.hidden) {
-      audio.play();
-    } else {
-      audio.pause();
-      audio.currentTime = 0; // Reset the audio if needed
-    }
   }, []);
 
   const updateListeners = useCallback(async () => {
@@ -333,10 +316,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }
     };
     currentSocket.on("connect", onConnect);
-
     currentSocket.on("error", handleError);
     currentSocket.on("connect_error", handleConnectError);
-    currentSocket.on("message", handleMessage);
+
     currentSocket.on("userLeftRoom", handleUserLeftRoom);
     currentSocket.on("userJoinedRoom", handleUserJoinedRoom);
     currentSocket.on("joined", handleJoined);
@@ -353,8 +335,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         clearInterval(timerRef.current);
       }
       currentSocket.off("connect", onConnect);
-      currentSocket.off("message", handleMessage);
-
       currentSocket.off("error", handleError);
       currentSocket.off("connect_error", handleConnectError);
       currentSocket.off("userLeftRoom", handleUserLeftRoom);
@@ -371,7 +351,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     handleUserLeftRoom,
     onConnect,
     handleJoined,
-    handleMessage,
     handleError,
     handleConnectError,
     handleUserJoinedRoom,
@@ -387,8 +366,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   return (
     <SocketContext.Provider
       value={{
-        messages,
-        setMessages,
         total,
         loading,
         handleUpdateQueue,
