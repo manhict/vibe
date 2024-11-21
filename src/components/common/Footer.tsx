@@ -18,7 +18,7 @@ function Footer() {
               }
               alt="logo"
               height={45}
-              className=" size-8 max-md:size-7 rounded-full"
+              className=" size-8 max-md:size-7 object-cover rounded-full"
               width={45}
             />
           </Link>
@@ -33,7 +33,7 @@ function Footer() {
               }
               alt="logo"
               height={45}
-              className=" size-8 max-md:size-7 rounded-full"
+              className=" size-8 max-md:size-7 object-cover rounded-full"
               width={45}
             />
           </Link>
