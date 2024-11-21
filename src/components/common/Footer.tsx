@@ -14,7 +14,7 @@ function Footer() {
             <Image
               title="tanmay"
               src={
-                "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/babyo7.png"
+                "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/TanmayIMG_4211.jpeg"
               }
               alt="logo"
               height={45}
