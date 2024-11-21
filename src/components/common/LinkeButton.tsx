@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { decrypt } from "tanmayo7lock";
+import Changelog from "./Changelog";
 
 interface LikeButtonProps {
   hearts?: string[]; // Array of heart emojis or icons
@@ -157,18 +158,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           } size-5  hover:fill-zinc-200 `}
         />
       </svg>
-      <svg
-        width="25"
-        height="25"
-        viewBox="0 0 25 25"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M22.5 12.7192C16.9785 12.7192 12.5 8.24067 12.5 2.71918C12.5 8.24067 8.0215 12.7192 2.5 12.7192C8.0215 12.7192 12.5 17.1977 12.5 22.7192C12.5 17.1977 16.9785 12.7192 22.5 12.7192Z"
-          fill="#EADDFF"
-        />
-      </svg>
+      <Changelog />
 
       <Heart
         ref={heartRef}
