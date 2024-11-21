@@ -15,7 +15,7 @@ const changelogContent = `
 
 ### 🎬 Latest Updates
 
-<video autoplay loop muted>
+<video autoplay playsinline loop muted>
   <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/0C86F376-F67E-4778-A657-C6BDB82BF104.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -65,7 +65,7 @@ function Changelog() {
           <div className="flex backdrop-blur-xl flex-col  overflow-hidden p-0 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45 to-black/25 rounded-[24px]">
             <div className="overflow-y-auto hide-scrollbar p-6 w-full h-full text-white">
               <div
-                className="prose prose-invert max-w-none"
+                className="prose prose-invert max-md:prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
                   __html: marked.parse(changelogContent),
                 }}
