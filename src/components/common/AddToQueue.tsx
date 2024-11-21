@@ -13,13 +13,12 @@ import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
 import api from "@/lib/api";
 import { data, searchResults } from "@/lib/types";
-import { emitMessage } from "@/lib/customEmits";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
 
 function AddToQueueComp() {
-  const { queue, roomId, user, setQueue } = useUserContext();
+  const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
   const { total } = useSocket();
   const [isSearchedOpened, setOpenSearch] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);

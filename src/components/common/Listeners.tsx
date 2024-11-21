@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 function Listeners({ className }: { className?: string }) {
-  const { listener, user } = useUserContext();
+  const { listener } = useUserContext();
 
   return (
     <Dialog>
@@ -33,35 +33,32 @@ function Listeners({ className }: { className?: string }) {
           <p>Listening</p>
 
           <div className=" flex items-center">
-            {listener?.roomUsers
-              ?.filter((r) => r.userId?.username !== user?.username)
-              ?.slice(0, 5)
-              ?.map((roomUser, i) => (
-                <TooltipProvider key={i}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className={` ${i !== 0 && "-ml-2"} size-6`}>
-                        <Avatar className=" size-6 border border-white">
-                          <AvatarImage
-                            loading="lazy"
-                            alt={roomUser?.userId?.name}
-                            height={200}
-                            width={200}
-                            className=" rounded-full"
-                            src={roomUser?.userId?.imageUrl}
-                          />
-                          <AvatarFallback>SX</AvatarFallback>
-                        </Avatar>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                      <p>
-                        {roomUser?.userId?.username} ({roomUser?.userId?.name})
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
+            {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
+              <TooltipProvider key={i}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className={` ${i !== 0 && "-ml-2"} size-6`}>
+                      <Avatar className=" size-6 border border-white">
+                        <AvatarImage
+                          loading="lazy"
+                          alt={roomUser?.userId?.name}
+                          height={200}
+                          width={200}
+                          className=" rounded-full"
+                          src={roomUser?.userId?.imageUrl}
+                        />
+                        <AvatarFallback>SX</AvatarFallback>
+                      </Avatar>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                    <p>
+                      {roomUser?.userId?.username} ({roomUser?.userId?.name})
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
             {listener && listener?.totalUsers >= 5 && (
               <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
                 <Avatar className=" size-6 border-white border">
@@ -81,26 +78,23 @@ function Listeners({ className }: { className?: string }) {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className="w-full flex items-center justify-center">
+        <div className="flex w-full backdrop-blur-lg flex-col overflow-hidden p-0 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45  to-black/25 rounded-[24px]">
           <div className="flex flex-col w-full overflow-hidden rounded-2xl">
             <div className="bg-black/80 w-full p-2.5 px-4">
               <p className=" font-semibold flex w-full justify-between">
-                <span>Vibing with</span>{" "}
-                {listener && `${listener?.totalUsers - 1}`}
+                <span>Vibing with</span> {listener && `${listener?.totalUsers}`}
               </p>
             </div>
             <div className="bg-black/80 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
-              {listener?.roomUsers
-                ?.filter((r) => r.userId?.username !== user?.username)
-                ?.map((user, j) => (
-                  <div key={j} className=" w-full py-2 flex items-center gap-2">
-                    <ProfilePic imageUrl={user?.userId?.imageUrl} />
-                    <div className="text-sm leading-tight">
-                      <p>{user?.userId?.name}</p>
-                      <p className=" text-xs">{user?.userId?.username}</p>
-                    </div>
+              {listener?.roomUsers?.map((user, j) => (
+                <div key={j} className=" w-full py-2 flex items-center gap-2">
+                  <ProfilePic imageUrl={user?.userId?.imageUrl} />
+                  <div className="text-sm leading-tight">
+                    <p>{user?.userId?.name}</p>
+                    <p className=" text-xs">{user?.userId?.username}</p>
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -124,7 +118,7 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
           <DialogDescription />
         </DialogHeader>
         <div className=" w-full flex items-center justify-center">
-          <Avatar className=" size-60">
+          <Avatar className=" size-56  border border-white/15">
             <AvatarImage loading="lazy" src={imageUrl} />
             <AvatarFallback>SX</AvatarFallback>
           </Avatar>

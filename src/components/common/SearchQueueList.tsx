@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import VoteIcon from "./VoteIcon";
-import { emitMessage } from "@/lib/customEmits";
 import Image from "next/image";
 function SearchQueueList({
   searchQu,
@@ -24,12 +23,16 @@ function SearchQueueList({
   selectedSongs: searchResults[];
 }) {
   const [queue, setQueue] = useState<searchResults[]>(searchQu || []);
-  const { user, setShowDragOptions, setShowAddDragOptions } = useUserContext();
+  const { user, setShowDragOptions, setShowAddDragOptions, emitMessage } =
+    useUserContext();
   const { currentSong, isPlaying } = useAudio();
 
-  const upVote = useCallback((song: searchResults) => {
-    emitMessage("upvote", { queueId: song?.queueId });
-  }, []);
+  const upVote = useCallback(
+    (song: searchResults) => {
+      emitMessage("upvote", { queueId: song?.queueId });
+    },
+    [emitMessage]
+  );
   const handleDelete = useCallback(
     (song: searchResults) => {
       if (isDeleting) return;
@@ -41,7 +44,7 @@ function SearchQueueList({
         setQueue((prev) => prev.filter((s) => s.id !== song.id));
       }
     },
-    [user, isDeleting]
+    [user, isDeleting, emitMessage]
   );
   const handleUpVote = useDebounce(upVote);
 
@@ -107,7 +110,7 @@ function SearchQueueList({
       if (user?.role !== "admin") return toast.error("Only admin can play");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
-    [isDeleting, user, currentSong]
+    [isDeleting, user, currentSong, emitMessage]
   );
   const handlePlay = useDebounce(Play);
 

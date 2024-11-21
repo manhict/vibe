@@ -16,10 +16,9 @@ import { Input } from "../ui/input";
 import { encryptObjectValues } from "@/utils/utils";
 import api from "@/lib/api";
 import { AtSign, LoaderCircle, Sun } from "lucide-react";
-import { socket } from "@/app/socket";
 import confetti from "canvas-confetti";
 function OnBoarding() {
-  const { user, setUser } = useUserContext();
+  const { user, setUser, socketRef } = useUserContext();
   const [inputValue, setInputValue] = useState(user?.username);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(() => {
@@ -67,7 +66,7 @@ function OnBoarding() {
         setError(res.error);
       }
       if (res.success) {
-        socket.emit("profile");
+        socketRef.current.emit("profile");
         setError(null);
         setCurrentStep((prev) => prev + 1);
         if (user) {
@@ -80,7 +79,7 @@ function OnBoarding() {
       }
       setLoader(false);
     },
-    [user, setUser]
+    [user, setUser, socketRef]
   );
 
   // Animation variants text

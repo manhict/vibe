@@ -29,7 +29,7 @@ function InviteButton() {
         toast.success("Link copied to clipboard!");
       }
     } catch (error: any) {}
-  }, []);
+  }, [inviteLink]);
   return (
     <Dialog>
       <DialogTrigger asChild>

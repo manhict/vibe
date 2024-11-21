@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import VoteIcon from "./VoteIcon";
-import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 import Image from "next/image";
 import autoAnimate from "@formkit/auto-animate";
@@ -36,15 +35,19 @@ function QueueListComp({
     showDragOptions,
     setShowDragOptions,
     setShowAddDragOptions,
+    emitMessage,
   } = useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
   const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const upVote = useCallback((song: searchResults) => {
-    emitMessage("upvote", { queueId: song?.queueId });
-  }, []);
+  const upVote = useCallback(
+    (song: searchResults) => {
+      emitMessage("upvote", { queueId: song?.queueId });
+    },
+    [emitMessage]
+  );
 
   const handleUpVote = useDebounce(upVote);
 
@@ -105,7 +108,7 @@ function QueueListComp({
       if (user?.role !== "admin") return toast.error("Only admin can play");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
-    [isDeleting, user, currentSong]
+    [isDeleting, user, currentSong, emitMessage]
   );
 
   const handlePlay = useDebounce(Play);

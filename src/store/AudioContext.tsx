@@ -13,8 +13,6 @@ import React, {
   SetStateAction,
 } from "react";
 import { useUserContext } from "./userStore";
-import { socket } from "@/app/socket";
-import { emitMessage } from "@/lib/customEmits";
 import getURL from "@/utils/utils";
 import { toast } from "sonner";
 
@@ -77,65 +75,71 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const duration = useMemo(() => currentDuration, [currentDuration]);
   const volume = useMemo(() => currentVolume, [currentVolume]);
   const skipCountRef = useRef(0); // Ref to track skipped songs
-  const { user, isAdminOnline, queue } = useUserContext();
+  const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
   // play
-  const play = useCallback(async (song: searchResults) => {
-    setCurrentSong(song);
-    if (audioRef.current) {
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.src = "";
-      }
-      if (videoRef.current) {
-        videoRef.current.src = "";
-      }
-      audioRef.current.src = "";
-      const currentVideoUrl = getURL(song).replace(
-        process.env.VIDEO_STREAM_URI || "",
-        process.env.STREAM_URL || ""
-      );
+  const play = useCallback(
+    async (song: searchResults) => {
+      setCurrentSong(song);
+      if (audioRef.current) {
+        if (backgroundVideoRef.current) {
+          backgroundVideoRef.current.src = "";
+        }
+        if (videoRef.current) {
+          videoRef.current.src = "";
+        }
+        audioRef.current.src = "";
+        const currentVideoUrl = getURL(song).replace(
+          process.env.VIDEO_STREAM_URI || "",
+          process.env.STREAM_URL || ""
+        );
 
-      audioRef.current.src = currentVideoUrl;
+        audioRef.current.src = currentVideoUrl;
 
-      audioRef.current
-        .play()
-        .then(async () => {
-          // Reset skip count on successful play
-          skipCountRef.current = 0;
-          if (videoRef.current) {
-            videoRef.current?.play();
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current?.play();
-          }
-          setIsPlaying(true);
-        })
-        .catch((e) => {
-          if (e.message.startsWith("Failed to load because no supported")) {
-            skipCountRef.current += 1;
-            if (skipCountRef.current >= 3) {
-              toast.error("Maximum skip limit reached. Unable to play song.", {
-                style: { background: "#e94625" },
-              });
-            } else {
-              emitMessage("songEnded", "songEnded");
-              toast.error("Song not available. Skipping", {
-                style: { background: "#e94625" },
-              });
+        audioRef.current
+          .play()
+          .then(async () => {
+            // Reset skip count on successful play
+            skipCountRef.current = 0;
+            if (videoRef.current) {
+              videoRef.current?.play();
             }
-          }
-          console.error("Error playing audio", e.message);
-        });
-    }
-  }, []);
+            if (backgroundVideoRef.current) {
+              backgroundVideoRef.current?.play();
+            }
+            setIsPlaying(true);
+          })
+          .catch((e) => {
+            if (e.message.startsWith("Failed to load because no supported")) {
+              skipCountRef.current += 1;
+              if (skipCountRef.current >= 3) {
+                toast.error(
+                  "Maximum skip limit reached. Unable to play song.",
+                  {
+                    style: { background: "#e94625" },
+                  }
+                );
+              } else {
+                emitMessage("songEnded", "songEnded");
+                toast.error("Song not available. Skipping", {
+                  style: { background: "#e94625" },
+                });
+              }
+            }
+            console.error("Error playing audio", e.message);
+          });
+      }
+    },
+    [emitMessage]
+  );
 
   // pause
   const pause = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    socket.emit("status", false);
+    socketRef.current.emit("status", false);
     setIsPlaying(false);
-  }, []);
+  }, [socketRef]);
 
   // resume
   const resume = useCallback(() => {
@@ -143,14 +147,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(() => {
-          socket.emit("status", true);
+          socketRef.current.emit("status", true);
           setIsPlaying(true);
         })
         .catch((error) => {
           console.error("Error resuming audio:", error);
         });
     }
-  }, [currentSong]);
+  }, [currentSong, socketRef]);
 
   // toggle play/pause
   const togglePlayPause = useCallback(() => {
@@ -205,19 +209,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Play the next song in the queue
   const playNext = useCallback(() => {
-    if (socket.connected) {
-      audioRef.current?.pause();
-      emitMessage("playNext", "playNext");
-    }
-  }, []);
+    audioRef.current?.pause();
+    emitMessage("playNext", "playNext");
+  }, [emitMessage]);
 
   // Play the previous song in the queue
   const playPrev = useCallback(() => {
-    if (socket.connected) {
-      audioRef.current?.pause();
-      emitMessage("playPrev", "playPrev");
-    }
-  }, []);
+    audioRef.current?.pause();
+    emitMessage("playPrev", "playPrev");
+  }, [emitMessage]);
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {
     const handleBlock = () => {
@@ -296,48 +296,47 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioRef.current &&
         !audioRef.current.paused
       ) {
-        socket.emit("progress", audioRef.current?.currentTime);
+        socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
     }, 2000);
     return () => clearInterval(t);
-  }, [isAdminOnline]);
+  }, [isAdminOnline, socketRef]);
 
   useEffect(() => {
-    const handlePlay = () => {
-      // requestAnimationFrame(updateProgress),
-      setIsPlaying(true);
-      if (videoRef.current) {
-        videoRef.current?.play();
-      }
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current?.play();
-      }
-    };
-    const handlePause = () => {
-      setIsPlaying(false);
-      if (videoRef.current) {
-        videoRef.current?.pause();
-      }
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current?.pause();
-      }
-    };
-    const handleCanPlay = () => {
-      setMediaSession();
-
-      // if (audioRef.current) {
-      //   setDuration(audioRef.current.duration);
-      // }
-    };
-    const handleEnd = () => {
-      if (isAdminOnline.current) {
-        emitMessage("songEnded", "songEnded");
-      }
-    };
-
     const audioElement = audioRef.current;
 
     if (audioElement) {
+      const handlePlay = () => {
+        // requestAnimationFrame(updateProgress),
+        setIsPlaying(true);
+        if (videoRef.current) {
+          videoRef.current?.play();
+        }
+        if (backgroundVideoRef.current) {
+          backgroundVideoRef.current?.play();
+        }
+      };
+      const handlePause = () => {
+        setIsPlaying(false);
+        if (videoRef.current) {
+          videoRef.current?.pause();
+        }
+        if (backgroundVideoRef.current) {
+          backgroundVideoRef.current?.pause();
+        }
+      };
+      const handleCanPlay = () => {
+        setMediaSession();
+
+        // if (audioRef.current) {
+        //   setDuration(audioRef.current.duration);
+        // }
+      };
+      const handleEnd = () => {
+        if (isAdminOnline.current) {
+          emitMessage("songEnded", "songEnded");
+        }
+      };
       audioElement.addEventListener("play", handlePlay);
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
@@ -349,7 +348,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioElement.removeEventListener("canplay", handleCanPlay);
       };
     }
-  }, [setMediaSession, isAdminOnline]);
+  }, [setMediaSession, isAdminOnline, emitMessage]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -372,21 +371,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
     };
     document.addEventListener("keydown", handleKeyDown);
-    const volume = localStorage.getItem("volume");
-    if (volume && audioRef.current && audioRef?.current.volume !== 0) {
-      handleVolumeChange(Number(volume));
-    }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [togglePlayPause, playNext, playPrev]);
 
-  useEffect(() => {
-    if (!currentSong && queue.length == 1) {
-      play(queue[0]);
-    }
-  }, [currentSong, queue, play]);
   const value = useMemo(
     () => ({
       play,

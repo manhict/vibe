@@ -3,14 +3,13 @@ import { Slider } from "../ui/slider";
 import { formatElapsedTime } from "@/utils/utils";
 import { useUserContext } from "@/store/userStore";
 import { toast } from "sonner";
-import { socket } from "@/app/socket";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
   const { audioRef, setProgress, videoRef, backgroundVideoRef } = useAudio();
   const [currentProgress, setAudioProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-  const { user } = useUserContext();
+  const { user, socketRef } = useUserContext();
   const seek = useCallback(
     (value: number) => {
       if (audioRef.current) {
@@ -30,7 +29,7 @@ function ProgressBar({ className }: { className?: string }) {
       if (user && user.role !== "admin") {
         return toast.error("Only admin is allowed to seek");
       }
-      socket.emit("seek", e[0]);
+      socketRef.current.emit("seek", e[0]);
       seek(e[0]);
     }
   };
@@ -55,10 +54,10 @@ function ProgressBar({ className }: { className?: string }) {
       const clickPosition = e.clientX - rect.left;
       const newProgress = (clickPosition / rect.width) * duration;
       setProgress(newProgress);
-      socket.emit("seek", newProgress);
+      socketRef.current.emit("seek", newProgress);
       seek(newProgress);
     },
-    [duration, seek, setProgress, user]
+    [duration, seek, setProgress, user, socketRef]
   );
   const lastEmittedTime = useRef(0);
   const lastEmitted = useRef(0);
@@ -85,7 +84,7 @@ function ProgressBar({ className }: { className?: string }) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, []);
+  }, [audioRef, backgroundVideoRef, videoRef]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -106,7 +105,7 @@ function ProgressBar({ className }: { className?: string }) {
         audioElement.removeEventListener("canplay", canPlay);
       };
     }
-  }, []);
+  }, [audioRef, updateProgress]);
   return (
     <div
       className={cn(

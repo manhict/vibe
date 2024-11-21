@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useUserContext } from "@/store/userStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { emitMessage } from "@/lib/customEmits";
 import { roomsData, searchResults } from "@/lib/types";
 import { toast } from "sonner";
 import useAddSong from "@/Hooks/useAddSong";
@@ -20,6 +19,7 @@ export default function DraggableOptions() {
     setShowDragOptions,
     showAddDragOptions,
     setShowAddDragOptions,
+    emitMessage,
   } = useUserContext();
   const [room, setRooms] = useState<roomsData[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -52,7 +52,7 @@ export default function DraggableOptions() {
         );
       }
     },
-    [setQueue, user]
+    [setQueue, user, emitMessage]
   );
 
   const handleDrop = useCallback(

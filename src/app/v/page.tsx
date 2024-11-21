@@ -1,5 +1,7 @@
 import Home from "@/components/common/Home";
 import { Metadata } from "next";
+import { getLoggedInUser } from "../actions/getLoggedInUser";
+import { cookies } from "next/headers";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -62,6 +64,8 @@ export async function generateMetadata({
     },
   };
 }
-export default function page() {
-  return <Home />;
+export default async function page() {
+  const user = await getLoggedInUser();
+  const roomId = cookies().get("room")?.value;
+  return <Home user={user} roomId={roomId} />;
 }

@@ -1,13 +1,11 @@
-import { socket } from "@/app/socket";
 import api from "@/lib/api";
-import { emitMessage } from "@/lib/customEmits";
 import { searchResults } from "@/lib/types";
 import { useUserContext } from "@/store/userStore";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
 function useAddSong() {
-  const { queue } = useUserContext();
+  const { queue, socketRef, emitMessage } = useUserContext();
   const addSong = useCallback(
     async (
       selectedSongs: searchResults[],
@@ -41,12 +39,12 @@ function useAddSong() {
           }`
         );
         if (!check) {
-          socket.emit("event", roomId);
+          socketRef.current.emit("event", roomId);
         }
       }
       toast.dismiss("adding");
     },
-    [queue]
+    [queue, socketRef, emitMessage]
   );
 
   return { addSong };

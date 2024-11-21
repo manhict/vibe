@@ -3,7 +3,13 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
-import React, { SetStateAction, useCallback, useState } from "react";
+import React, {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/store/AudioContext";
 import {
@@ -16,19 +22,19 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 
 function Chat({
-  messagesEndRef,
   setIsChatOpen,
+  isChatOpen,
 }: {
+  isChatOpen: boolean;
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
 }) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
-  const { user, listener } = useUserContext();
+  const { user, listener, emitMessage, setSeen } = useUserContext();
   const { messages } = useSocket();
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,8 +44,24 @@ function Chat({
       emitMessage("message", message);
       setMessage("");
     },
-    [message]
+    [message, emitMessage]
   );
+
+  useEffect(() => {
+    if (isChatOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setSeen(true);
+    } else {
+      if (messagesEndRef.current) {
+        setSeen(true);
+      }
+    }
+  }, [messages, isChatOpen, setSeen]);
+  useEffect(() => {
+    if (messages.length > 0) {
+      setSeen(false);
+    }
+  }, [messages, setSeen]);
 
   return (
     <>
