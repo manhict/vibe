@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import React from "react";
 
 const changelogContent = `
 ## What's New ⚡️
@@ -39,7 +40,7 @@ const changelogContent = `
 We're constantly working to improve your experience. Stay tuned for more updates! 🚀
 `;
 
-function Changelog() {
+function ChangelogComp() {
   return (
     <Dialog>
       <DialogTrigger>
@@ -78,5 +79,5 @@ function Changelog() {
     </Dialog>
   );
 }
-
+const Changelog = React.memo(ChangelogComp);
 export default Changelog;
