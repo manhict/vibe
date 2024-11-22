@@ -23,6 +23,7 @@ function SearchQueueList({
   selectedSongs: searchResults[];
 }) {
   const [queue, setQueue] = useState<searchResults[]>(searchQu || []);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { user, setShowDragOptions, setShowAddDragOptions, emitMessage } =
     useUserContext();
   const { currentSong, isPlaying } = useAudio();
@@ -132,6 +133,9 @@ function SearchQueueList({
     setShowDragOptions(false);
     setShowAddDragOptions(false);
   };
+  useEffect(() => {
+    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+  }, [selectedSongs]);
   return (
     <>
       {queue?.length > 0 ? (
@@ -222,7 +226,7 @@ function SearchQueueList({
                   <div className=" relative mr-0.5 pr-1.5">
                     <input
                       onChange={() => handleSelect(song, false)}
-                      checked={selectedSongs.includes(song)}
+                      checked={selectedIds.has(song.id)}
                       name={song?.id + i}
                       id={song?.id + i}
                       type="checkbox"
