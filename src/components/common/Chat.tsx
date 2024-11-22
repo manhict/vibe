@@ -161,7 +161,7 @@ function Chat({
         <p>Chat</p>
         <div className=" flex items-center">
           {listener?.roomUsers
-            .filter((r) => r.userId.username == user?.username)
+            .filter((r) => r.userId.username != user?.username)
             ?.slice(0, 5)
             ?.map((roomUser, i) => (
               <div
