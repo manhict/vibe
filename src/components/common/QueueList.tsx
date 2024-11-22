@@ -1,7 +1,13 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 import { formatArtistName, getSpotifyTrackID } from "@/utils/utils";
-import React, { SetStateAction, useCallback, useEffect, useRef } from "react";
+import React, {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -41,7 +47,7 @@ function QueueListComp({
   const { loading, handleUpdateQueue } = useSocket();
   const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
-
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const upVote = useCallback(
     (song: searchResults) => {
       emitMessage("upvote", { queueId: song?.queueId });
@@ -224,6 +230,9 @@ function QueueListComp({
     e.preventDefault();
     setIsDragging(false);
   };
+  useEffect(() => {
+    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+  }, [selectedSongs]);
   return (
     <div
       onDragEnter={handleDragEnter}
@@ -344,7 +353,7 @@ function QueueListComp({
               <div className="relative mr-0.5 pr-1.5">
                 <input
                   onChange={() => handleSelect(song, false)}
-                  checked={selectedSongs.includes(song)}
+                  checked={selectedIds.has(song.id)}
                   name={song?.id + i}
                   id={song?.id + i}
                   type="checkbox"
