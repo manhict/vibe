@@ -3,11 +3,11 @@ import Privacy from "./Privacy";
 export async function generateMetadata() {
   return {
     title: `Vibe Privacy Policy`,
-    description: `Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!`,
+    description: `Democratic Music Selection:`,
 
     icons: { icon: "/favicon.png" },
     openGraph: {
-      title: "Vibe - Votes decide the beats",
+      title: "Vibe",
       description:
         "Explore, vote, and enjoy a community-driven music experience where your votes decide the beats.",
       url: "https://getvibe.in",
@@ -17,14 +17,14 @@ export async function generateMetadata() {
           url: "https://getvibe.in/logo.svg",
           width: 1200,
           height: 630,
-          alt: "Vibe - Votes decide the beats",
+          alt: "Vibe",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       site: "@tanmay11117",
-      title: "Vibe - Votes decide the beats",
+      title: "Vibe",
       description:
         "Discover, vote, and influence the playlist in real-time on Vibe, the collaborative music platform.",
       images: [
