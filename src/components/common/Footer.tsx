@@ -20,7 +20,7 @@ function Footer() {
         </span>
         <p className=" mt-2">together.</p>
       </div>
-      <div className=" flex -ml-1 max-md:text-base text-xl items-center font-medium gap-2">
+      <div className=" flex -ml-1 max-md:text-base text-xl items-center font-semibold gap-2">
         <p className=" ">Built by </p>{" "}
         <span>
           <Link href="https://twitter.com/tanmay11117" target="_blank">

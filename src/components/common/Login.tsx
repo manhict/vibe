@@ -20,7 +20,7 @@ import Link from "next/link";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { user, roomId, socketRef } = useUserContext();
+  const { user, roomId } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -44,7 +44,6 @@ function Login({ footer = false }: { footer?: boolean }) {
       setLoader(false);
     }
   };
-  if (!socketRef.current.connected) return;
   return (
     <Dialog
       key={"user Login"}

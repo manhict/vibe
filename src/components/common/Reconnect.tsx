@@ -30,7 +30,7 @@ function Reconnect() {
       <div className=" my-4 rounded-xl overflow-hidden">
         <Image alt={emotion.msg} src={emotion.gif} height={280} width={280} />
       </div>
-      <p className=" text-lg">Loading latest snaps...</p>
+      <p className=" text-base">Loading latest snaps...</p>
       <LoaderCircleIcon className=" my-2 size-7 animate-spin" />
     </div>
   );
