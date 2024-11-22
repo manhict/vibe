@@ -134,7 +134,7 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center flex"
+              className="max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center flex"
             >
               <div className="flex items-center relative">
                 <div
@@ -159,7 +159,7 @@ function Page() {
               <Button
                 disabled={loader || typeof error === "string"}
                 type="submit"
-                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2"
+                className=" bg-white rounded-lg flex-col justify-center items-center gap-2"
               >
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
