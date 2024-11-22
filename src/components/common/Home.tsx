@@ -30,6 +30,7 @@ export default function Home({
   const { addSong } = useAddSong();
   useEffect(() => {
     const handlePaste = async (event: ClipboardEvent) => {
+      if (event instanceof HTMLInputElement) return;
       const droppedUrl = event?.clipboardData?.getData("text");
       if (!droppedUrl) return;
       if (droppedUrl.includes("youtube.com")) {
