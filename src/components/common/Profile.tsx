@@ -185,7 +185,14 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
         />
 
         <svg
-          onClick={() => (window.location.href = "/browse")}
+          onClick={() => {
+            const confirmNavigation = window.confirm(
+              "Are you sure you want to navigate to the browse page?"
+            );
+            if (confirmNavigation) {
+              window.location.href = "/browse";
+            }
+          }}
           width="24"
           height="25"
           viewBox="0 0 24 25"

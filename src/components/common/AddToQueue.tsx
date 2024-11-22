@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Search, Trash2, X } from "lucide-react";
+import { LoaderCircle, Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
@@ -16,6 +16,14 @@ import { data, searchResults } from "@/lib/types";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
@@ -104,7 +112,32 @@ function AddToQueueComp() {
     setSelectedSongs([]);
   };
   const [isDragging, setIsDragging] = useState(false);
-
+  const [ip, setIp] = useState<string>("");
+  useEffect(() => {
+    fetch("https://api.ipify.org/").then(async (r) => {
+      setIp(await r.text());
+    });
+  }, []);
+  const [loader, setLoader] = useState<boolean>(false);
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const payload: { feedback: string } | any = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      if (payload.feedback.trim().length == 0) return;
+      setLoader(true);
+      await api.post("https://ngl-backend.vercel.app/api/message", {
+        ip: ip,
+        messageInput: `@vibe ${payload.feedback}`,
+        uid: "Pf9jmYG5eIRIsb8HgYjHikG01OS2",
+      });
+      setLoader(false);
+    },
+    [ip]
+  );
   return (
     <div
       className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
@@ -171,6 +204,44 @@ function AddToQueueComp() {
               )}
             </Button>
           )}
+          <Dialog>
+            <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-9 bg-purple p-2.5 hover:bg-purple/80">
+              📩
+            </DialogTrigger>
+            <DialogContent className="w-96 max-md:w-[85dvw] flex flex-col items-center justify-center bg-transparent border-none">
+              <DialogHeader className="h-0">
+                <DialogTitle />
+                <DialogDescription />
+              </DialogHeader>
+              <div className=" flex w-full items-center justify-center">
+                <div className="flex w-full backdrop-blur-xl flex-col  overflow-hidden p-7 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45 to-black/25 rounded-[24px]">
+                  <form onSubmit={handleSubmit} className=" w-full space-y-4">
+                    <p className=" font-semibold text-2xl">
+                      Feedback / Question
+                    </p>
+                    <textarea
+                      maxLength={195}
+                      className="flex h-40 w-full rounded-md border border-white/15 outline-none bg-transparent px-3 py-2 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed text-base resize-none disabled:opacity-90"
+                      placeholder="Type your message here."
+                      name="feedback"
+                    />
+                    <Button
+                      disabled={loader}
+                      variant={"default"}
+                      className=" w-full mt-2.5 bg-purple hover:bg-purple/80 text-white"
+                      type="submit"
+                    >
+                      {loader ? (
+                        <LoaderCircle className=" animate-spin " />
+                      ) : (
+                        "      Send ⚡️"
+                      )}
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       {isDeleting && queue.length > 1 && (
