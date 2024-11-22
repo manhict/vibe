@@ -22,7 +22,8 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { useSocket } from "@/Hooks/useSocket";
+import { messages } from "@/lib/types";
+import { decrypt } from "tanmayo7lock";
 
 function Chat({
   setIsChatOpen,
@@ -34,8 +35,9 @@ function Chat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
-  const { user, listener, emitMessage, setSeen } = useUserContext();
-  const { messages } = useSocket();
+  const { user, listener, emitMessage, setSeen, socketRef } = useUserContext();
+  const [messages, setMessages] = useState<messages[]>([]);
+
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -47,21 +49,40 @@ function Chat({
     [message, emitMessage]
   );
 
+  const handleMessage = useCallback(
+    (data: any): void => {
+      const message = decrypt(data) as messages;
+      setMessages((prev) => [...prev, message]);
+      const audio = new Audio(
+        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
+      );
+      if (!isChatOpen) {
+        setSeen(false);
+      }
+      if (document.hidden) {
+        audio.play();
+      } else {
+        audio.pause();
+        audio.currentTime = 0; // Reset the audio if needed
+      }
+    },
+    [setSeen, isChatOpen]
+  );
+
   useEffect(() => {
     if (isChatOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       setSeen(true);
-    } else {
-      if (messagesEndRef.current) {
-        setSeen(true);
-      }
     }
-  }, [messages, isChatOpen, setSeen]);
+  }, [setSeen, isChatOpen]);
+
   useEffect(() => {
-    if (messages.length > 0) {
-      setSeen(false);
-    }
-  }, [messages, setSeen]);
+    const currentSocket = socketRef.current;
+    currentSocket.on("message", handleMessage);
+    return () => {
+      currentSocket.off("message", handleMessage);
+    };
+  }, [socketRef, handleMessage]);
 
   return (
     <>

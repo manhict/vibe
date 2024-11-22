@@ -9,19 +9,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import React from "react";
 
 const changelogContent = `
 ## What's New ⚡️
 
 ### 🎬 Latest Updates
 
-<video autoplay loop muted>
+<video autoplay playsinline loop muted>
   <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/0C86F376-F67E-4778-A657-C6BDB82BF104.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 ### ✨ New Features
 
+- 🔖 **Copy-Paste to add song**: Copy song url from popular platforms like **YouTube** and **Spotify** and paste.
 - 🚀 **Drag-drop to add song**: Drag and drop songs from popular platforms like **YouTube** and **Spotify**.
 - 🧹 **Drag-drop to add and delete**: Easily drag and drop to add songs to another room or delete them.
 
@@ -38,7 +40,7 @@ const changelogContent = `
 We're constantly working to improve your experience. Stay tuned for more updates! 🚀
 `;
 
-function Changelog() {
+function ChangelogComp() {
   return (
     <Dialog>
       <DialogTrigger>
@@ -61,11 +63,11 @@ function Changelog() {
           <DialogTitle />
           <DialogDescription />
         </DialogHeader>
-        <div className="h-[70dvh] flex items-center justify-center">
+        <div className="h-[90dvh] flex items-center justify-center">
           <div className="flex backdrop-blur-xl flex-col  overflow-hidden p-0 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45 to-black/25 rounded-[24px]">
             <div className="overflow-y-auto hide-scrollbar p-6 w-full h-full text-white">
               <div
-                className="prose prose-invert max-w-none"
+                className="prose prose-invert max-md:prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
                   __html: marked.parse(changelogContent),
                 }}
@@ -77,5 +79,5 @@ function Changelog() {
     </Dialog>
   );
 }
-
+const Changelog = React.memo(ChangelogComp);
 export default Changelog;

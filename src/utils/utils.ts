@@ -209,7 +209,11 @@ export default function getURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` || "/cache.jpg";
+    : `${
+        window.navigator.userAgent.includes("Electron")
+          ? "http://localhost:7777/stream"
+          : process.env.VIDEO_STREAM_URI
+      }/${currentSongUrl}` || "/cache.jpg";
 
   return currentVideoUrl;
 }
@@ -219,7 +223,11 @@ export function getBackgroundURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` || "/cache.jpg";
+    : `${
+        window.navigator.userAgent.includes("Electron")
+          ? "http://localhost:7777/stream"
+          : process.env.BACKGROUND_STREAM_URI
+      }/${currentSongUrl}` || "/cache.jpg";
 
   return currentVideoUrl;
 }

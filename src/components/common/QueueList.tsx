@@ -315,8 +315,28 @@ function QueueListComp({
               <div className=" text-start w-11/12">
                 <p className=" font-semibold truncate">{parse(song.name)}</p>
               </div>
-              <p className="text-[#D0BCFF] opacity-75 truncate text-xs">
+              <p className="text-[#D0BCFF] flex gap-2 items-center opacity-95 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
+                <span>
+                  {song.addedByUser &&
+                    song.addedByUser.username !== user?.username && (
+                      <Avatar
+                        onClick={(e) => e.stopPropagation()}
+                        className=" size-4 relative group"
+                      >
+                        <AvatarImage
+                          draggable="false"
+                          loading="lazy"
+                          alt={song.name}
+                          height={500}
+                          width={500}
+                          className="object-cover"
+                          src={song.addedByUser?.imageUrl}
+                        />
+                        <AvatarFallback>SX</AvatarFallback>
+                      </Avatar>
+                    )}
+                </span>
               </p>
             </div>
 

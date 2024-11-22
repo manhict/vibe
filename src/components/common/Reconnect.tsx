@@ -2,19 +2,20 @@
 import { useSocket } from "@/Hooks/useSocket";
 import { BACKGROUND_APP_TIMEOUT, getRandom } from "@/utils/utils";
 import { LoaderCircleIcon } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 const message = [
   {
     msg: "Welcome back",
-    gif: "https://media.tenor.com/s3x-q943K-MAAAPo/omori-basil.mp4",
+    gif: "https://media.tenor.com/xAXxRsuJG9QAAAAj/white-rabbit.gif",
   },
   {
     msg: "Missed you",
-    gif: "https://media.tenor.com/Ag8zeVQT3fYAAAPo/wizard-cat-cat-wizard.mp4",
+    gif: "https://media.tenor.com/8bUmBbKU618AAAAi/cony-and.gif",
   },
   {
     msg: "oops, i was just hiding",
-    gif: "https://media.tenor.com/mAXtaG12njEAAAPo/cats-kissing.mp4",
+    gif: "https://media.tenor.com/LMuHrXvRHLQAAAAi/the-simpsons-homer-simpson.gif",
   },
 ];
 
@@ -25,11 +26,11 @@ function Reconnect() {
   if (hiddenTimeRef.current < BACKGROUND_APP_TIMEOUT) return;
   return (
     <div className=" w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/40 backdrop-blur-sm z-50 absolute flex items-center flex-col justify-center font-semibold text-2xl">
-      <p>{emotion.msg}</p>
+      {/* <p>{emotion.msg}</p> */}
       <div className=" my-4 rounded-xl overflow-hidden">
-        <video muted autoPlay loop src={emotion.gif} height={280} width={280} />
+        <Image alt={emotion.msg} src={emotion.gif} height={280} width={280} />
       </div>
-      <p className=" text-lg">Restoring activity...</p>
+      <p className=" text-lg">Loading latest snaps...</p>
       <LoaderCircleIcon className=" my-2 size-7 animate-spin" />
     </div>
   );
