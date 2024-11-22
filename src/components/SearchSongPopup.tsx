@@ -320,7 +320,7 @@ function SearchSongPopupComp({
             <label
               htmlFor={song?.id}
               key={i}
-              title={`${parse(song.name)} (${
+              title={`${parse(song?.name)} (${
                 formatArtistName(song?.artists?.primary) || "Unknown"
               })`}
               className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
@@ -342,7 +342,7 @@ function SearchSongPopupComp({
               </Avatar>
               <div className="text-sm font-medium w-10/12 truncate">
                 <p className="font-semibold truncate w-11/12">
-                  {parse(song.name)}
+                  {parse(song?.name)}
                 </p>
                 <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                   {formatArtistName(song.artists.primary)}
@@ -396,13 +396,13 @@ function SearchSongPopupComp({
                       <AvatarFallback>SX</AvatarFallback>
                     </Avatar>
                     <div
-                      title={`${parse(song.name)} (${
+                      title={`${parse(song?.name)} (${
                         formatArtistName(song?.artists?.primary) || "Unknown"
                       })`}
                       className=" flex flex-col  leading-tight"
                     >
                       <p className=" w-24 font-semibold truncate">
-                        {parse(song.name)}
+                        {parse(song?.name)}
                       </p>
                       <p className=" w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
                         {formatArtistName(song?.artists?.primary) || "Unknown"}

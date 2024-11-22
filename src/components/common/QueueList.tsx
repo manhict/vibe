@@ -322,7 +322,7 @@ function QueueListComp({
             </div>
             <div className="flex flex-col gap-1 flex-grow text-sm w-6/12">
               <div className=" text-start w-11/12">
-                <p className=" font-semibold truncate">{parse(song.name)}</p>
+                <p className=" font-semibold truncate">{parse(song?.name)}</p>
               </div>
               <p className="text-[#D0BCFF] flex gap-2 items-center opacity-95 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}

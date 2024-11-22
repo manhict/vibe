@@ -214,7 +214,7 @@ function SearchQueueList({
                 >
                   <div className=" w-auto text-start">
                     <p className=" font-semibold truncate">
-                      {parse(song.name)}
+                      {parse(song?.name)}
                     </p>
                   </div>
 
