@@ -72,15 +72,15 @@ export const springConfig = {
 };
 
 export const playVariants = {
-  hidden: { y: -17 }, // Comes from top
+  hidden: { y: -25 }, // Comes from top
   visible: { y: 0, transition: springConfig }, // Spring-based movement
-  exit: { y: -17, transition: springConfig }, // Exits upwards with spring effect
+  exit: { y: -25, transition: springConfig }, // Exits upwards with spring effect
 };
 
 export const pauseVariants = {
-  hidden: { y: 17 }, // Comes from bottom
+  hidden: { y: 25 }, // Comes from bottom
   visible: { y: 0, transition: { duration: 0.1, ease: "easeInOut" } }, // Spring-based movement
-  exit: { y: 17, transition: { duration: 0.1, ease: "easeInOut" } }, // Exits downwards with spring effect
+  exit: { y: 25, transition: { duration: 0.1, ease: "easeInOut" } }, // Exits downwards with spring effect
 };
 
 export const slideInVariants = {
