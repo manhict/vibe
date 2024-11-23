@@ -130,16 +130,15 @@ function AddToQueueComp() {
       });
       if (payload.feedback.trim().length == 0) return;
       setLoader(true);
-      const res = await api.post("https://ngl-backend.vercel.app/api/message", {
+      await api.post("https://ngl-backend.vercel.app/api/message", {
         ip: ip,
         messageInput: `@vibe ${payload.feedback}`,
         uid: "Pf9jmYG5eIRIsb8HgYjHikG01OS2",
       });
       e.currentTarget.reset();
       setLoader(false);
-      if (res.success) {
-        setStatus("Feedback received 😃");
-      }
+
+      setStatus("Feedback received 😃");
     },
     [ip]
   );
