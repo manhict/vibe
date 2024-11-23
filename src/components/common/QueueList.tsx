@@ -326,7 +326,7 @@ function QueueListComp({
               </div>
               <p className="text-[#D0BCFF] flex gap-2 items-center opacity-95 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
-                <span>
+                {/* <span>
                   {song.addedByUser &&
                     song.addedByUser.username !== user?.username && (
                       <Avatar
@@ -345,7 +345,7 @@ function QueueListComp({
                         <AvatarFallback>SX</AvatarFallback>
                       </Avatar>
                     )}
-                </span>
+                </span> */}
               </p>
             </div>
 
