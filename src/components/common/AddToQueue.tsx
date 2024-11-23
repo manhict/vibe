@@ -135,11 +135,11 @@ function AddToQueueComp() {
         messageInput: `@vibe ${payload.feedback}`,
         uid: "Pf9jmYG5eIRIsb8HgYjHikG01OS2",
       });
+      e.currentTarget.reset();
+      setLoader(false);
       if (res.success) {
         setStatus("Feedback received 😃");
-        e.currentTarget.reset();
       }
-      setLoader(false);
     },
     [ip]
   );
