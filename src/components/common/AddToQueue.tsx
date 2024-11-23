@@ -141,7 +141,10 @@ function AddToQueueComp() {
             xhr: ip,
             log: payload.feedback,
             nxt: roomId,
-          })
+          }),
+          {
+            showErrorToast: false,
+          }
         );
       } finally {
         setFeedback("");
