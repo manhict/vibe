@@ -21,7 +21,12 @@ const changelogContent = `
   Your browser does not support the video tag.
 </video>
 
----
+
+<video autoplay playsinline loop muted>
+  <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/A02BB57B-F48C-421D-B8AC-B48F03C34260.mp4 type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 
 ### ✨ **New Features**
 
@@ -29,7 +34,6 @@ const changelogContent = `
 - 🚀 **Drag-and-Drop to Add Songs**: Effortlessly drag and drop songs from platforms like **YouTube** and **Spotify**.  
 - 🧹 **Drag-and-Drop for Organizing**: Move songs between rooms or delete them with drag-and-drop ease.  
 
----
 
 ### 🛠️ **What’s Coming Next?**
 
@@ -42,7 +46,6 @@ const changelogContent = `
 - ✍️ **Enhanced Profiles (Might Come)**: We’re considering adding support for bios and more optional details to help you personalize your profile.  
   If you have any suggestions or ideas, we’d love to hear from you! Please send your feedback our way.  
 
----
 
 ### 📈 **Improvements**
 
@@ -50,13 +53,11 @@ const changelogContent = `
 - 🧑‍💻 **Streamlined Onboarding**: New users can now get started in **50% less time**.  
 - 🔍 **Better Search**: Enjoy **auto-suggestions** and lightning-fast search results.  
 
----
 
 ### 🐞 **Bug Fixes**
 
 - ✅ Fixed: User profile updates now reflect immediately.  
 
----
 
 **Stay tuned!** We’re working hard to bring you more exciting features and improvements. Thank you for being a part of our journey! 💙  
 
