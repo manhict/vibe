@@ -14,7 +14,7 @@ export async function generateMetadata() {
       type: "website",
       images: [
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 1200,
           height: 630,
           alt: "Vibe",
@@ -29,13 +29,13 @@ export async function generateMetadata() {
         "Discover, vote, and influence the playlist in real-time on Vibe, the collaborative music platform.",
       images: [
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 1200,
           height: 630,
-          alt: "Vibe - Collaborative Music Platform",
+          alt: "Vibe",
         },
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 800,
           height: 600,
           alt: "Vibe Music Collaboration",
