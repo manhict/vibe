@@ -118,6 +118,7 @@ function AddToQueueComp() {
       setIp(await r.text());
     });
   }, []);
+  const [status, setStatus] = useState<string | null>(null);
   const [loader, setLoader] = useState<boolean>(false);
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -129,11 +130,15 @@ function AddToQueueComp() {
       });
       if (payload.feedback.trim().length == 0) return;
       setLoader(true);
-      await api.post("https://ngl-backend.vercel.app/api/message", {
+      const res = await api.post("https://ngl-backend.vercel.app/api/message", {
         ip: ip,
         messageInput: `@vibe ${payload.feedback}`,
         uid: "Pf9jmYG5eIRIsb8HgYjHikG01OS2",
       });
+      if (res.success) {
+        setStatus("Feedback received 😃");
+        e.currentTarget.reset();
+      }
       setLoader(false);
     },
     [ip]
@@ -226,7 +231,7 @@ function AddToQueueComp() {
                       name="feedback"
                     />
                     <Button
-                      disabled={loader}
+                      disabled={loader || status ? true : false}
                       variant={"default"}
                       className=" w-full mt-2.5 bg-purple hover:bg-purple/80 text-white"
                       type="submit"
@@ -234,7 +239,7 @@ function AddToQueueComp() {
                       {loader ? (
                         <LoaderCircle className=" animate-spin " />
                       ) : (
-                        "      Send ⚡️"
+                        <>{status ? status : "Send 🔫"}</>
                       )}
                     </Button>
                   </form>
