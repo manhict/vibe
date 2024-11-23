@@ -6,7 +6,13 @@ import { BsPip } from "react-icons/bs";
 import Image from "next/image";
 import UpvotedBy from "./UpvotedBy";
 function PLayerCoverComp() {
-  const { user, showVideo, setShowVideo } = useUserContext();
+  const {
+    user,
+    showVideo,
+    setShowVideo,
+    setShowDragOptions,
+    setShowAddDragOptions,
+  } = useUserContext();
   const { currentSong, videoRef } = useAudio();
   const [pip, setPIP] = useState<boolean>(false);
   const handleClick = useCallback(() => {
@@ -27,12 +33,16 @@ function PLayerCoverComp() {
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (currentSong) {
+      setShowDragOptions(true);
+      setShowAddDragOptions(true);
       e.dataTransfer.setData("application/json", JSON.stringify(currentSong));
     }
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setShowDragOptions(false);
+    setShowAddDragOptions(false);
   };
   return (
     <div
