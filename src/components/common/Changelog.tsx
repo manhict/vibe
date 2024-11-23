@@ -23,7 +23,7 @@ const changelogContent = `
 
 
 <video autoplay playsinline loop muted>
-  <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/A02BB57B-F48C-421D-B8AC-B48F03C34260.mp4 type="video/mp4">
+  <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/A02BB57B-F48C-421D-B8AC-B48F03C34260.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
