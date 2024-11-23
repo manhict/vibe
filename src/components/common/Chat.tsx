@@ -175,7 +175,7 @@ function Chat({
                       alt={roomUser?.userId?.name}
                       height={200}
                       width={200}
-                      className=" rounded-full"
+                      className=" rounded-full object-cover"
                       src={roomUser?.userId?.imageUrl}
                     />
                   </Avatar>
