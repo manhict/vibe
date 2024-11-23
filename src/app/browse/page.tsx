@@ -49,14 +49,14 @@ export async function generateMetadata() {
 async function page() {
   const vibeId = cookies().get("vibeId")?.value;
   if (!vibeId) redirect("/");
-  const res = await fetch(`${process.env.SOCKET_URI}/api/rooms/all`, {
+  const res = await fetch(`${process.env.SOCKET_URI}/api/rooms/browse`, {
     headers: {
       cookie: `vibeIdR=${vibeId}`,
     },
   });
   if (!res.ok) redirect("/");
 
-  return <Browse data={(await res.json()).results} />;
+  return <Browse data={await res.json()} />;
 }
 
 export default page;

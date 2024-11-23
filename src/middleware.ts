@@ -42,7 +42,7 @@ export default async function middleware(req: NextRequest) {
       if (!room) {
         const newRoomId = generateRoomId();
         const res = NextResponse.redirect(
-          new URL(`${url.pathname}?room=${newRoomId}&new=true`, req.url)
+          new URL(`${url.pathname}?room=${newRoomId}`, req.url)
         );
         res.cookies.set("room", newRoomId, { path: "/", httpOnly: true });
         return res;
