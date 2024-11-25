@@ -20,7 +20,7 @@ import {
 import InviteButton from "./inviteButton";
 import Youtube from "./Youtube";
 function Listeners({ className }: { className?: string }) {
-  const { listener } = useUserContext();
+  const { listener, user } = useUserContext();
 
   return (
     <div className=" flex items-center w-full justify-between">
@@ -36,32 +36,36 @@ function Listeners({ className }: { className?: string }) {
             <p>Listening</p>
 
             <div className=" flex items-center">
-              {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
-                <TooltipProvider key={i}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className={` ${i !== 0 && "-ml-2"} size-6`}>
-                        <Avatar className=" size-6 border border-white">
-                          <AvatarImage
-                            loading="lazy"
-                            alt={roomUser?.userId?.name}
-                            height={200}
-                            width={200}
-                            className=" rounded-full"
-                            src={roomUser?.userId?.imageUrl}
-                          />
-                          <AvatarFallback>SX</AvatarFallback>
-                        </Avatar>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                      <p>
-                        {roomUser?.userId?.username} ({roomUser?.userId?.name})
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
+              {listener?.roomUsers
+                ?.filter((r) => r.userId.username !== user?.username)
+                ?.slice(0, 5)
+                .map((roomUser, i) => (
+                  <TooltipProvider key={i}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className={` ${i !== 0 && "-ml-2"} size-6`}>
+                          <Avatar className=" size-6 border border-white">
+                            <AvatarImage
+                              loading="lazy"
+                              alt={roomUser?.userId?.name}
+                              height={200}
+                              width={200}
+                              className=" rounded-full object-cover"
+                              src={roomUser?.userId?.imageUrl}
+                            />
+                            <AvatarFallback>SX</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                        <p>
+                          {roomUser?.userId?.username} ({roomUser?.userId?.name}
+                          )
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
               {listener && listener?.totalUsers >= 5 && (
                 <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
                   <Avatar className=" size-6 border-white border">

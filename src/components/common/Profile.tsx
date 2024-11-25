@@ -31,7 +31,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
 
   useEffect(() => {
     console.log(
-      "%cVibe developed by Tanmay and designed by Ajay",
+      "%cVibe developed by Phoenix member #777",
       "color: #D0BCFF; font-size: 20px; padding: 10px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
     );
     setUser(user);
@@ -185,7 +185,14 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
         />
 
         <svg
-          onClick={() => (window.location.href = "/browse")}
+          onClick={() => {
+            const confirmNavigation = window.confirm(
+              "Are you sure you want to navigate to the browse page?"
+            );
+            if (confirmNavigation) {
+              window.location.href = "/browse";
+            }
+          }}
           width="24"
           height="25"
           viewBox="0 0 24 25"

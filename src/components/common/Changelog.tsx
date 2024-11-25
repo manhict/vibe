@@ -12,32 +12,55 @@ import {
 import React from "react";
 
 const changelogContent = `
-## What's New ⚡️
+## **What's New ⚡️**
 
-### 🎬 Latest Updates
+### 🎬 **Latest Updates**
 
 <video autoplay playsinline loop muted>
   <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/0C86F376-F67E-4778-A657-C6BDB82BF104.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-### ✨ New Features
 
-- 🔖 **Copy-Paste to add song**: Copy song url from popular platforms like **YouTube** and **Spotify** and paste.
-- 🚀 **Drag-drop to add song**: Drag and drop songs from popular platforms like **YouTube** and **Spotify**.
-- 🧹 **Drag-drop to add and delete**: Easily drag and drop to add songs to another room or delete them.
+<video autoplay playsinline loop muted>
+  <source src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/A02BB57B-F48C-421D-B8AC-B48F03C34260.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-### 📈 Improvements
 
-- ⚡️ Increased page load speed by **40%** through code optimization.
-- 🧑‍💻 Streamlined user onboarding process, reducing setup time by **50%**.
-- 🔍 Enhanced search functionality with **auto-suggestions** and faster results.
+### ✨ **New Features**
 
-### 🐞 Bug Fixes
+- 🔖 **Copy-Paste to Add Songs**: Simply copy song URLs from platforms like **YouTube** and **Spotify**, and paste them in the app.  
+- 🚀 **Drag-and-Drop to Add Songs**: Effortlessly drag and drop songs from platforms like **YouTube** and **Spotify**.  
+- 🧹 **Drag-and-Drop for Organizing**: Move songs between rooms or delete them with drag-and-drop ease.  
 
-- ✅ Fixed issue where user profile updates did not reflect immediately.
 
-We're constantly working to improve your experience. Stay tuned for more updates! 🚀
+### 🛠️ **What’s Coming Next?**
+
+- 🎧 **Auto-Sync Playlists**: Spotify playlist syncing coming soon!  
+- ✏️ **Edit Room Names**: Rename your rooms on the fly.  
+- 🌎 **Browse and Join Rooms**: Explore public rooms and join them effortlessly.  
+- 🗑️ **Delete Rooms**: Clear up your list by deleting unused rooms.  
+- 🔥 **Listening Streaks**: Track and celebrate your listening milestones.  
+- 🎵 **Fresh UI for Listening**: A new, sleek interface for an improved listening experience.  
+- ✍️ **Enhanced Profiles (Might Come)**: We’re considering adding support for bios and more optional details to help you personalize your profile.  
+  If you have any suggestions or ideas, we’d love to hear from you! Please send your feedback our way.  
+
+
+### 📈 **Improvements**
+
+- ⚡️ **Faster Load Times**: Pages now load **40% faster** thanks to optimized code.  
+- 🧑‍💻 **Streamlined Onboarding**: New users can now get started in **50% less time**.  
+- 🔍 **Better Search**: Enjoy **auto-suggestions** and lightning-fast search results.  
+
+
+### 🐞 **Bug Fixes**
+
+- ✅ Fixed: User profile updates now reflect immediately.  
+
+
+**Stay tuned!** We’re working hard to bring you more exciting features and improvements. Thank you for being a part of our journey! 💙  
+
 `;
 
 function ChangelogComp() {
@@ -58,7 +81,7 @@ function ChangelogComp() {
           />
         </svg>
       </DialogTrigger>
-      <DialogContent className="w-fit max-md:w-[85dvw] flex flex-col items-center justify-center bg-transparent border-none">
+      <DialogContent className="w-fit max-md:w-[55dvw] flex flex-col items-center justify-center bg-transparent border-none">
         <DialogHeader className="h-0">
           <DialogTitle />
           <DialogDescription />

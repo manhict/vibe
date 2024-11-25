@@ -9,6 +9,7 @@ import React, { useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import useDebounce from "@/Hooks/useDebounce";
 import Login from "@/components/common/Login";
+import Link from "next/link";
 function Page() {
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -134,7 +135,7 @@ function Page() {
 
             <form
               onSubmit={makeRoom}
-              className="max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center flex"
+              className="max-w-[340px] hidden h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
             >
               <div className="flex items-center relative">
                 <div
@@ -164,8 +165,12 @@ function Page() {
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
             </form>
-
-            <p className="h-4 text-red-500 font-normal text-xs -mt-2 px-1">
+            <Link href={"/v"} className="w-full md:w-fit">
+              <Button size={"lg"} className=" w-full py-5 text-lg">
+                Start Listening
+              </Button>
+            </Link>
+            <p className="h-2 text-red-500 font-normal text-xs -mt-2 px-1">
               {error}
             </p>
             <Login footer />

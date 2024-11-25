@@ -58,10 +58,13 @@ function SearchSongPopupComp({
 
         const controller = new AbortController();
         abortControllerRef.current = controller;
+        const id = extractPlaylistID(value);
+        if (youtube && !id) {
+          toast.error("Invalid YouTube URL");
+          return;
+        }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(
-              value
-            )}`
+          ? `${process.env.SOCKET_URI}/api/youtube?id=${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -316,54 +319,56 @@ function SearchSongPopupComp({
             songs && "border-t"
           }  flex-col overflow-hidden backdrop-blur-xl bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll`}
         >
-          {songs?.data.results.map((song, i) => (
-            <label
-              htmlFor={song?.id}
-              key={i}
-              title={`${parse(song.name)} (${
-                formatArtistName(song?.artists?.primary) || "Unknown"
-              })`}
-              className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
-                i != songs.data.results.length - 1 && "border-b"
-              }  border-white/20 p-2.5 items-center`}
-            >
-              <Avatar className=" h-14 w-14 rounded-none">
-                <AvatarImage
-                  loading="lazy"
-                  alt={song?.name}
-                  height={500}
-                  width={500}
-                  className=" h-full w-full"
-                  src={
-                    song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
-                  }
-                />
-                <AvatarFallback>SX</AvatarFallback>
-              </Avatar>
-              <div className="text-sm font-medium w-10/12 truncate">
-                <p className="font-semibold truncate w-11/12">
-                  {parse(song.name)}
-                </p>
-                <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
-                  {formatArtistName(song.artists.primary)}
-                </p>
-                {song?.source !== "youtube" && (
-                  <p className=" text-xs text-[#a176eb]">☆</p>
-                )}
-              </div>
-              <div className=" relative ">
-                <input
-                  onChange={() => handleSelect(song, true)}
-                  checked={selectedSongs.includes(song)}
-                  name={song?.id}
-                  id={song?.id}
-                  type="checkbox"
-                  className="peer appearance-none w-5 h-5 border border-gray-400 inset-0 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
-                />
-                <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
-              </div>
-            </label>
-          ))}
+          {songs?.data.results
+            .slice(0, youtube ? 100 : songs.data.results.length)
+            .map((song, i) => (
+              <label
+                htmlFor={song?.id}
+                key={i}
+                title={`${parse(song?.name)} (${
+                  formatArtistName(song?.artists?.primary) || "Unknown"
+                })`}
+                className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
+                  i != songs.data.results.length - 1 && "border-b"
+                }  border-white/20 p-2.5 items-center`}
+              >
+                <Avatar className=" h-14 w-14 rounded-none">
+                  <AvatarImage
+                    loading="lazy"
+                    alt={song?.name}
+                    height={500}
+                    width={500}
+                    className=" h-full w-full"
+                    src={
+                      song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
+                    }
+                  />
+                  <AvatarFallback>SX</AvatarFallback>
+                </Avatar>
+                <div className="text-sm font-medium w-10/12 truncate">
+                  <p className="font-semibold truncate w-11/12">
+                    {parse(song?.name)}
+                  </p>
+                  <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
+                    {formatArtistName(song.artists.primary)}
+                  </p>
+                  {song?.source !== "youtube" && (
+                    <p className=" text-xs text-[#a176eb]">☆</p>
+                  )}
+                </div>
+                <div className=" relative ">
+                  <input
+                    onChange={() => handleSelect(song, true)}
+                    checked={selectedSongs.includes(song)}
+                    name={song?.id}
+                    id={song?.id}
+                    type="checkbox"
+                    className="peer appearance-none w-5 h-5 border border-gray-400 inset-0 rounded-[2px] checked:bg-purple-700 checked:border-purple checked:bg-purple"
+                  />
+                  <MdDone className="hidden w-4 h-4 text-white absolute left-0.5 top-0.5 peer-checked:block" />
+                </div>
+              </label>
+            ))}
           {loading && (
             <p className="text-center text-zinc-500 py-4">Loading..</p>
           )}
@@ -396,13 +401,13 @@ function SearchSongPopupComp({
                       <AvatarFallback>SX</AvatarFallback>
                     </Avatar>
                     <div
-                      title={`${parse(song.name)} (${
+                      title={`${parse(song?.name)} (${
                         formatArtistName(song?.artists?.primary) || "Unknown"
                       })`}
                       className=" flex flex-col  leading-tight"
                     >
                       <p className=" w-24 font-semibold truncate">
-                        {parse(song.name)}
+                        {parse(song?.name)}
                       </p>
                       <p className=" w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
                         {formatArtistName(song?.artists?.primary) || "Unknown"}
@@ -436,7 +441,7 @@ function SearchSongPopupComp({
           songs?.data?.results?.length > 0 &&
           user?.role == "admin" &&
           selectedSongs?.length == 0 && (
-            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
+            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-black/80">
               <DialogClose
                 onClick={handleAddAll}
                 className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"

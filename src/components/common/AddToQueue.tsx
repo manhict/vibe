@@ -1,13 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Search, Trash2, X } from "lucide-react";
+import { LoaderCircle, Search, Trash2, X } from "lucide-react";
 import QueueList from "./QueueList";
 import { useUserContext } from "@/store/userStore";
 import SearchSongPopup from "../SearchSongPopup";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { motion } from "framer-motion";
-import { slideInVariants } from "@/utils/utils";
+import { encryptObjectValues, slideInVariants } from "@/utils/utils";
 import useSelect from "@/Hooks/useSelect";
 import { useSocket } from "@/Hooks/useSocket";
 import useDebounce from "@/Hooks/useDebounce";
@@ -16,6 +16,15 @@ import { data, searchResults } from "@/lib/types";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { toast } from "sonner";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
@@ -104,7 +113,47 @@ function AddToQueueComp() {
     setSelectedSongs([]);
   };
   const [isDragging, setIsDragging] = useState(false);
-
+  const [ip, setIp] = useState<string>("");
+  useEffect(() => {
+    fetch("https://api.ipify.org/").then(async (r) => {
+      setIp(await r.text());
+    });
+  }, []);
+  const [status, setStatus] = useState<string | null>(null);
+  const [loader, setLoader] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<string>("");
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const payload: { feedback: string } | any = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      if (!payload.feedback || payload.feedback.trim().length == 0) return;
+      if (payload.feedback.trim().length > 170)
+        return toast.error("Message to long");
+      try {
+        setLoader(true);
+        await api.post(
+          `${process.env.SOCKET_URI}/api/feedback`,
+          encryptObjectValues({
+            xhr: ip,
+            log: payload.feedback,
+            nxt: roomId,
+          }),
+          {
+            showErrorToast: false,
+          }
+        );
+      } finally {
+        setFeedback("");
+        setLoader(false);
+        setStatus("Feedback received 😃");
+      }
+    },
+    [ip, roomId]
+  );
   return (
     <div
       className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
@@ -171,6 +220,50 @@ function AddToQueueComp() {
               )}
             </Button>
           )}
+          <Dialog>
+            <DialogTrigger
+              disabled={loader || status ? true : false}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-9 bg-purple p-2.5 hover:bg-purple/80"
+            >
+              📩
+            </DialogTrigger>
+            <DialogContent className="w-96 max-md:w-[85dvw] flex flex-col items-center justify-center bg-transparent border-none">
+              <DialogHeader className="h-0">
+                <DialogTitle />
+                <DialogDescription />
+              </DialogHeader>
+              <div className=" flex w-full items-center justify-center">
+                <div className="flex w-full backdrop-blur-xl flex-col  overflow-hidden p-7 items-center justify-center h-full border-2 border-white/15 bg-gradient-to-br from-black/45 to-black/25 rounded-[24px]">
+                  <form onSubmit={handleSubmit} className=" w-full space-y-4">
+                    <p className=" font-semibold text-2xl">
+                      Feedback / Question
+                    </p>
+                    <textarea
+                      onChange={(e) => setFeedback(e.currentTarget.value)}
+                      value={feedback}
+                      maxLength={170}
+                      disabled={loader || status ? true : false}
+                      className="flex h-40 w-full rounded-md border border-white/15 outline-none bg-transparent px-3 py-2 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed text-base resize-none disabled:opacity-90"
+                      placeholder="Type your message here."
+                      name="feedback"
+                    />
+                    <Button
+                      disabled={loader || status ? true : false}
+                      variant={"default"}
+                      className=" w-full mt-2.5 bg-purple hover:bg-purple/80 text-white"
+                      type="submit"
+                    >
+                      {loader ? (
+                        <LoaderCircle className=" animate-spin " />
+                      ) : (
+                        <>{status ? status : "Send 🔫"}</>
+                      )}
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       {isDeleting && queue.length > 1 && (
