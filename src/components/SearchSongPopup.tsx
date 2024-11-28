@@ -21,11 +21,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
-import { GrYoutube } from "react-icons/gr";
 import { useUserContext } from "@/store/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAddSong from "@/Hooks/useAddSong";
 import { useAudio } from "@/store/AudioContext";
+import { BsSpotify } from "react-icons/bs";
 
 function SearchSongPopupComp({
   isAddToQueue = false,
@@ -64,7 +64,7 @@ function SearchSongPopupComp({
           return;
         }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/youtube?id=${id}`
+          ? `${process.env.SOCKET_URI}/api/spotify/playlist/${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -225,17 +225,37 @@ function SearchSongPopupComp({
       }
     }
   }, [songs, roomId, emitMessage]);
+  const searchRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const handleCheatCodes = (event: KeyboardEvent) => {
+      if (
+        (event.metaKey && event.key === "k") ||
+        (event.ctrlKey && event.key === "k")
+      ) {
+        event.preventDefault();
+        searchRef.current?.click();
+      }
+    };
 
+    document.addEventListener("keydown", handleCheatCodes);
+
+    return () => {
+      document.removeEventListener("keydown", handleCheatCodes);
+    };
+  }, []);
   return (
     <Dialog key={"songs"}>
       {youtube ? (
-        <DialogTrigger className=" items-center justify-center flex t h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
-          <GrYoutube className="size-4" />
+        <DialogTrigger className=" items-center justify-center flex t h-8 rounded-lg px-2 text-xs bg-green-500 w-fit hover:bg-green-500 hover:opacity-80 duration-300">
+          <BsSpotify className="size-4" />
         </DialogTrigger>
       ) : (
         <>
           {!isAddToQueue ? (
-            <DialogTrigger className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
+            <DialogTrigger
+              ref={searchRef}
+              className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between"
+            >
               <Search />
               <input
                 type="text"
@@ -279,7 +299,7 @@ function SearchSongPopupComp({
             onChange={handleSearch}
             placeholder={
               youtube
-                ? "Paste youtube playlist url to add songs"
+                ? "Paste spotify playlist link (removing soon)"
                 : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
@@ -338,7 +358,7 @@ function SearchSongPopupComp({
                     alt={song?.name}
                     height={500}
                     width={500}
-                    className=" h-full w-full"
+                    className=" h-full w-full object-cover"
                     src={
                       song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
                     }

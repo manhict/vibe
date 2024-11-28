@@ -54,15 +54,11 @@ export const linkifyOptions = {
 };
 
 export function extractPlaylistID(url: string) {
-  try {
-    // Create a new URL object to parse the input URL
-    const urlObj = new URL(url);
+  // const urlObj = new URL(url);
 
-    // Get the value of the 'list' parameter, which is the playlist ID
-    return urlObj.searchParams.get("list");
-  } catch (error) {
-    return null;
-  }
+  // return urlObj.searchParams.get("list");
+  const match = url.match(/playlist\/([^/?]+)/);
+  return match?.[1] || null;
 }
 
 export const springConfig = {
