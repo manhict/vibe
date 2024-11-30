@@ -47,9 +47,7 @@ export default function DraggableOptions() {
         });
         setQueue((prev) => prev.filter((s) => s.id !== song.id));
       } else {
-        toast.error(
-          "only admin and user who add this song can delete this song"
-        );
+        toast.error("Only admin and user who added can delete.");
       }
     },
     [setQueue, user, emitMessage]
