@@ -318,11 +318,11 @@ function SearchSongPopupComp({
               />
             </DialogTrigger>
           ) : (
-            <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center items-center">
-              <p className="text-[#B489FF] font-bold text-3xl ">
+            <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">
+              <p className="text-[#B489FF] font-bold text-4xl ">
                 {user?.name?.split(" ")[0]},
               </p>
-              <p className=" font-semibold text-2xl">
+              <p className=" font-semibold text-3xl">
                 Looks like you <br />
                 miss her.
               </p>
@@ -330,13 +330,11 @@ function SearchSongPopupComp({
                 Add Songs
               </div>
               <Image
-                src={
-                  "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/bt21-rj_1.png"
-                }
-                height={150}
+                src={"https://media.tenor.com/OSO8YozpungAAAAi/bt21-rj.gif"}
+                height={170}
                 className=" mt-2"
                 alt="cute gif"
-                width={150}
+                width={170}
               />
             </DialogTrigger>
           )}
