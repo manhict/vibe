@@ -36,7 +36,11 @@ export default async function middleware(req: NextRequest) {
     if (url.pathname.startsWith("/v")) {
       if (room) {
         const res = NextResponse.next();
-        res.cookies.set("room", room, { path: "/", httpOnly: true });
+        res.cookies.set("room", room, {
+          path: "/",
+          httpOnly: true,
+          sameSite: "none",
+        });
         return res;
       }
       if (!room) {
@@ -44,7 +48,11 @@ export default async function middleware(req: NextRequest) {
         const res = NextResponse.redirect(
           new URL(`${url.pathname}?room=${newRoomId}`, req.url)
         );
-        res.cookies.set("room", newRoomId, { path: "/", httpOnly: true });
+        res.cookies.set("room", newRoomId, {
+          path: "/",
+          httpOnly: true,
+          sameSite: "none",
+        });
         return res;
       }
     }
