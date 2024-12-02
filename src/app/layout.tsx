@@ -19,7 +19,7 @@ const geistMono = localFont({
 });
 export const metadata: Metadata = {
   title: "Vibe",
-  description: "Democratic Music Selection:",
+  description: "Let votes decide the beat",
   manifest: "/manifest.json",
   keywords: [
     "music",
@@ -36,8 +36,7 @@ export const metadata: Metadata = {
   // OpenGraph Meta Tags
   openGraph: {
     title: "Vibe",
-    description:
-      "Explore, vote, and enjoy a community-driven music experience where your votes decide the beats.",
+    description: "Let votes decide the beat",
     url: "https://getvibe.in",
     type: "website",
     siteName: "Vibe", // Add this line for site_name
@@ -56,8 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@tanmay11117",
     title: "Vibe",
-    description:
-      "Discover, vote, and influence the playlist in real-time on Vibe, the collaborative music platform.",
+    description: "Let votes decide the beat",
     images: [
       {
         url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
