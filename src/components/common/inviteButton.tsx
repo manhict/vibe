@@ -47,7 +47,7 @@ function InviteButton() {
             />
           </svg>
 
-          <span>Invite Friends</span>
+          <span>Invite her</span>
         </div>
       </DialogTrigger>
       <DialogContent className="w-fit flex flex-col border-none bg-transparent p-0">

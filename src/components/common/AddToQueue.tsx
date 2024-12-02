@@ -140,8 +140,8 @@ function AddToQueueComp() {
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className="md:text-lg max-md:pl-1.5 text-base font-semibold"
           >
-            In Queue{" "}
-            {total.current && total.current > 0 && `(${total.current})`}
+            Queue{" "}
+            {total.current && total.current > 0 ? `(${total.current})` : ``}
           </motion.p>
         )}
         <div className=" flex items-center gap-1">
