@@ -15,6 +15,7 @@ export async function generateMetadata({
 
   const res = await fetch(`${process.env.SOCKET_URI}/api/metadata`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },

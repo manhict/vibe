@@ -108,7 +108,7 @@ function SearchQueueList({
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
       e.stopPropagation();
-      if (user?.role !== "admin") return toast.error("Only admin can play");
+      if (user?.role !== "admin") return toast.error("UPVOTE to play next");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
     [isDeleting, user, currentSong, emitMessage]

@@ -33,7 +33,7 @@ function Listeners({ className }: { className?: string }) {
           )}
         >
           <div className=" flex items-center gap-1">
-            <p>Listening</p>
+            {listener?.totalUsers !== 0 && <p>Listening</p>}
 
             <div className=" flex items-center">
               {listener?.roomUsers

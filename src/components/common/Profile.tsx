@@ -31,7 +31,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
 
   useEffect(() => {
     console.log(
-      "%cVibe developed by Phoenix member #777",
+      "%cVibe developed by babyo7_",
       "color: #D0BCFF; font-size: 20px; padding: 10px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
     );
     setUser(user);

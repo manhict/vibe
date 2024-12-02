@@ -15,7 +15,7 @@ function LogoComp({ className }: { className?: string }) {
         }
       }}
     >
-      <p className=" text-2xl md:hidden font-semibold">Vibe </p>
+      <p className=" text-xl md:hidden font-semibold">Vibe </p>
       <Image
         src={"/logo.svg"}
         className={cn(

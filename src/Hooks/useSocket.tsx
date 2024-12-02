@@ -215,7 +215,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     queueControllerRef.current = controller;
     const data = await api.get(
       `${process.env.SOCKET_URI}/api/queue?page=1&room=${roomId}&limit=${
-        queue.length > 70 ? queue.length : 70
+        queue.length > 100 ? queue.length : 100
       }&name`,
       {
         headers: {

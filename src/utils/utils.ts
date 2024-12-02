@@ -54,15 +54,11 @@ export const linkifyOptions = {
 };
 
 export function extractPlaylistID(url: string) {
-  try {
-    // Create a new URL object to parse the input URL
-    const urlObj = new URL(url);
+  // const urlObj = new URL(url);
 
-    // Get the value of the 'list' parameter, which is the playlist ID
-    return urlObj.searchParams.get("list");
-  } catch (error) {
-    return null;
-  }
+  // return urlObj.searchParams.get("list");
+  const match = url.match(/playlist\/([^/?]+)/);
+  return match?.[1] || null;
 }
 
 export const springConfig = {
@@ -213,7 +209,8 @@ export default function getURL(currentSong: searchResults) {
         window.navigator.userAgent.includes("Electron")
           ? "http://localhost:7777/stream"
           : process.env.VIDEO_STREAM_URI
-      }/${currentSongUrl}` || "/cache.jpg";
+      }/${currentSongUrl}` ||
+      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }
@@ -227,7 +224,8 @@ export function getBackgroundURL(currentSong: searchResults) {
         window.navigator.userAgent.includes("Electron")
           ? "http://localhost:7777/stream"
           : process.env.BACKGROUND_STREAM_URI
-      }/${currentSongUrl}` || "/cache.jpg";
+      }/${currentSongUrl}` ||
+      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }

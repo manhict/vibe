@@ -47,6 +47,7 @@ export interface TUser {
   _id: string;
   email: string;
   name: string;
+  isBookmarked: boolean;
   username: string;
   imageUrl: string;
   role?: "admin" | "listener" | string;

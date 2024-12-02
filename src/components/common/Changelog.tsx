@@ -37,7 +37,7 @@ const changelogContent = `
 
 ### 🛠️ **What’s Coming Next?**
 
-- 🎧 **Auto-Sync Playlists**: Spotify playlist syncing coming soon!  
+- 🎧 **Bookmarks**: Effortlessly save links from platforms like Spotify, YouTube, and others, with seamless playlist synchronization across third-party apps.
 - ✏️ **Edit Room Names**: Rename your rooms on the fly.  
 - 🌎 **Browse and Join Rooms**: Explore public rooms and join them effortlessly.  
 - 🗑️ **Delete Rooms**: Clear up your list by deleting unused rooms.  
@@ -81,7 +81,7 @@ function ChangelogComp() {
           />
         </svg>
       </DialogTrigger>
-      <DialogContent className="w-fit max-md:w-[55dvw] flex flex-col items-center justify-center bg-transparent border-none">
+      <DialogContent className="w-fit max-md:w-[90dvw] flex flex-col items-center justify-center bg-transparent border-none">
         <DialogHeader className="h-0">
           <DialogTitle />
           <DialogDescription />

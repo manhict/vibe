@@ -45,7 +45,10 @@ function Login({ footer = false }: { footer?: boolean }) {
     }
   };
   return (
-    <Dialog key={"user Login"} open={footer ? false : user ? false : true}>
+    <Dialog
+      key={"user Login"}
+      defaultOpen={footer ? false : user ? false : true}
+    >
       {footer ? (
         <DialogTrigger
           asChild
