@@ -39,6 +39,7 @@ export default async function middleware(req: NextRequest) {
         res.cookies.set("room", room, {
           path: "/",
           httpOnly: true,
+          secure: true,
           sameSite: "none",
         });
         return res;
@@ -51,6 +52,7 @@ export default async function middleware(req: NextRequest) {
         res.cookies.set("room", newRoomId, {
           path: "/",
           httpOnly: true,
+          secure: true,
           sameSite: "none",
         });
         return res;
