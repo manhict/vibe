@@ -304,7 +304,7 @@ function SearchSongPopupComp({
                 type="text"
                 readOnly
                 className=" bg-transparent hidden md:flex font-medium text-white p-2 w-full outline-none"
-                placeholder="What do you want to play next for her?"
+                placeholder="What do you want to play next?"
               />
               <input
                 type="text"
