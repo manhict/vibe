@@ -70,19 +70,16 @@ function Chat({
   );
 
   useEffect(() => {
-    if (isChatOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      setSeen(true);
-    }
-  }, [setSeen, isChatOpen]);
-
-  useEffect(() => {
     const currentSocket = socketRef.current;
     currentSocket.on("message", handleMessage);
     return () => {
       currentSocket.off("message", handleMessage);
     };
   }, [socketRef, handleMessage]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
@@ -193,16 +190,12 @@ function Chat({
             </div>
           )}
         </div>
-        <X onClick={() => setIsChatOpen(false)} className=" " />
+        <X onClick={() => setIsChatOpen(false)} />
       </div>
-      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
+      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between  break-words overflow-x-hidden">
         <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
           {messages.map((message) => (
-            <div
-              ref={messagesEndRef}
-              title={message?.time}
-              key={message?.message}
-            >
+            <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
                 <div className=" flex gap-2">
                   <Avatar className="size-9">
@@ -285,6 +278,7 @@ function Chat({
                   </Avatar>
                 </div>
               )}
+              <div ref={messagesEndRef}></div>
             </div>
           ))}
         </div>

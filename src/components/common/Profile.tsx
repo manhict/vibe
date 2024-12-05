@@ -300,8 +300,8 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
                   <div className=" relative flex items-center">
                     <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
                     <Input
-                      maxLength={15}
-                      max={15}
+                      maxLength={25}
+                      max={25}
                       min={4}
                       className=" pl-7"
                       placeholder="name"
@@ -312,8 +312,8 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
                   <div className=" relative flex items-center">
                     <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
                     <Input
-                      maxLength={15}
-                      max={15}
+                      maxLength={25}
+                      max={25}
                       min={4}
                       placeholder="username"
                       name="username"

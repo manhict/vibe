@@ -34,7 +34,6 @@ function AddToQueueComp() {
   const search = useCallback(
     async (e?: React.ChangeEvent<HTMLInputElement>) => {
       const query = e?.target.value || "";
-      console.log(query);
 
       const localSearch = queue.filter((s) => {
         const songName = s?.name.toLowerCase();
