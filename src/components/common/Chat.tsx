@@ -76,7 +76,11 @@ function Chat({
       currentSocket.off("message", handleMessage);
     };
   }, [socketRef, handleMessage]);
-
+  useEffect(() => {
+    if (isChatOpen) {
+      setSeen(true);
+    }
+  }, [isChatOpen, setSeen]);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
