@@ -109,7 +109,7 @@ function AddToQueueComp() {
     <div
       className={`select-none max-md:rounded-none max-md:border-none  backdrop-blur-lg max-h-full border flex flex-col gap-2 max-md:w-full w-[45%] ${
         isDragging ? "border-white/70" : "border-white/15"
-      } rounded-xl p-3 pr-0`}
+      } rounded-2xl p-3 pr-0`}
     >
       <div className=" flex items-center pr-4 gap-2.5 justify-between">
         {isSearchedOpened ? (
