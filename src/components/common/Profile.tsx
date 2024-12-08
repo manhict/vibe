@@ -19,7 +19,6 @@ import React, {
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import Login from "./Login";
-import { socket } from "@/app/socket";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import OnBoarding from "./OnBoarding";
@@ -27,26 +26,28 @@ import { Input } from "../ui/input";
 import { AtSign, LoaderCircle, Mail, Sun } from "lucide-react";
 import { encryptObjectValues } from "@/utils/utils";
 import VibeAlert from "./VibeAlert";
-function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
-  const { setUser, user: LoggedInUser } = useUserContext();
+function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
+  const { setUser, user: LoggedInUser, socketRef } = useUserContext();
 
   useEffect(() => {
     console.log(
-      "%cVibe developed by Tanmay and designed by Ajay",
+      "%cVibe developed by babyo7_",
       "color: #D0BCFF; font-size: 20px; padding: 10px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
     );
     setUser(user);
+    const socket = socketRef.current;
     if (!roomId) toast.error("Room ID is required");
-    socket.io.opts.extraHeaders = {
-      Authorization: user?.token || "",
-      Room: roomId || "",
+    socket.io.opts.query = {
+      authorization: user?.token || "",
+      room: roomId || "",
     };
     api.setAuthToken(user?.token || null);
+
     socket.connect();
     return () => {
       socket.disconnect();
     };
-  }, [user, setUser, roomId]);
+  }, [socketRef, setUser, user, roomId]);
   const [inputValue, setInputValue] = useState(user?.username);
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +60,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         payload[key] = value;
       });
       setLoader(true);
-      const res = await api.put(
+      const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
         encryptObjectValues(payload)
       );
@@ -68,7 +69,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
       }
       if (res.success) {
         setError(null);
-        socket.emit("profile");
+        socketRef.current.emit("profile");
         toast.success("Profile updated!");
         if (LoggedInUser) {
           setUser(() => ({
@@ -80,7 +81,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
       }
       setLoader(false);
     },
-    [LoggedInUser, setUser]
+    [LoggedInUser, setUser, socketRef]
   );
   const [image, setImage] = useState(
     user?.imageUrl || "https://imagedump.vercel.app/notFound.jpg"
@@ -143,7 +144,7 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         if (res.success) {
           const imageUrl = (res.data as any)?.data?.direct_url;
           const imageDelUrl = (res.data as any)?.data?.deletion_url;
-          const update = await api.put(
+          const update = await api.patch(
             `${process.env.SOCKET_URI}/api/dp`,
             encryptObjectValues({
               imageUrl,
@@ -156,14 +157,14 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
               setUser({ ...LoggedInUser, imageUrl, imageDelUrl });
             }
           }
-          socket.emit("profile");
+          socketRef.current.emit("profile");
         }
       } catch (error) {
       } finally {
         setUploading(false);
       }
     },
-    [setUser, LoggedInUser]
+    [setUser, LoggedInUser, socketRef]
   );
 
   if (!user) {
@@ -184,7 +185,14 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
         />
 
         <svg
-          onClick={() => (window.location.href = "/browse")}
+          onClick={() => {
+            const confirmNavigation = window.confirm(
+              "Are you sure you want to navigate to the browse page?"
+            );
+            if (confirmNavigation) {
+              window.location.href = "/browse";
+            }
+          }}
           width="24"
           height="25"
           viewBox="0 0 24 25"
@@ -292,8 +300,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   <div className=" relative flex items-center">
                     <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
                     <Input
-                      maxLength={15}
-                      max={15}
+                      maxLength={25}
+                      max={25}
                       min={4}
                       className=" pl-7"
                       placeholder="name"
@@ -304,8 +312,8 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
                   <div className=" relative flex items-center">
                     <AtSign className=" size-4 ml-2 text-zinc-400 absolute" />
                     <Input
-                      maxLength={15}
-                      max={15}
+                      maxLength={25}
+                      max={25}
                       min={4}
                       placeholder="username"
                       name="username"
@@ -365,5 +373,5 @@ function Profile({ user, roomId }: { user: TUser; roomId?: string }) {
     </>
   );
 }
-
+const Profile = React.memo(ProfileComp);
 export default Profile;

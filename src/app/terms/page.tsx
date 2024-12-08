@@ -3,39 +3,38 @@ import Terms from "./Terms";
 export async function generateMetadata() {
   return {
     title: `Vibe Terms of Service`,
-    description: `Join Vibe, the music platform where your votes decide the playlist. Discover, vote, and enjoy trending tracks with a vibrant community. Tune in and let your voice be heard!`,
+    description: `Democratic Music Selection:`,
 
     icons: { icon: "/favicon.png" },
     openGraph: {
-      title: "Vibe - Votes decide the beats",
+      title: "Vibe",
       description:
         "Explore, vote, and enjoy a community-driven music experience where your votes decide the beats.",
       url: "https://getvibe.in",
       type: "website",
       images: [
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 1200,
           height: 630,
-          alt: "Vibe - Votes decide the beats",
+          alt: "Vibe",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       site: "@tanmay11117",
-      title: "Vibe - Votes decide the beats",
-      description:
-        "Discover, vote, and influence the playlist in real-time on Vibe, the collaborative music platform.",
+      title: "Vibe",
+      description: "Let votes decide the beat",
       images: [
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 1200,
           height: 630,
-          alt: "Vibe - Collaborative Music Platform",
+          alt: "Vibe",
         },
         {
-          url: "https://getvibe.in/logo.svg",
+          url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
           width: 800,
           height: 600,
           alt: "Vibe Music Collaboration",

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useUserContext } from "@/store/userStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { emitMessage } from "@/lib/customEmits";
 import { roomsData, searchResults } from "@/lib/types";
 import { toast } from "sonner";
 import useAddSong from "@/Hooks/useAddSong";
@@ -20,6 +19,7 @@ export default function DraggableOptions() {
     setShowDragOptions,
     showAddDragOptions,
     setShowAddDragOptions,
+    emitMessage,
   } = useUserContext();
   const [room, setRooms] = useState<roomsData[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -47,12 +47,10 @@ export default function DraggableOptions() {
         });
         setQueue((prev) => prev.filter((s) => s.id !== song.id));
       } else {
-        toast.error(
-          "only admin and user who add this song can delete this song"
-        );
+        toast.error("Only admin and user who added can delete.");
       }
     },
-    [setQueue, user]
+    [setQueue, user, emitMessage]
   );
 
   const handleDrop = useCallback(
@@ -85,6 +83,7 @@ export default function DraggableOptions() {
   );
 
   useEffect(() => {
+    if (!user) return;
     api
       .get(`${process.env.SOCKET_URI}/api/rooms/browse`, {
         showErrorToast: false,
@@ -94,7 +93,7 @@ export default function DraggableOptions() {
           setRooms(response.data as any);
         }
       });
-  }, []);
+  }, [user]);
   return (
     <div className="fixed z-50  w-full">
       <AnimatePresence>

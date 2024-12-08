@@ -16,7 +16,7 @@ export async function getLoggedInUser() {
     if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
     const data = await res.json();
 
-    return JSON.parse(JSON.stringify(data));
+    return data;
   } catch (error: any) {
     console.error("Error in getLoggedInUser:", error.message);
     return null;

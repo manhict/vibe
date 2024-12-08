@@ -7,7 +7,6 @@ import { searchResults, searchSongResult } from "@/lib/types";
 import api from "@/lib/api";
 import useDebounce from "@/Hooks/useDebounce";
 import { extractPlaylistID, formatArtistName } from "@/utils/utils";
-import { useInView } from "react-intersection-observer";
 import { Dialog } from "@radix-ui/react-dialog";
 import {
   DialogClose,
@@ -22,13 +21,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import parse from "html-react-parser";
 import useSelect from "@/Hooks/useSelect";
-import { GrYoutube } from "react-icons/gr";
 import { useUserContext } from "@/store/userStore";
-import { emitMessage } from "@/lib/customEmits";
 import { Skeleton } from "@/components/ui/skeleton";
 import useAddSong from "@/Hooks/useAddSong";
+import { useAudio } from "@/store/AudioContext";
+import { BsSpotify } from "react-icons/bs";
+import Image from "next/image";
 
-function SearchSongPopup({
+function SearchSongPopupComp({
   isAddToQueue = false,
   youtube = false,
 }: {
@@ -38,8 +38,9 @@ function SearchSongPopup({
   const [songs, setSongs] = useState<searchSongResult | null>(null);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const { ref, inView } = useInView();
-  const { roomId, user } = useUserContext();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const { roomId, user, queue, emitMessage } = useUserContext();
+  const { currentSong } = useAudio();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const { addSong } = useAddSong();
@@ -58,10 +59,13 @@ function SearchSongPopup({
 
         const controller = new AbortController();
         abortControllerRef.current = controller;
+        const id = extractPlaylistID(value);
+        if (youtube && !id) {
+          toast.error("Invalid YouTube URL");
+          return;
+        }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/youtube?id=${extractPlaylistID(
-              value
-            )}`
+          ? `${process.env.SOCKET_URI}/api/spotify/playlist/${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -118,11 +122,30 @@ function SearchSongPopup({
     setLoading(false);
   }, [query, page, songs]);
 
-  useEffect(() => {
-    if (inView && !loading) {
+  const scroll = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const { scrollTop, scrollHeight } = containerRef.current;
+
+    // Calculate the current scroll position and the halfway point
+    const isAtHalfway = scrollTop >= scrollHeight / 2;
+
+    // Trigger data fetching when both conditions are met
+    if (isAtHalfway && !loading) {
       searchMoreSongs();
     }
-  }, [inView, loading, searchMoreSongs]);
+  }, [loading, searchMoreSongs]);
+
+  const handleScroll = useDebounce(scroll);
+  useEffect(() => {
+    const container = containerRef.current;
+
+    container?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const { handleSelect, selectedSongs, setSelectedSongs } = useSelect();
   const handleAdd = useCallback(async () => {
@@ -133,8 +156,23 @@ function SearchSongPopup({
       });
     if (selectedSongs.length == 0) return toast.error("No song selected");
     await addSong(selectedSongs, roomId);
+    if (!currentSong && queue.length == 0 && user.role == "admin") {
+      emitMessage("play", {
+        ...selectedSongs[0],
+        currentQueueId: selectedSongs[0]?.queueId,
+      });
+    }
     setSelectedSongs([]);
-  }, [setSelectedSongs, selectedSongs, user, roomId, addSong]);
+  }, [
+    emitMessage,
+    setSelectedSongs,
+    selectedSongs,
+    currentSong,
+    queue.length,
+    roomId,
+    addSong,
+    user,
+  ]);
 
   const handleAddAll = useCallback(async () => {
     if (songs && songs?.data.results.length > 0) {
@@ -187,18 +225,80 @@ function SearchSongPopup({
         toast.dismiss("adding");
       }
     }
-  }, [songs, roomId]);
+  }, [songs, roomId, emitMessage]);
+  const searchRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const handleCheatCodes = (event: KeyboardEvent) => {
+      if (
+        (event.metaKey && event.key === "k") ||
+        (event.ctrlKey && event.key === "k")
+      ) {
+        event.preventDefault();
+        searchRef.current?.click();
+      }
+    };
+
+    document.addEventListener("keydown", handleCheatCodes);
+
+    return () => {
+      document.removeEventListener("keydown", handleCheatCodes);
+    };
+  }, []);
+  const [starred, setIsStarred] = useState(false);
+
+  const controllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setIsStarred(user?.isBookmarked);
+    }
+  }, [user]);
+
+  const handleStarClick = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      const payload = {
+        type: "room",
+      };
+
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+
+      const controller = new AbortController();
+      controllerRef.current = controller;
+
+      const method = starred ? "delete" : "post";
+      const url = `${process.env.SOCKET_URI}/api/bookmark${
+        starred ? "?type=room" : ""
+      }`;
+      setIsStarred((prev) => !prev);
+      const res = await api[method](url, payload, {
+        credentials: "include",
+        signal: controller.signal,
+      });
+
+      if (res.error) {
+        setIsStarred((prev) => !prev);
+      }
+    },
+    [starred]
+  );
 
   return (
     <Dialog key={"songs"}>
       {youtube ? (
-        <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground shadow-sm h-8 rounded-lg px-2 text-xs bg-red-500 w-fit hover:bg-red-500 hover:opacity-80 duration-300">
-          <GrYoutube className="size-4" />
+        <DialogTrigger className=" items-center justify-center flex t h-8 rounded-lg px-2 text-xs bg-green-500 w-fit hover:bg-green-500 hover:opacity-80 duration-300">
+          <BsSpotify className="size-4" />
         </DialogTrigger>
       ) : (
         <>
           {!isAddToQueue ? (
-            <DialogTrigger className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] rounded-full justify-between">
+            <DialogTrigger
+              ref={searchRef}
+              className="w-7/12 bg-black/70 border flex items-center px-4 gap-2 text-[#6750A4] max-md:flex-grow rounded-full justify-between"
+            >
               <Search />
               <input
                 type="text"
@@ -212,18 +312,30 @@ function SearchSongPopup({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              <Star />
+              <Star
+                onClick={handleStarClick}
+                className={`cursor-pointer ${starred ? "fill-purple" : "none"}`}
+              />
             </DialogTrigger>
           ) : (
-            <DialogTrigger className="flex-col hidden md:flex w-full h-full text-zinc-200 justify-center items-center">
-              <p className=" font-semibold text-3xl ">Seems like</p>
-              <p className=" font-medium text-xl">your queue is empty</p>
-              <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2 mt-4 mb-2">
+            <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">
+              <p className="text-[#B489FF] font-bold text-4xl ">
+                {user?.name?.split(" ")[0]},
+              </p>
+              <p className=" font-semibold text-3xl">
+                Looks like you <br />
+                miss her.
+              </p>
+              <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-[1.1rem] mt-4 mb-2">
                 Add Songs
               </div>
-              <p className=" font-normal text-sm mt-1">
-                don&apos;t tell anyone 🤫
-              </p>
+              <Image
+                src={"https://media.tenor.com/OSO8YozpungAAAAi/bt21-rj.gif"}
+                height={170}
+                className=" mt-2"
+                alt="cute gif"
+                width={170}
+              />
             </DialogTrigger>
           )}
         </>
@@ -242,7 +354,7 @@ function SearchSongPopup({
             onChange={handleSearch}
             placeholder={
               youtube
-                ? "Paste youtube playlist url to add songs"
+                ? "Paste spotify playlist link (removing soon)"
                 : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
@@ -256,7 +368,7 @@ function SearchSongPopup({
           </DialogClose>
         </div>
         {loading && !songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
+          <div className="flex border-zinc-500 border-t flex-col overflow-hidden backdrop-blur-xl bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
             {Array.from(Array(6)).map((_, i) => (
               <div
                 key={i}
@@ -276,13 +388,19 @@ function SearchSongPopup({
             ))}
           </div>
         )}
-        {songs && (
-          <div className="flex border-zinc-500 border-t flex-col overflow-hidden bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll">
-            {songs?.data.results.map((song, i) => (
+        <div
+          ref={containerRef}
+          className={`flex border-zinc-500 ${
+            songs && "border-t"
+          }  flex-col overflow-hidden backdrop-blur-xl bg-black/80 max-h-[50dvh] pl-2.5 overflow-y-scroll`}
+        >
+          {songs?.data.results
+            .slice(0, youtube ? 100 : songs.data.results.length)
+            .map((song, i) => (
               <label
                 htmlFor={song?.id}
                 key={i}
-                title={`${parse(song.name)} (${
+                title={`${parse(song?.name)} (${
                   formatArtistName(song?.artists?.primary) || "Unknown"
                 })`}
                 className={`flex gap-2 px-2.5 text-start  hover:bg-zinc-800/20 ${
@@ -295,16 +413,17 @@ function SearchSongPopup({
                     alt={song?.name}
                     height={500}
                     width={500}
-                    className=" h-full w-full"
+                    className=" h-full w-full object-cover"
                     src={
-                      song?.image[song?.image?.length - 1]?.url || "/cache.jpg"
+                      song?.image[song?.image?.length - 1]?.url ||
+                      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
                     }
                   />
                   <AvatarFallback>SX</AvatarFallback>
                 </Avatar>
                 <div className="text-sm font-medium w-10/12 truncate">
                   <p className="font-semibold truncate w-11/12">
-                    {parse(song.name)}
+                    {parse(song?.name)}
                   </p>
                   <p className="font-medium truncate w-10/12 text-zinc-400 text-xs">
                     {formatArtistName(song.artists.primary)}
@@ -326,17 +445,14 @@ function SearchSongPopup({
                 </div>
               </label>
             ))}
+          {loading && (
+            <p className="text-center text-zinc-500 py-4">Loading..</p>
+          )}
+          {songs?.data.results.length === 0 && !loading && (
+            <p className="text-center text-zinc-500 py-4">No songs found.</p>
+          )}
+        </div>
 
-            {/* Infinite Scroll Trigger */}
-            <div ref={ref} className="h-1"></div>
-            {loading && (
-              <p className="text-center text-zinc-500 py-4">Loading..</p>
-            )}
-            {songs?.data.results.length === 0 && !loading && (
-              <p className="text-center text-zinc-500 py-4">No songs found.</p>
-            )}
-          </div>
-        )}
         {selectedSongs.length > 0 && (
           <>
             <div className=" p-2 bg-black/80 border-t pb-0 py-4 px-4 overflow-x-scroll">
@@ -355,19 +471,19 @@ function SearchSongPopup({
                         className=" h-full w-full border"
                         src={
                           song?.image[song?.image?.length - 1]?.url ||
-                          "/cache.jpg"
+                          "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
                         }
                       />
                       <AvatarFallback>SX</AvatarFallback>
                     </Avatar>
                     <div
-                      title={`${parse(song.name)} (${
+                      title={`${parse(song?.name)} (${
                         formatArtistName(song?.artists?.primary) || "Unknown"
                       })`}
                       className=" flex flex-col  leading-tight"
                     >
                       <p className=" w-24 font-semibold truncate">
-                        {parse(song.name)}
+                        {parse(song?.name)}
                       </p>
                       <p className=" w-20 text-[#D0BCFF] truncate text-[9px] font-medium">
                         {formatArtistName(song?.artists?.primary) || "Unknown"}
@@ -401,7 +517,7 @@ function SearchSongPopup({
           songs?.data?.results?.length > 0 &&
           user?.role == "admin" &&
           selectedSongs?.length == 0 && (
-            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-[#49454F]/70 ">
+            <DialogFooter className=" p-2.5 px-4 pb-3.5 bg-black/80">
               <DialogClose
                 onClick={handleAddAll}
                 className=" py-3 w-full rounded-xl bg-purple/80 font-semibold text-sm"
@@ -414,5 +530,5 @@ function SearchSongPopup({
     </Dialog>
   );
 }
-
+const SearchSongPopup = React.memo(SearchSongPopupComp);
 export default SearchSongPopup;

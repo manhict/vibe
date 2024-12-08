@@ -59,7 +59,7 @@
 
 @layer base {
   * {
-    cursor: url("/cursor.svg"), auto;
+    /* cursor: url("/cursor.svg"), auto; */
     @apply border-border;
   }
   body {

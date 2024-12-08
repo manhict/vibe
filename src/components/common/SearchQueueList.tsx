@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import VoteIcon from "./VoteIcon";
-import { emitMessage } from "@/lib/customEmits";
 import Image from "next/image";
 function SearchQueueList({
   searchQu,
@@ -24,12 +23,17 @@ function SearchQueueList({
   selectedSongs: searchResults[];
 }) {
   const [queue, setQueue] = useState<searchResults[]>(searchQu || []);
-  const { user } = useUserContext();
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const { user, setShowDragOptions, setShowAddDragOptions, emitMessage } =
+    useUserContext();
   const { currentSong, isPlaying } = useAudio();
 
-  const upVote = useCallback((song: searchResults) => {
-    emitMessage("upvote", { queueId: song?.queueId });
-  }, []);
+  const upVote = useCallback(
+    (song: searchResults) => {
+      emitMessage("upvote", { queueId: song?.queueId });
+    },
+    [emitMessage]
+  );
   const handleDelete = useCallback(
     (song: searchResults) => {
       if (isDeleting) return;
@@ -41,7 +45,7 @@ function SearchQueueList({
         setQueue((prev) => prev.filter((s) => s.id !== song.id));
       }
     },
-    [user, isDeleting]
+    [user, isDeleting, emitMessage]
   );
   const handleUpVote = useDebounce(upVote);
 
@@ -104,10 +108,10 @@ function SearchQueueList({
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
       e.stopPropagation();
-      if (user?.role !== "admin") return toast.error("Only admin can play");
+      if (user?.role !== "admin") return toast.error("UPVOTE to play next");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
-    [isDeleting, user, currentSong]
+    [isDeleting, user, currentSong, emitMessage]
   );
   const handlePlay = useDebounce(Play);
 
@@ -116,6 +120,22 @@ function SearchQueueList({
       setQueue(searchQu);
     }
   }, [searchQu]);
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    song: searchResults
+  ) => {
+    setShowDragOptions(true);
+    setShowAddDragOptions(true);
+    e.dataTransfer.setData("application/json", JSON.stringify(song));
+  };
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOptions(false);
+    setShowAddDragOptions(false);
+  };
+  useEffect(() => {
+    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+  }, [selectedSongs]);
   return (
     <>
       {queue?.length > 0 ? (
@@ -123,6 +143,9 @@ function SearchQueueList({
           <p className=" font-medium">Search Results</p>
           {queue?.map((song, i) => (
             <div
+              onDragEnd={handleDragEnd}
+              draggable
+              onDragStart={(e) => handleDragStart(e, song)}
               title={
                 song.addedByUser && song.addedByUser.username !== user?.username
                   ? `Added by ${song.addedByUser.name} (${song.addedByUser.username})`
@@ -143,6 +166,7 @@ function SearchQueueList({
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">
                     <AvatarImage
+                      draggable="false"
                       loading="lazy"
                       alt={song.name}
                       height={500}
@@ -190,7 +214,7 @@ function SearchQueueList({
                 >
                   <div className=" w-auto text-start">
                     <p className=" font-semibold truncate">
-                      {parse(song.name)}
+                      {parse(song?.name)}
                     </p>
                   </div>
 
@@ -202,7 +226,7 @@ function SearchQueueList({
                   <div className=" relative mr-0.5 pr-1.5">
                     <input
                       onChange={() => handleSelect(song, false)}
-                      checked={selectedSongs.includes(song)}
+                      checked={selectedIds.has(song.id)}
                       name={song?.id + i}
                       id={song?.id + i}
                       type="checkbox"

@@ -106,10 +106,14 @@ const api = {
 
     try {
       const headers = new Headers(fetchOptions.headers);
-
+      const searchParam = new URLSearchParams(window.location.search);
+      const room = searchParam.get("room");
       // Automatically set Content-Type to application/json if body is not FormData
       if (fetchOptions.body && !(fetchOptions.body instanceof FormData)) {
         headers.set("Content-Type", "application/json");
+        if (room) {
+          headers.set("room", room);
+        }
         fetchOptions.body = JSON.stringify(fetchOptions.body);
       }
 
@@ -165,6 +169,19 @@ const api = {
     } = {}
   ): Promise<ApiResponse<T>> => {
     return api.request<T>(url, "PUT", {
+      ...options,
+      body: data,
+    });
+  },
+  patch: async <T>(
+    url: string,
+    data: any,
+    options: RequestInit & {
+      showErrorToast?: boolean;
+      headers?: Record<string, string>;
+    } = {}
+  ): Promise<ApiResponse<T>> => {
+    return api.request<T>(url, "PATCH", {
       ...options,
       body: data,
     });

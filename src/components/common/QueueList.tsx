@@ -1,7 +1,13 @@
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import { formatArtistName } from "@/utils/utils";
-import React, { useCallback, useEffect, useRef } from "react";
+import { formatArtistName, getSpotifyTrackID } from "@/utils/utils";
+import React, {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { searchResults } from "@/lib/types";
 import useDebounce from "@/Hooks/useDebounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -9,30 +15,45 @@ import { toast } from "sonner";
 import parse from "html-react-parser";
 import { MdDone } from "react-icons/md";
 import VoteIcon from "./VoteIcon";
-import { emitMessage } from "@/lib/customEmits";
 import { useSocket } from "@/Hooks/useSocket";
 import Image from "next/image";
 import autoAnimate from "@formkit/auto-animate";
+import useAddSong from "@/Hooks/useAddSong";
+import api from "@/lib/api";
 interface QueueListProps {
   isDeleting?: boolean;
   handleSelect: (song: searchResults, limit: boolean) => void;
   selectedSongs: searchResults[];
+  setIsDragging: React.Dispatch<SetStateAction<boolean>>;
 }
 
 function QueueListComp({
   isDeleting = false,
   handleSelect,
   selectedSongs,
+  setIsDragging,
 }: QueueListProps) {
-  const { queue, setQueue, user, setShowDragOptions, setShowAddDragOptions } =
-    useUserContext();
+  const {
+    queue,
+    setQueue,
+    roomId,
+    user,
+    showDragOptions,
+    setShowDragOptions,
+    setShowAddDragOptions,
+    emitMessage,
+  } = useUserContext();
   const { currentSong, isPlaying } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
+  const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const upVote = useCallback((song: searchResults) => {
-    emitMessage("upvote", { queueId: song?.queueId });
-  }, []);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const upVote = useCallback(
+    (song: searchResults) => {
+      emitMessage("upvote", { queueId: song?.queueId });
+    },
+    [emitMessage]
+  );
 
   const handleUpVote = useDebounce(upVote);
 
@@ -90,10 +111,10 @@ function QueueListComp({
     (e: React.MouseEvent, song: searchResults) => {
       if (isDeleting) return;
       e.stopPropagation();
-      if (user?.role !== "admin") return toast.error("Only admin can play");
+      if (user?.role !== "admin") return toast.error("UPVOTE to play next");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
     },
-    [isDeleting, user, currentSong]
+    [isDeleting, user, currentSong, emitMessage]
   );
 
   const handlePlay = useDebounce(Play);
@@ -141,9 +162,83 @@ function QueueListComp({
   useEffect(() => {
     containerRef.current && autoAnimate(containerRef.current);
   }, [containerRef]);
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      if (showDragOptions) return;
+      const droppedUrl = e.dataTransfer.getData("text/plain");
 
+      if (droppedUrl.includes("youtube.com")) {
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/search/?name=${droppedUrl}&page=0`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          } else {
+            toast.error("No track found 😭");
+          }
+        }
+        return;
+      }
+
+      if (droppedUrl.includes("spotify.com")) {
+        const id = getSpotifyTrackID(droppedUrl);
+        if (!id) {
+          toast.error("No track found 😭");
+          return;
+        }
+        const res = await api.get(
+          `${process.env.SOCKET_URI}/api/spotify/${id}`,
+          { showErrorToast: false }
+        );
+        if (res.success) {
+          const data = res.data as any;
+          const song = data?.data;
+          if (song?.results && song?.results.length > 0) {
+            await addSong(song.results, roomId);
+          } else {
+            toast.error("No track found 😭");
+          }
+        }
+        return;
+      }
+
+      const jsonData = e.dataTransfer.getData("application/json");
+      if (!jsonData) return;
+      const song = JSON.parse(jsonData);
+      if (!song) return;
+      await addSong([song], roomId);
+    },
+    [roomId, showDragOptions, addSong, setIsDragging]
+  );
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  useEffect(() => {
+    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+  }, [selectedSongs]);
   return (
     <div
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       ref={containerRef}
       className="py-2 pr-2  max-h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
     >
@@ -172,6 +267,7 @@ function QueueListComp({
             <div title={String(song?.order)} className="relative">
               <Avatar className="size-[3.2rem] rounded-md relative group">
                 <AvatarImage
+                  draggable="false"
                   loading="lazy"
                   alt={song.name}
                   height={500}
@@ -226,10 +322,30 @@ function QueueListComp({
             </div>
             <div className="flex flex-col gap-1 flex-grow text-sm w-6/12">
               <div className=" text-start w-11/12">
-                <p className=" font-semibold truncate">{parse(song.name)}</p>
+                <p className=" font-semibold truncate">{parse(song?.name)}</p>
               </div>
-              <p className="text-[#D0BCFF] opacity-75 truncate text-xs">
+              <p className="text-[#D0BCFF] flex gap-2 items-center opacity-95 truncate text-xs">
                 {formatArtistName(song.artists.primary)}{" "}
+                {/* <span>
+                  {song.addedByUser &&
+                    song.addedByUser.username !== user?.username && (
+                      <Avatar
+                        onClick={(e) => e.stopPropagation()}
+                        className=" size-4 relative group"
+                      >
+                        <AvatarImage
+                          draggable="false"
+                          loading="lazy"
+                          alt={song.name}
+                          height={500}
+                          width={500}
+                          className="object-cover"
+                          src={song.addedByUser?.imageUrl}
+                        />
+                        <AvatarFallback>SX</AvatarFallback>
+                      </Avatar>
+                    )}
+                </span> */}
               </p>
             </div>
 
@@ -237,7 +353,7 @@ function QueueListComp({
               <div className="relative mr-0.5 pr-1.5">
                 <input
                   onChange={() => handleSelect(song, false)}
-                  checked={selectedSongs.includes(song)}
+                  checked={selectedIds.has(song.id)}
                   name={song?.id + i}
                   id={song?.id + i}
                   type="checkbox"

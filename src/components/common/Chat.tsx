@@ -3,7 +3,13 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
-import React, { SetStateAction, useCallback, useState } from "react";
+import React, {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAudio } from "@/store/AudioContext";
 import {
@@ -16,20 +22,22 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { emitMessage } from "@/lib/customEmits";
-import { useSocket } from "@/Hooks/useSocket";
+import { messages } from "@/lib/types";
+import { decrypt } from "tanmayo7lock";
 
 function Chat({
-  messagesEndRef,
   setIsChatOpen,
+  isChatOpen,
 }: {
+  isChatOpen: boolean;
   setIsChatOpen: React.Dispatch<SetStateAction<boolean>>;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
 }) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentSong, playPrev, playNext } = useAudio();
   const [message, setMessage] = useState<string>("");
-  const { user, listener } = useUserContext();
-  const { messages } = useSocket();
+  const { user, listener, emitMessage, setSeen, socketRef } = useUserContext();
+  const [messages, setMessages] = useState<messages[]>([]);
+  const isAdmin = user?.role === "admin";
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -38,8 +46,44 @@ function Chat({
       emitMessage("message", message);
       setMessage("");
     },
-    [message]
+    [message, emitMessage]
   );
+
+  const handleMessage = useCallback(
+    (data: any): void => {
+      const message = decrypt(data) as messages;
+      setMessages((prev) => [...prev, message]);
+      const audio = new Audio(
+        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
+      );
+      if (!isChatOpen) {
+        setSeen(false);
+      }
+      if (document.hidden) {
+        audio.play();
+      } else {
+        audio.pause();
+        audio.currentTime = 0; // Reset the audio if needed
+      }
+    },
+    [setSeen, isChatOpen]
+  );
+
+  useEffect(() => {
+    const currentSocket = socketRef.current;
+    currentSocket.on("message", handleMessage);
+    return () => {
+      currentSocket.off("message", handleMessage);
+    };
+  }, [socketRef, handleMessage]);
+  useEffect(() => {
+    if (isChatOpen) {
+      setSeen(true);
+    }
+  }, [isChatOpen, setSeen]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
@@ -54,7 +98,7 @@ function Chat({
               className=" h-full object-cover  w-full"
               src={
                 currentSong?.image[currentSong.image.length - 1].url ||
-                "/cache.jpg"
+                "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
               }
             />
           </Avatar>
@@ -81,11 +125,11 @@ function Chat({
             >
               <path
                 d="M14.5392 10.1308C14.7748 9.95045 14.9656 9.71919 15.0968 9.4547C15.228 9.19022 15.2962 8.89953 15.2962 8.60494C15.2962 8.31034 15.228 8.01966 15.0968 7.75517C14.9656 7.49068 14.7748 7.25942 14.5392 7.07912C11.4881 4.74472 8.08115 2.90473 4.4458 1.62803L3.78112 1.39453C2.51079 0.948656 1.16819 1.79812 0.996162 3.09547C0.515602 6.75308 0.515602 10.4568 0.996162 14.1144C1.1692 15.4117 2.51079 16.2612 3.78112 15.8153L4.4458 15.5818C8.08115 14.3051 11.4881 12.4652 14.5392 10.1308Z"
-                fill={user?.role !== "admin" ? "#434343" : "#EADDFF"}
+                fill={isAdmin ? "#EADDFF" :"#434343"}
               />
               <path
                 d="M18.6625 1.26718C18.7124 0.821304 19.0911 0.503082 19.5397 0.503082C19.9884 0.503082 20.3676 0.820549 20.4187 1.26629C20.5328 2.26253 20.6971 4.30858 20.6971 7.83333C20.6971 11.5742 20.5121 14.0197 20.3983 15.1696C20.3547 15.6102 19.9825 15.9352 19.5397 15.9352C19.0911 15.9352 18.7124 15.617 18.6625 15.1711C18.5483 14.1504 18.3823 12.0145 18.3823 8.21913C18.3823 4.42377 18.5483 2.28784 18.6625 1.26718Z"
-                fill={user?.role !== "admin" ? "#434343" : "#EADDFF"}
+                fill={isAdmin ? "#EADDFF" :"#434343"}
                 fillOpacity="0.5"
               />
             </svg>
@@ -118,7 +162,8 @@ function Chat({
         <p>Chat</p>
         <div className=" flex items-center">
           {listener?.roomUsers
-            ?.filter((r) => r.userId?.username !== user?.username)
+            ?.filter((r) => r.userId.username !== user?.username)
+            ?.slice(0, 5)
             ?.map((roomUser, i) => (
               <div
                 title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
@@ -131,7 +176,7 @@ function Chat({
                       alt={roomUser?.userId?.name}
                       height={200}
                       width={200}
-                      className=" rounded-full"
+                      className=" rounded-full object-cover"
                       src={roomUser?.userId?.imageUrl}
                     />
                   </Avatar>
@@ -149,16 +194,12 @@ function Chat({
             </div>
           )}
         </div>
-        <X onClick={() => setIsChatOpen(false)} className=" " />
+        <X onClick={() => setIsChatOpen(false)} />
       </div>
-      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between ">
+      <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between  break-words overflow-x-hidden">
         <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
           {messages.map((message) => (
-            <div
-              ref={messagesEndRef}
-              title={message?.time}
-              key={message?.message}
-            >
+            <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
                 <div className=" flex gap-2">
                   <Avatar className="size-9">
@@ -241,6 +282,7 @@ function Chat({
                   </Avatar>
                 </div>
               )}
+              <div ref={messagesEndRef}></div>
             </div>
           ))}
         </div>

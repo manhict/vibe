@@ -9,21 +9,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, provider } from "@/config/firebase";
 import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
-import { TUser } from "@/lib/types";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import { FaSpotify } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { setUser, user } = useUserContext();
-
+  const { user, roomId } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -37,7 +34,7 @@ function Login({ footer = false }: { footer?: boolean }) {
         });
         if (res.success) {
           await api.post(`/api/login`, { token: (res.data as any)?.token });
-          setUser((res.data as any).data as TUser);
+          await signOut(auth);
           window.location.reload();
         }
       }
@@ -47,7 +44,6 @@ function Login({ footer = false }: { footer?: boolean }) {
       setLoader(false);
     }
   };
-
   return (
     <Dialog
       key={"user Login"}
@@ -77,7 +73,7 @@ function Login({ footer = false }: { footer?: boolean }) {
             <div className=" space-y-2">
               <h1 className=" font-semibold text-3xl mb-2">Login Or SignUp</h1>
               <p className=" text-zinc-300 text-2xl">
-                let&apos;s get to know <br /> each other.
+                Let&apos;s get to know <br /> each other.
               </p>
             </div>
             <div className="w-full flex flex-col items-center gap-2 justify-center">
@@ -89,28 +85,15 @@ function Login({ footer = false }: { footer?: boolean }) {
                 <FcGoogle className=" size-5 " />
                 {loader ? "Signing in..." : "Continue with Google"}
               </Button>
-              <Button
-                disabled
-                className=" gap-1.5 w-full items-center shadow-none px-7 py-5"
+              <Link
+                href={`${process.env.SOCKET_URI}/api/auth/discord?login=${roomId}`}
+                className=" w-full"
               >
-                <BsDiscord className=" size-5" />
-                Continue with Discord
-              </Button>
-              {typeof window !== "undefined" &&
-                window.navigator.userAgent.includes("Electron") && (
-                  <Link
-                    href={`https://accounts.spotify.com/en/authorize?client_id=${
-                      process.env.SPOTIFY_CLIENT_ID
-                    }&scope=user-read-private%20user-read-email&response_type=token&redirect_uri=${encodeURIComponent(
-                      process.env.SPOTIFY_REDIRECT_URL || ""
-                    )}&show_dialog=true`}
-                  >
-                    <Button className=" gap-1.5 items-center shadow-none px-7 py-5">
-                      <FaSpotify className=" size-5" />
-                      Continue with Spotify
-                    </Button>
-                  </Link>
-                )}
+                <Button className=" gap-1.5 w-full items-center shadow-none px-7 py-5">
+                  <BsDiscord className=" size-5" />
+                  Continue with Discord
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -16,10 +16,9 @@ import { Input } from "../ui/input";
 import { encryptObjectValues } from "@/utils/utils";
 import api from "@/lib/api";
 import { AtSign, LoaderCircle, Sun } from "lucide-react";
-import { socket } from "@/app/socket";
 import confetti from "canvas-confetti";
 function OnBoarding() {
-  const { user, setUser } = useUserContext();
+  const { user, setUser, socketRef } = useUserContext();
   const [inputValue, setInputValue] = useState(user?.username);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(() => {
@@ -59,7 +58,7 @@ function OnBoarding() {
       // }
 
       setLoader(true);
-      const res = await api.put(
+      const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
         encryptObjectValues(payload)
       );
@@ -67,7 +66,7 @@ function OnBoarding() {
         setError(res.error);
       }
       if (res.success) {
-        socket.emit("profile");
+        socketRef.current.emit("profile");
         setError(null);
         setCurrentStep((prev) => prev + 1);
         if (user) {
@@ -80,7 +79,7 @@ function OnBoarding() {
       }
       setLoader(false);
     },
-    [user, setUser]
+    [user, setUser, socketRef]
   );
 
   // Animation variants text
@@ -235,8 +234,8 @@ function OnBoarding() {
                             <div className=" relative flex items-center">
                               <Sun className=" size-4 ml-2 text-zinc-400 absolute" />
                               <Input
-                                maxLength={15}
-                                max={15}
+                                maxLength={25}
+                                max={25}
                                 min={4}
                                 placeholder="name"
                                 name="name"

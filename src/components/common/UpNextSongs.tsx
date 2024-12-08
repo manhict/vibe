@@ -52,7 +52,7 @@ function UpNextSongs() {
                     className="h-full object-cover w-full border"
                     src={
                       nextSong?.image[nextSong?.image?.length - 1]?.url ||
-                      "/cache.jpg"
+                      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
                     }
                   />
                   <AvatarFallback>SX</AvatarFallback>

@@ -54,15 +54,11 @@ export const linkifyOptions = {
 };
 
 export function extractPlaylistID(url: string) {
-  try {
-    // Create a new URL object to parse the input URL
-    const urlObj = new URL(url);
+  // const urlObj = new URL(url);
 
-    // Get the value of the 'list' parameter, which is the playlist ID
-    return urlObj.searchParams.get("list");
-  } catch (error) {
-    return null;
-  }
+  // return urlObj.searchParams.get("list");
+  const match = url.match(/playlist\/([^/?]+)/);
+  return match?.[1] || null;
 }
 
 export const springConfig = {
@@ -72,15 +68,15 @@ export const springConfig = {
 };
 
 export const playVariants = {
-  hidden: { y: -17 }, // Comes from top
+  hidden: { y: -25 }, // Comes from top
   visible: { y: 0, transition: springConfig }, // Spring-based movement
-  exit: { y: -17, transition: springConfig }, // Exits upwards with spring effect
+  exit: { y: -25, transition: springConfig }, // Exits upwards with spring effect
 };
 
 export const pauseVariants = {
-  hidden: { y: 17 }, // Comes from bottom
+  hidden: { y: 25 }, // Comes from bottom
   visible: { y: 0, transition: { duration: 0.1, ease: "easeInOut" } }, // Spring-based movement
-  exit: { y: 17, transition: { duration: 0.1, ease: "easeInOut" } }, // Exits downwards with spring effect
+  exit: { y: 25, transition: { duration: 0.1, ease: "easeInOut" } }, // Exits downwards with spring effect
 };
 
 export const slideInVariants = {
@@ -209,7 +205,12 @@ export default function getURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` || "/cache.jpg";
+    : `${
+        window.navigator.userAgent.includes("Electron")
+          ? "http://localhost:7777/stream"
+          : process.env.VIDEO_STREAM_URI
+      }/${currentSongUrl}` ||
+      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }
@@ -219,7 +220,12 @@ export function getBackgroundURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` || "/cache.jpg";
+    : `${
+        window.navigator.userAgent.includes("Electron")
+          ? "http://localhost:7777/stream"
+          : process.env.BACKGROUND_STREAM_URI
+      }/${currentSongUrl}` ||
+      "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }
@@ -266,6 +272,7 @@ export function decryptObjectValues(obj: any) {
 export const BACKGROUND_APP_TIMEOUT = 150000;
 
 export const getInviteLink = (roomId?: string, username?: string) => {
+  if (typeof window == "undefined") return "";
   if (username) {
     return `${window.location.origin}/v?room=${roomId}&ref=${username}&new=true`;
   }
@@ -282,3 +289,8 @@ export function getRandom(emojis: { msg: string; gif: string }[]): {
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export function getSpotifyTrackID(url: string) {
+  const match = url.match(/\/track\/([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
+}

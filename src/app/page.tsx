@@ -9,6 +9,7 @@ import React, { useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import useDebounce from "@/Hooks/useDebounce";
 import Login from "@/components/common/Login";
+import Link from "next/link";
 function Page() {
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -125,16 +126,16 @@ function Page() {
             </p>
             <span className="ml-1 max-md:hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
               Invite friends, enjoy high quality music
-              <br /> & let votes will decide the beat🥂.
+              <br /> & let votes decide the beat🥂.
             </span>
             <span className="ml-1 max-md:flex hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
-              Invite friends, enjoy high quality music & let votes will decide
-              the beat🥂.
+              Invite friends, enjoy high quality music & let votes decide the
+              beat🥂.
             </span>
 
             <form
               onSubmit={makeRoom}
-              className="w-auto max-w-[340px] h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center inline-flex"
+              className="max-w-[340px] hidden h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
             >
               <div className="flex items-center relative">
                 <div
@@ -159,13 +160,17 @@ function Page() {
               <Button
                 disabled={loader || typeof error === "string"}
                 type="submit"
-                className=" w-auto bg-white rounded-lg flex-col justify-center items-center gap-2 inline-flex"
+                className=" bg-white rounded-lg flex-col justify-center items-center gap-2"
               >
                 {loader ? <LoaderCircle className=" animate-spin" /> : "Claim"}
               </Button>
             </form>
-
-            <p className="h-4 text-red-500 font-normal text-xs -mt-2 px-1">
+            <Link href={"/v"} className="w-full md:w-fit">
+              <Button size={"lg"} className=" w-full py-5 text-lg">
+                Start Listening
+              </Button>
+            </Link>
+            <p className="h-2 text-red-500 font-normal text-xs -mt-2 px-1">
               {error}
             </p>
             <Login footer />
