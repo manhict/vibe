@@ -115,9 +115,12 @@ export default function RootLayout({
                   position="bottom-right"
                   visibleToasts={2}
                   toastOptions={{
-                    style: { background: "#6750A4" },
+                    classNames: {
+                      error:
+                        "bg-red-500 rounded-xl w-fit right-0 text-white border-none",
+                    },
                     className:
-                      "rounded-xl w-fit right-0 text-white border-none",
+                      "bg-[#6750A4] rounded-xl w-fit right-0 text-white border-none",
                   }}
                 />
                 {children}

@@ -15,7 +15,6 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import Link from "next/link";
 import { BsDiscord } from "react-icons/bs";
 
@@ -39,7 +38,6 @@ function Login({ footer = false }: { footer?: boolean }) {
         }
       }
     } catch (error: any) {
-      toast.error(error?.message);
     } finally {
       setLoader(false);
     }
