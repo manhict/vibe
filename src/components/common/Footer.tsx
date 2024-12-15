@@ -23,7 +23,7 @@ function Footer() {
       <div className=" flex -ml-1 max-md:text-base text-xl items-center font-semibold gap-2">
         <p className=" ">Built by </p>{" "}
         <span>
-          <Link href="https://twitter.com/tanmay11117" target="_blank">
+          <Link href="https://twitter.com/tanmayo7" target="_blank">
             <Image
               title="tanmay"
               src={
@@ -60,7 +60,7 @@ function Footer() {
           />
         </Link>
 
-        <Link href="https://twitter.com/tanmay11117" target="_blank">
+        <Link href="https://twitter.com/tanmayo7" target="_blank">
           <XLogo
             // size={24}
             className=" hover:text-white text-zinc-300 transition-all duration-150"

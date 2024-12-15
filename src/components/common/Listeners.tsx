@@ -123,7 +123,11 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
     <Dialog>
       <DialogTrigger className="flex items-center justify-center gap-2">
         <Avatar className=" size-10">
-          <AvatarImage loading="lazy" src={imageUrl} />
+          <AvatarImage
+            loading="lazy"
+            className=" object-cover"
+            src={imageUrl}
+          />
           <AvatarFallback>SX</AvatarFallback>
         </Avatar>
       </DialogTrigger>
@@ -134,7 +138,11 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
         </DialogHeader>
         <div className=" w-full flex items-center justify-center">
           <Avatar className=" size-56  border border-white/15">
-            <AvatarImage loading="lazy" src={imageUrl} />
+            <AvatarImage
+              loading="lazy"
+              className=" object-cover"
+              src={imageUrl}
+            />
             <AvatarFallback>SX</AvatarFallback>
           </Avatar>
         </div>
