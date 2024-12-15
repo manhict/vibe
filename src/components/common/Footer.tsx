@@ -51,7 +51,7 @@ function Footer() {
             />
           </Link>
         </span>
-        <span className=" -ml-4">
+        {/* <span className=" -ml-4">
           <Link href="https://www.instagram.com/1yuno1/" target="_blank">
             <Image
               title="yono"
@@ -64,7 +64,7 @@ function Footer() {
               width={45}
             />
           </Link>
-        </span>
+        </span> */}
       </div>
       <div className="flex md:hidden  text-xl md:text-2xl  items-center gap-2">
         <Link href="https://www.instagram.com/fixing_x/" target="_blank">
