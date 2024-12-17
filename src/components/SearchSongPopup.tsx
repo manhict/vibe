@@ -323,10 +323,14 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              <Download
-                onClick={handleStarClick}
-                className={`cursor-pointer ${starred ? "fill-purple" : "none"}`}
-              />
+              {!(window && (window.process as any)?.type) && (
+                <Download
+                  onClick={handleStarClick}
+                  className={`cursor-pointer ${
+                    starred ? "fill-purple" : "none"
+                  }`}
+                />
+              )}
             </DialogTrigger>
           ) : (
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">
