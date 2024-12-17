@@ -115,16 +115,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
               skipCountRef.current += 1;
               if (skipCountRef.current >= 3) {
                 toast.error(
-                  "Maximum skip limit reached. Unable to play song.",
+                  "Maximum skip limit reached. Download vibe desktop app.",
                   {
                     style: { background: "#e94625" },
                   }
                 );
               } else {
                 emitMessage("songEnded", "songEnded");
-                toast.error("Song not available. Skipping", {
-                  style: { background: "#e94625" },
-                });
+                toast.error(
+                  "Song not available on web (recommended:download desktop app). Skipping",
+                  {
+                    style: { background: "#e94625" },
+                  }
+                );
               }
             }
             console.error("Error playing audio", e.message);
