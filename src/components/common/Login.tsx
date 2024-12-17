@@ -75,11 +75,7 @@ function Login({ footer = false }: { footer?: boolean }) {
               </p>
             </div>
             <div className="w-full flex flex-col items-center gap-2 justify-center">
-              {!(
-                typeof window !== "undefined" &&
-                window &&
-                (window.process as any)?.type
-              ) && (
+              {!(window && (window.process as any)?.type) && (
                 <Button
                   disabled={loader}
                   onClick={handleLogin}
