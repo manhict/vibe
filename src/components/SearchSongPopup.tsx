@@ -322,7 +322,11 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              {!(window && (window.process as any)?.type) && (
+              {!(
+                typeof window !== "undefined" &&
+                window &&
+                (window.process as any)?.type
+              ) && (
                 <svg
                   onClick={handleStarClick}
                   xmlns="http://www.w3.org/2000/svg"
