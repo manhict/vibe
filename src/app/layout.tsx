@@ -113,7 +113,7 @@ export default function RootLayout({
               <SocketProvider>
                 <Toaster
                   position="bottom-right"
-                  visibleToasts={2}
+                  visibleToasts={1}
                   toastOptions={{
                     classNames: {
                       error:
