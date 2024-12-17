@@ -49,6 +49,8 @@ const nextConfig = {
     UPLOAD_URL: process.env.UPLOAD_URL,
     UPLOAD_DOMAIN: process.env.UPLOAD_DOMAIN,
     UPLOAD_SOURCE: process.env.UPLOAD_SOURCE,
+    MAC_DOWNLOAD_URL: process.env.MAC_DOWNLOAD_URL,
+    WINDOW_DOWNLOAD_URL: process.env.WINDOW_DOWNLOAD_URL,
   },
 };
 

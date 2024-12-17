@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       colors: {
         purple: "#8D50F9",
+        lightPurple: "#EADDFF",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
