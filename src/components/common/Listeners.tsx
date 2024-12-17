@@ -26,14 +26,13 @@ function Listeners({ className }: { className?: string }) {
     <div className=" flex items-center w-full justify-between">
       <Dialog>
         <DialogTrigger
-          disabled={listener?.totalUsers === 0}
           className={cn(
             " max-md:w-full flex items-center text-sm font-medium justify-between",
             className
           )}
         >
           <div className=" flex items-center gap-1">
-            {listener?.totalUsers !== 0 && <p>Listening</p>}
+            <p>Listening</p>
 
             <div className=" flex items-center">
               {listener?.roomUsers?.slice(0, 5).map((roomUser, i) => (
