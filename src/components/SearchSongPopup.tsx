@@ -1,6 +1,13 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Loader2Icon,
+  Search,
+  // Star,
+  X,
+} from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
@@ -246,7 +253,7 @@ function SearchSongPopupComp({
   }, []);
   const [starred, setIsStarred] = useState(false);
 
-  const controllerRef = useRef<AbortController | null>(null);
+  // const controllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -254,37 +261,41 @@ function SearchSongPopupComp({
     }
   }, [user]);
 
-  const handleStarClick = useCallback(
-    async (e: React.MouseEvent) => {
-      e.stopPropagation();
+  const handleStarClick = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const userAgent = navigator.userAgent.toLowerCase();
 
-      const payload = {
-        type: "room",
-      };
+    const isMac = /macintosh|mac os x/i.test(userAgent);
+    if (isMac) {
+      window.open(process.env.MAC_DOWNLOAD_URL);
+    } else {
+      window.open(process.env.WINDOW_DOWNLOAD_URL);
+    }
+    // const payload = {
+    //   type: "room",
+    // };
 
-      if (controllerRef.current) {
-        controllerRef.current.abort();
-      }
+    // if (controllerRef.current) {
+    //   controllerRef.current.abort();
+    // }
 
-      const controller = new AbortController();
-      controllerRef.current = controller;
+    // const controller = new AbortController();
+    // controllerRef.current = controller;
 
-      const method = starred ? "delete" : "post";
-      const url = `${process.env.SOCKET_URI}/api/bookmark${
-        starred ? "?type=room" : ""
-      }`;
-      setIsStarred((prev) => !prev);
-      const res = await api[method](url, payload, {
-        credentials: "include",
-        signal: controller.signal,
-      });
+    // const method = starred ? "delete" : "post";
+    // const url = `${process.env.SOCKET_URI}/api/bookmark${
+    //   starred ? "?type=room" : ""
+    // }`;
+    // setIsStarred((prev) => !prev);
+    // const res = await api[method](url, payload, {
+    //   credentials: "include",
+    //   signal: controller.signal,
+    // });
 
-      if (res.error) {
-        setIsStarred((prev) => !prev);
-      }
-    },
-    [starred]
-  );
+    // if (res.error) {
+    //   setIsStarred((prev) => !prev);
+    // }
+  }, []);
 
   return (
     <Dialog key={"songs"}>
@@ -312,7 +323,7 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              <Star
+              <Download
                 onClick={handleStarClick}
                 className={`cursor-pointer ${starred ? "fill-purple" : "none"}`}
               />
