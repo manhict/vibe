@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         sameSite: "lax",
         secure: true,
         path: "/",
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000),
       });
       return response;
     }
