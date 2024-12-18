@@ -62,7 +62,10 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
       setLoader(true);
       const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
-        encryptObjectValues(payload)
+        encryptObjectValues(payload),
+        {
+          credentials: "include",
+        }
       );
       if (res.error) {
         setError(res.error);
