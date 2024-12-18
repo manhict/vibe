@@ -25,7 +25,7 @@ export default async function middleware(req: NextRequest) {
     if (url.pathname == "/") {
       const isLoggedIn = await fetch(`${process.env.SOCKET_URI}/api/@me`, {
         headers: {
-          Authorization: `Bearer ${vibeId}`,
+          Authorization: `${vibeId}`,
         },
       });
       if (isLoggedIn.ok) {
