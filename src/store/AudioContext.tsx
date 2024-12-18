@@ -33,6 +33,7 @@ interface AudioContextType {
   duration: number;
   progress: number;
   currentSong: searchResults | null;
+  setCurrentSong: React.Dispatch<SetStateAction<searchResults | null>>;
   setProgress: React.Dispatch<SetStateAction<number>>;
   isLooped: boolean;
   setLoop: React.Dispatch<SetStateAction<boolean>>;
@@ -321,7 +322,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         }
       };
       const handlePause = () => {
-        setIsPlaying(false);
         if (videoRef.current) {
           videoRef.current?.pause();
         }
@@ -407,6 +407,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       videoRef,
       backgroundVideoRef,
       audioRef,
+      setCurrentSong,
     }),
     [
       play,

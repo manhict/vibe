@@ -16,7 +16,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
-import { BACKGROUND_APP_TIMEOUT, delay } from "@/utils/utils";
+import getURL, { BACKGROUND_APP_TIMEOUT, delay } from "@/utils/utils";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -62,7 +62,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   } = useUserContext();
 
   const isActive = useRef<boolean>(true);
-  const { seek, play } = useAudio();
+  const { seek, play, setCurrentSong, audioRef, isPlaying, setProgress } =
+    useAudio();
 
   const hiddenTimeRef = useRef<number>(0);
   const necessaryFetchRef = useRef<boolean>(false);
@@ -301,15 +302,23 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       isAdminOnline.current = value;
     };
 
-    const handleIsPlaying = (data: any) => {
-      if (data) {
-        play(decrypt(data));
-      }
-    };
-
     const handlePlay = (data: any) => {
+      const song = decrypt(data) as searchResults;
+      if (!song) return;
+
+      if (!isPlaying && audioRef.current) {
+        setCurrentSong(song);
+        setProgress(0);
+        audioRef.current.src = getURL(song).replace(
+          process.env.VIDEO_STREAM_URI || "",
+          window.navigator.userAgent.includes("Electron")
+            ? "http://localhost:7777/stream"
+            : process.env.STREAM_URL || ""
+        );
+        return;
+      }
       if (data) {
-        play(decrypt(data));
+        play(song);
       }
     };
     currentSocket.on("connect", onConnect);
@@ -320,7 +329,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("joined", handleJoined);
     currentSocket.on("update", UpdateQueue);
     currentSocket.on("seekable", handleSeekable);
-    currentSocket.on("isplaying", handleIsPlaying);
+    currentSocket.on("isplaying", handlePlay);
     currentSocket.on("play", handlePlay);
     currentSocket.on("seek", seek);
     currentSocket.on("profile", updateListeners);
@@ -338,12 +347,16 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("update", UpdateQueue);
       currentSocket.off("joined", handleJoined);
       currentSocket.off("seekable", handleSeekable);
-      currentSocket.off("isplaying", handleIsPlaying);
+      currentSocket.off("isplaying", handlePlay);
       currentSocket.off("play", handlePlay);
       currentSocket.off("seek", seek);
       currentSocket.off("profile", updateListeners);
     };
   }, [
+    isPlaying,
+    setProgress,
+    setCurrentSong,
+    audioRef,
     handleUserLeftRoom,
     onConnect,
     handleJoined,
