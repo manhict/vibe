@@ -19,7 +19,7 @@ import Link from "next/link";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { user, roomId } = useUserContext();
+  const { user, roomId, isElectron } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -75,17 +75,16 @@ function Login({ footer = false }: { footer?: boolean }) {
               </p>
             </div>
             <div className="w-full flex flex-col items-center gap-2 justify-center">
-              {typeof window !== "undefined" &&
-                !window.navigator.userAgent.includes("Electron") && (
-                  <Button
-                    disabled={loader}
-                    onClick={handleLogin}
-                    className="gap-1.5 w-full items-center justify-center flex shadow-none px-1 py-5"
-                  >
-                    <FcGoogle className="size-5" />
-                    {loader ? "Signing in..." : "Continue with Google"}
-                  </Button>
-                )}
+              {!isElectron && (
+                <Button
+                  disabled={loader}
+                  onClick={handleLogin}
+                  className="gap-1.5 w-full items-center justify-center flex shadow-none px-1 py-5"
+                >
+                  <FcGoogle className="size-5" />
+                  {loader ? "Signing in..." : "Continue with Google"}
+                </Button>
+              )}
               <Link
                 href={`${process.env.SOCKET_URI}/api/auth/discord?login=${roomId}`}
                 className=" w-full"

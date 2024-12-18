@@ -45,7 +45,7 @@ function SearchSongPopupComp({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { roomId, user, queue, emitMessage } = useUserContext();
+  const { roomId, user, queue, emitMessage, isElectron } = useUserContext();
   const { currentSong } = useAudio();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -295,7 +295,6 @@ function SearchSongPopupComp({
     //   setIsStarred((prev) => !prev);
     // }
   }, []);
-
   return (
     <Dialog key={"songs"}>
       {youtube ? (
@@ -322,21 +321,21 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              {typeof window !== "undefined" &&
-                !window.navigator.userAgent.includes("Electron") && (
-                  <svg
-                    onClick={handleStarClick}
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="27"
-                    height="27"
-                    className={`cursor-pointer ${
-                      starred ? "fill-purple" : "fill-lightPurple opacity-90"
-                    } hover:opacity-100`}
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"></path>
-                  </svg>
-                )}
+
+              {!isElectron && (
+                <svg
+                  onClick={handleStarClick}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="27"
+                  height="27"
+                  className={`cursor-pointer ${
+                    starred ? "fill-purple" : "fill-lightPurple opacity-90"
+                  } hover:opacity-100`}
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"></path>
+                </svg>
+              )}
             </DialogTrigger>
           ) : (
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">
