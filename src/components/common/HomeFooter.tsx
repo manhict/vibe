@@ -36,7 +36,7 @@ function HomeFooter({ className }: { className?: string }) {
             />
           </Link>
 
-          <Link href="https://twitter.com/tanmayo7" target="_blank">
+          <Link href="https://twitter.com/tanmay7_" target="_blank">
             <XLogo
               // size={24}
               className=" hover:text-white transition-all duration-500"

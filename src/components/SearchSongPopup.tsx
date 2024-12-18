@@ -1,6 +1,12 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2Icon,
+  Search,
+  // Star,
+  X,
+} from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
@@ -246,7 +252,7 @@ function SearchSongPopupComp({
   }, []);
   const [starred, setIsStarred] = useState(false);
 
-  const controllerRef = useRef<AbortController | null>(null);
+  // const controllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -254,37 +260,41 @@ function SearchSongPopupComp({
     }
   }, [user]);
 
-  const handleStarClick = useCallback(
-    async (e: React.MouseEvent) => {
-      e.stopPropagation();
+  const handleStarClick = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const userAgent = navigator.userAgent.toLowerCase();
 
-      const payload = {
-        type: "room",
-      };
+    const isMac = /macintosh|mac os x/i.test(userAgent);
+    if (isMac) {
+      window.open(process.env.MAC_DOWNLOAD_URL);
+    } else {
+      window.open(process.env.WINDOW_DOWNLOAD_URL);
+    }
+    // const payload = {
+    //   type: "room",
+    // };
 
-      if (controllerRef.current) {
-        controllerRef.current.abort();
-      }
+    // if (controllerRef.current) {
+    //   controllerRef.current.abort();
+    // }
 
-      const controller = new AbortController();
-      controllerRef.current = controller;
+    // const controller = new AbortController();
+    // controllerRef.current = controller;
 
-      const method = starred ? "delete" : "post";
-      const url = `${process.env.SOCKET_URI}/api/bookmark${
-        starred ? "?type=room" : ""
-      }`;
-      setIsStarred((prev) => !prev);
-      const res = await api[method](url, payload, {
-        credentials: "include",
-        signal: controller.signal,
-      });
+    // const method = starred ? "delete" : "post";
+    // const url = `${process.env.SOCKET_URI}/api/bookmark${
+    //   starred ? "?type=room" : ""
+    // }`;
+    // setIsStarred((prev) => !prev);
+    // const res = await api[method](url, payload, {
+    //   credentials: "include",
+    //   signal: controller.signal,
+    // });
 
-      if (res.error) {
-        setIsStarred((prev) => !prev);
-      }
-    },
-    [starred]
-  );
+    // if (res.error) {
+    //   setIsStarred((prev) => !prev);
+    // }
+  }, []);
 
   return (
     <Dialog key={"songs"}>
@@ -312,19 +322,29 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              <Star
-                onClick={handleStarClick}
-                className={`cursor-pointer ${starred ? "fill-purple" : "none"}`}
-              />
+              {!(window && (window.process as any)?.type) && (
+                <svg
+                  onClick={handleStarClick}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="27"
+                  height="27"
+                  className={`cursor-pointer ${
+                    starred ? "fill-purple" : "fill-lightPurple opacity-90"
+                  } hover:opacity-100`}
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"></path>
+                </svg>
+              )}
             </DialogTrigger>
           ) : (
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">
               <p className="text-[#B489FF] font-bold text-4xl ">
                 {user?.name?.split(" ")[0]},
               </p>
-              <p className=" font-semibold text-3xl">
-                Looks like you <br />
-                miss her.
+              <p className=" font-semibold mt-1.5 text-3xl">
+                Looks like Your <br />
+                queue is empty.
               </p>
               <div className="inline-flex items-center rounded-lg justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-[1.1rem] mt-4 mb-2">
                 Add Songs
