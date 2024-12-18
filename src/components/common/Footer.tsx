@@ -23,7 +23,7 @@ function Footer() {
       <div className=" flex -ml-1 max-md:text-base text-xl items-center font-semibold gap-2">
         <p className=" ">Built by </p>{" "}
         <span>
-          <Link href="https://twitter.com/tanmayo7" target="_blank">
+          <Link href="https://twitter.com/tanmay7_" target="_blank">
             <Image
               title="tanmay"
               src={
