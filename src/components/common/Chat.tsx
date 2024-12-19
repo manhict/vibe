@@ -3,6 +3,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
 import { X } from "lucide-react";
+import { RiFileGifLine } from "react-icons/ri";
 import React, {
   SetStateAction,
   useCallback,
@@ -24,6 +25,10 @@ import PlayButton from "./PlayButton";
 import { toast } from "sonner";
 import { messages } from "@/lib/types";
 import { decrypt } from "tanmayo7lock";
+import { uploadImage } from "@/lib/utils";
+import api from "@/lib/api";
+import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 
 function Chat({
   setIsChatOpen,
@@ -84,6 +89,92 @@ function Chat({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [gif, showGif] = useState<boolean>(false);
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append(
+      "payload_json",
+      JSON.stringify({
+        upload_source: process.env.UPLOAD_SOURCE,
+        domain: process.env.UPLOAD_DOMAIN,
+        type: 1,
+        name: file.name,
+      })
+    );
+    formData.append("file", file);
+    setUploading(true);
+    const res = await uploadImage(formData);
+
+    if (res.success && res.data && res.data.data.direct_url) {
+      emitMessage("message", res.data.data.direct_url);
+    }
+    setUploading(false);
+  };
+  const handlePaste = async (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const clipboardData = e.clipboardData;
+    const items = clipboardData.items;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        const file = items[i].getAsFile();
+        if (file) {
+          await handleFileUpload(file);
+        }
+        e.preventDefault();
+        break;
+      }
+    }
+  };
+  const handleDrop = async (e: React.DragEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      await handleFileUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const [gifs, setGifs] = useState([]);
+  const [gifQuery, setQuery] = useState("funny");
+  const controllerRef = useRef<AbortController | null>(null);
+  const fetchGifs = async (searchTerm: string) => {
+    if (searchTerm.trim().length == 0) return;
+
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    controllerRef.current = controller;
+    const response = await api.get<any>(
+      `https://tenor.googleapis.com/v2/search?q=${searchTerm}&key=AIzaSyDv9pWityxOON42ciQ3MrmVedu32pZ2TWE&limit=50`,
+      {
+        signal: controllerRef.current?.signal,
+      }
+    );
+    if (response.success) {
+      setGifs(
+        response.data.results.map((gif: any) => gif.media_formats.gif.url)
+      );
+    }
+  };
+
+  useEffect(() => {
+    setGifs([]);
+    fetchGifs(gifQuery);
+  }, [gifQuery]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value;
+
+    setQuery(searchTerm);
+  };
 
   return (
     <>
@@ -125,11 +216,11 @@ function Chat({
             >
               <path
                 d="M14.5392 10.1308C14.7748 9.95045 14.9656 9.71919 15.0968 9.4547C15.228 9.19022 15.2962 8.89953 15.2962 8.60494C15.2962 8.31034 15.228 8.01966 15.0968 7.75517C14.9656 7.49068 14.7748 7.25942 14.5392 7.07912C11.4881 4.74472 8.08115 2.90473 4.4458 1.62803L3.78112 1.39453C2.51079 0.948656 1.16819 1.79812 0.996162 3.09547C0.515602 6.75308 0.515602 10.4568 0.996162 14.1144C1.1692 15.4117 2.51079 16.2612 3.78112 15.8153L4.4458 15.5818C8.08115 14.3051 11.4881 12.4652 14.5392 10.1308Z"
-                fill={isAdmin ? "#EADDFF" :"#434343"}
+                fill={isAdmin ? "#EADDFF" : "#434343"}
               />
               <path
                 d="M18.6625 1.26718C18.7124 0.821304 19.0911 0.503082 19.5397 0.503082C19.9884 0.503082 20.3676 0.820549 20.4187 1.26629C20.5328 2.26253 20.6971 4.30858 20.6971 7.83333C20.6971 11.5742 20.5121 14.0197 20.3983 15.1696C20.3547 15.6102 19.9825 15.9352 19.5397 15.9352C19.0911 15.9352 18.7124 15.617 18.6625 15.1711C18.5483 14.1504 18.3823 12.0145 18.3823 8.21913C18.3823 4.42377 18.5483 2.28784 18.6625 1.26718Z"
-                fill={isAdmin ? "#EADDFF" :"#434343"}
+                fill={isAdmin ? "#EADDFF" : "#434343"}
                 fillOpacity="0.5"
               />
             </svg>
@@ -146,11 +237,11 @@ function Chat({
             >
               <path
                 d="M14.5392 10.1308C14.7748 9.95045 14.9656 9.71919 15.0968 9.4547C15.228 9.19022 15.2962 8.89953 15.2962 8.60494C15.2962 8.31034 15.228 8.01966 15.0968 7.75517C14.9656 7.49068 14.7748 7.25942 14.5392 7.07912C11.4881 4.74472 8.08115 2.90473 4.4458 1.62803L3.78112 1.39453C2.51079 0.948656 1.16819 1.79812 0.996162 3.09547C0.515602 6.75308 0.515602 10.4568 0.996162 14.1144C1.1692 15.4117 2.51079 16.2612 3.78112 15.8153L4.4458 15.5818C8.08115 14.3051 11.4881 12.4652 14.5392 10.1308Z"
-                fill={isAdmin ? "#EADDFF" :"#434343"}
+                fill={isAdmin ? "#EADDFF" : "#434343"}
               />
               <path
                 d="M18.6625 1.26718C18.7124 0.821304 19.0911 0.503082 19.5397 0.503082C19.9884 0.503082 20.3676 0.820549 20.4187 1.26629C20.5328 2.26253 20.6971 4.30858 20.6971 7.83333C20.6971 11.5742 20.5121 14.0197 20.3983 15.1696C20.3547 15.6102 19.9825 15.9352 19.5397 15.9352C19.0911 15.9352 18.7124 15.617 18.6625 15.1711C18.5483 14.1504 18.3823 12.0145 18.3823 8.21913C18.3823 4.42377 18.5483 2.28784 18.6625 1.26718Z"
-                fill={isAdmin ? "#EADDFF" :"#434343"}
+                fill={isAdmin ? "#EADDFF" : "#434343"}
                 fillOpacity="0.5"
               />
             </svg>
@@ -287,15 +378,59 @@ function Chat({
           ))}
         </div>
         <form onSubmit={sendMessage} className=" relative">
+          {uploading && (
+            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
+              <p>sending file...</p>
+            </div>
+          )}
+
           <Input
             onChange={(e) => setMessage(e.target.value)}
             value={message}
+            onPaste={handlePaste}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
             name="message"
             id="message"
             type="text"
-            className=" bg-white/5 pr-20 rounded-xl py-5 border border-white/20"
+            className=" bg-white/5 pr-20 pl-9 rounded-xl py-5 border border-white/20"
             placeholder="Send Message"
           />
+          {gif && (
+            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/10 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-lg rounded-xl">
+              <Input
+                autoFocus
+                value={gifQuery}
+                onChange={handleInputChange}
+                placeholder="Search gif"
+                className=" rounded-lg py-4 backdrop-blur-lg placeholder:text-muted-foreground/70 mb-0.5"
+              />
+              <div className="columns-1 sm:columns-2 md:columns-2 lg:columns-2 space-y-3 overflow-y-scroll rounded-md">
+                {gifs.length > 0 ? (
+                  gifs.map((gifUrl, index) => (
+                    <GifComponent
+                      key={index}
+                      index={index}
+                      gifUrl={gifUrl}
+                      showGif={showGif}
+                      emitMessage={emitMessage}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center px-1 text-muted-foreground">
+                    No GIFs found!
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+          <RiFileGifLine
+            onClick={() => showGif((prev) => !prev)}
+            className={`${
+              gif ? "text-white" : "text-muted-foreground"
+            } hover:text-white absolute size-6 left-2 top-[0.55rem] z-10 cursor-pointer`}
+          />
+
           <Button
             size={"sm"}
             className=" absolute right-1.5 top-[0.349rem] bg-purple  hover:bg-purple text-white rounded-lg px-4"
@@ -307,5 +442,35 @@ function Chat({
     </>
   );
 }
+
+const GifComponent = ({ gifUrl, index, emitMessage, showGif }: any) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="relative">
+      {isLoading && <Skeleton className="w-full absolute h-full rounded-lg" />}
+      <Image
+        height={500}
+        width={500}
+        key={index}
+        src={gifUrl}
+        onClick={() => {
+          emitMessage("message", gifUrl);
+          showGif(false);
+        }}
+        loading="eager"
+        alt={`Gif ${index + 1}`}
+        className={`break-inside-avoid rounded-lg shadow-sm ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
+        onLoad={handleImageLoad}
+      />
+    </div>
+  );
+};
 
 export default Chat;

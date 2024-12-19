@@ -129,3 +129,7 @@ export interface CachedVideo {
   blob: Blob;
   timestamp: number;
 }
+
+export interface uploadedImageT {
+  data: { direct_url: string; deletion_url: string };
+}
