@@ -320,7 +320,7 @@ function Chat({
                     ) : (
                       <Linkify as="p" options={linkifyOptions}>
                         <p
-                          className={`w-fit  break-words bg-white/20 ${
+                          className={`w-fit  break-words bg-white/10 ${
                             containsOnlyEmojis(message?.message)
                               ? "text-5xl"
                               : "text-sm"
@@ -349,7 +349,7 @@ function Chat({
                     ) : (
                       <Linkify as="p" options={linkifyOptions}>
                         <p
-                          className={` w-fit  text-end  break-words bg-white/20  ${
+                          className={` w-fit  text-end  break-words bg-white/10  ${
                             containsOnlyEmojis(message?.message)
                               ? "text-5xl"
                               : "text-sm"
