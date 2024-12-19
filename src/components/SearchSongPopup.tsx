@@ -71,7 +71,9 @@ function SearchSongPopupComp({
           return;
         }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/spotify/playlist/${id}`
+          ? `${process.env.SOCKET_URI}/api/${
+              value.includes("youtube.com") ? "youtube" : "spotify"
+            }/playlist/${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -373,9 +375,7 @@ function SearchSongPopupComp({
             autoFocus
             onChange={handleSearch}
             placeholder={
-              youtube
-                ? "Paste spotify playlist link (removing soon)"
-                : "What u wanna listen?"
+              youtube ? "Paste spotify playlist link" : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
           />

@@ -54,9 +54,11 @@ export const linkifyOptions = {
 };
 
 export function extractPlaylistID(url: string) {
-  // const urlObj = new URL(url);
+  if (url.includes("youtube.com")) {
+    const urlObj = new URL(url);
 
-  // return urlObj.searchParams.get("list");
+    return urlObj.searchParams.get("list");
+  }
   const match = url.match(/playlist\/([^/?]+)/);
   return match?.[1] || null;
 }
