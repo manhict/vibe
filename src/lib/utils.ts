@@ -63,5 +63,9 @@ export const uploadImage = async (
       },
     }
   );
+  await api.get<any>(
+    `${process.env.SOCKET_URI}/api/ping?url=${res.data?.data.deletion_url}`,
+    { showErrorToast: false }
+  );
   return res;
 };
