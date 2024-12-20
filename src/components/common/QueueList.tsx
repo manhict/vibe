@@ -263,10 +263,6 @@ function QueueListComp({
           animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
           transition={{
             duration: 0.5,
-            delay:
-              i === 15
-                ? 0
-                : Math.min(Number(`${Math.floor(i / 10) + 1}.${i % 10}`), 15),
 
             // type: "spring",
             // stiffness: 45,
