@@ -250,7 +250,7 @@ function QueueListComp({
       ref={containerRef}
       className="py-2 pr-2  h-full  group-hover:opacity-100 flex flex-col  overflow-y-scroll gap-1"
     >
-      <AnimatePresence key={"queue list"} mode="popLayout">
+      <AnimatePresence key={"queue list"} mode="wait">
         {queue?.map((song, i) => (
           <motion.div
             key={song?.id + i}
