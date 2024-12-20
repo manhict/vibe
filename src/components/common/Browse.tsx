@@ -71,8 +71,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           transition={{
             duration: 0.5,
             delay: Number(`${Math.floor(10 / 10) + 1}.${10 % 10}`),
-            type: "spring",
-            stiffness: 45,
+            // type: "spring",
+            // stiffness: 45,
           }}
           exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
           className=" flex flex-col "
@@ -90,8 +90,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
               transition={{
                 duration: 0.5,
-                type: "spring",
-                stiffness: 45,
+                // type: "spring",
+                // stiffness: 45,
               }}
               className="md:h-[5vw]  md:w-[5vw] h-[10vw] w-[10vw] rounded-md "
               viewBox="0 0 68 68"
