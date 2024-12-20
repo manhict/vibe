@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 // import useDebounce from "@/Hooks/useDebounce";
 import { Heart } from "lucide-react";
@@ -127,6 +128,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   const handleEmit = useCallback(() => {
     if (user?.imageUrl) {
       setLikEffectUser([{ imageUrl: user.imageUrl }]);
+      api.get<any>(`${process.env.SOCKET_URI}/api/ping`).then((rateLimit) => {
+        if (rateLimit.error) {
+          return;
+        }
+      });
       emitMessage("heart", { imageUrl: user.imageUrl });
     }
   }, [user, emitMessage]);
