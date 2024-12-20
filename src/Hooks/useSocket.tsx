@@ -352,6 +352,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("profile", updateListeners);
     };
   }, [
+    isPlaying,
+    setProgress,
+    setCurrentSong,
+    audioRef,
     handleUserLeftRoom,
     onConnect,
     handleJoined,
