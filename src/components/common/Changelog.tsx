@@ -81,7 +81,7 @@ function ChangelogComp() {
           />
         </svg>
       </DialogTrigger>
-      <DialogContent className="w-fit max-md:w-[90dvw] flex flex-col items-center justify-center bg-transparent border-none">
+      <DialogContent className=" max-w-screen-md max-md:max-w-[90vw] flex flex-col items-center justify-center bg-transparent border-none">
         <DialogHeader className="h-0">
           <DialogTitle />
           <DialogDescription />

@@ -13,6 +13,7 @@ import Controller from "./Controller";
 import PLayerCover from "./PLayerCover";
 import { useUserContext } from "@/store/userStore";
 import Changelog from "./Changelog";
+import DesktopChangeLog from "./DesktopChangeLog";
 function MemoPLayer() {
   const { isChatOpen, setIsChatOpen } = useUserContext();
 
@@ -91,6 +92,7 @@ function MemoPLayer() {
         <UpNextSongs />
         <div className=" absolute top-4 right-4">
           <Changelog />
+          <DesktopChangeLog />
         </div>
         <Listeners className=" max-md:flex hidden " />
       </div>

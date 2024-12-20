@@ -47,6 +47,10 @@ export const isImageUrl = (url: string): boolean => {
     url
   );
 };
+export const isVideoUrl = (url: string): boolean => {
+  // Only match URLs that end with known image file extensions
+  return /^https?:\/\/.*\.(mp4|mov)$/i.test(url);
+};
 export const linkifyOptions = {
   target: "_blank",
   nl2br: true,

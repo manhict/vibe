@@ -17,6 +17,7 @@ import {
   containsOnlyEmojis,
   formatArtistName,
   isImageUrl,
+  isVideoUrl,
   linkifyOptions,
 } from "@/utils/utils";
 import Linkify from "linkify-react";
@@ -299,7 +300,7 @@ function Chat({
             </div>
           )}
         </div>
-        <X onClick={() => setIsChatOpen(false)} />
+        <X className=" cursor-pointer" onClick={() => setIsChatOpen(false)} />
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between  break-words overflow-x-hidden">
         <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
@@ -322,27 +323,40 @@ function Chat({
                     <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
                       {message?.user?.name}
                     </p>
-
-                    {isImageUrl(message?.message) ? (
+                    {isVideoUrl(message.message) ? (
                       <Link href={message?.message} target="_blank">
-                        <img
+                        <video
                           src={message?.message}
-                          alt="User sent image"
+                          controls
+                          autoPlay
+                          muted
                           className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
                         />
                       </Link>
                     ) : (
-                      <Linkify as="p" options={linkifyOptions}>
-                        <p
-                          className={`w-fit  break-words bg-white/10 ${
-                            containsOnlyEmojis(message?.message)
-                              ? "text-5xl"
-                              : "text-sm"
-                          } px-4 py-1 rounded-md rounded-tl-none`}
-                        >
-                          {message?.message}
-                        </p>
-                      </Linkify>
+                      <>
+                        {isImageUrl(message?.message) ? (
+                          <Link href={message?.message} target="_blank">
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                            />
+                          </Link>
+                        ) : (
+                          <Linkify as="p" options={linkifyOptions}>
+                            <p
+                              className={`w-fit  break-words bg-white/10 ${
+                                containsOnlyEmojis(message?.message)
+                                  ? "text-5xl"
+                                  : "text-sm"
+                              } px-4 py-1 rounded-md rounded-tl-none`}
+                            >
+                              {message?.message}
+                            </p>
+                          </Linkify>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -352,26 +366,40 @@ function Chat({
                     <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
                       {message.user?.name}
                     </p>
-                    {isImageUrl(message?.message) ? (
+                    {isVideoUrl(message.message) ? (
                       <Link href={message?.message} target="_blank">
-                        <img
+                        <video
                           src={message?.message}
-                          alt="User sent image"
+                          controls
+                          autoPlay
+                          muted
                           className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
                         />
                       </Link>
                     ) : (
-                      <Linkify as="p" options={linkifyOptions}>
-                        <p
-                          className={` w-fit  text-end  break-words bg-white/10  ${
-                            containsOnlyEmojis(message?.message)
-                              ? "text-5xl"
-                              : "text-sm"
-                          } px-4 py-1 rounded-md rounded-tr-none`}
-                        >
-                          {message?.message}
-                        </p>
-                      </Linkify>
+                      <>
+                        {isImageUrl(message?.message) ? (
+                          <Link href={message?.message} target="_blank">
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
+                            />
+                          </Link>
+                        ) : (
+                          <Linkify as="p" options={linkifyOptions}>
+                            <p
+                              className={` w-fit  text-end  break-words bg-white/10  ${
+                                containsOnlyEmojis(message?.message)
+                                  ? "text-5xl"
+                                  : "text-sm"
+                              } px-4 py-1 rounded-md rounded-tr-none`}
+                            >
+                              {message?.message}
+                            </p>
+                          </Linkify>
+                        )}
+                      </>
                     )}
                   </div>
                   <Avatar className="size-9">
