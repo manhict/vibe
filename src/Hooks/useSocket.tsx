@@ -131,7 +131,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     [updateListeners]
   );
 
-  const updateQueue = useCallback(async () => {
+  const handleUpdateQueue = useCallback(async () => {
     if (!isActive.current) {
       necessaryFetchRef.current = true;
       return;
@@ -176,7 +176,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
     setLoading(false);
   }, [setQueue, page, queue, total, roomId]);
-  const handleUpdateQueue = useDebounce(updateQueue);
 
   const upNextSong = useCallback(async () => {
     if (!isActive.current) {
