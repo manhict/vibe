@@ -310,9 +310,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         setProgress(0);
         audioRef.current.src = getURL(song).replace(
           process.env.VIDEO_STREAM_URI || "",
-          window.navigator.userAgent.includes("Electron")
-            ? "http://localhost:7777/stream"
-            : process.env.STREAM_URL || ""
+          // window.navigator.userAgent.includes("Electron")
+          //   ? "http://localhost:7777/stream"
+          process.env.STREAM_URL || ""
         );
         return;
       }
