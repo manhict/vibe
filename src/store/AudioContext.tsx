@@ -134,11 +134,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioRef.current.src = "";
         const currentVideoUrl = getURL(song).replace(
           process.env.VIDEO_STREAM_URI || "",
-          window.navigator.userAgent.includes("Electron")
-            ? // ? "http://localhost:7777/stream"
-              // : process.env.STREAM_URL || ""
-              process.env.STREAM_URL || ""
-            : process.env.STREAM_URL || ""
+          // window.navigator.userAgent.includes("Electron")
+          // ? // ? "http://localhost:7777/stream"
+          // : process.env.STREAM_URL || ""
+          // process.env.STREAM_URL || ""
+          process.env.STREAM_URL || ""
         );
 
         audioRef.current.src = currentVideoUrl;
