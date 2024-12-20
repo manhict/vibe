@@ -25,7 +25,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         showErrorToast: false,
       }
     );
-    if (!res.success) {
+    if (res.status === 409) {
       window.location.href = `/${roomName}`;
     } else {
       toast.error("Room not found 😼");
