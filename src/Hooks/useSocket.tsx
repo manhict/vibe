@@ -16,7 +16,7 @@ import api from "@/lib/api";
 import { useUserContext } from "@/store/userStore";
 import { useAudio } from "@/store/AudioContext";
 import useDebounce from "./useDebounce";
-import getURL, { BACKGROUND_APP_TIMEOUT, delay } from "@/utils/utils";
+import getURL from "@/utils/utils";
 // Define the shape of a message
 export interface Message {
   id: string;
@@ -29,7 +29,7 @@ interface SocketContextType {
   loading: boolean;
   total: React.MutableRefObject<number | null>;
   handleUpdateQueue: () => void;
-  hiddenTimeRef: React.RefObject<number>;
+  // hiddenTimeRef: React.RefObject<number>;
   setPage: React.Dispatch<SetStateAction<number | null>>;
 }
 
@@ -65,9 +65,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const { seek, play, setCurrentSong, audioRef, isPlaying, setProgress } =
     useAudio();
 
-  const hiddenTimeRef = useRef<number>(0);
+  // const hiddenTimeRef = useRef<number>(0);
   const necessaryFetchRef = useRef<boolean>(false);
-  const timerRef = useRef<number | null>(null);
+  // const timerRef = useRef<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number | null>(1);
   const total = useRef<number | null>(null);
@@ -260,40 +260,40 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     [seek, setUser, roomId]
   );
 
-  const handleVisibilityChange = useCallback(async () => {
-    if (!window.location.pathname.startsWith("/v")) return;
-    if (document.hidden) {
-      const startTime = Date.now();
-      timerRef.current = window.setInterval(() => {
-        hiddenTimeRef.current = Date.now() - startTime;
-        // console.log(hiddenTimeRef.current);
-        if (
-          hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT &&
-          isActive.current
-        ) {
-          isActive.current = false;
-        }
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+  // const handleVisibilityChange = useCallback(async () => {
+  //   if (!window.location.pathname.startsWith("/v")) return;
+  //   if (document.hidden) {
+  //     const startTime = Date.now();
+  //     timerRef.current = window.setInterval(() => {
+  //       hiddenTimeRef.current = Date.now() - startTime;
+  //       // console.log(hiddenTimeRef.current);
+  //       if (
+  //         hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT &&
+  //         isActive.current
+  //       ) {
+  //         isActive.current = false;
+  //       }
+  //     }, 1000);
+  //   } else {
+  //     if (timerRef.current) {
+  //       clearInterval(timerRef.current);
+  //       timerRef.current = null;
+  //     }
 
-      const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
+  //     const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
 
-      isActive.current = true;
-      if (wasAwayForTooLong && necessaryFetchRef.current) {
-        await updateListeners();
-        await UpdateQueue();
-        await delay(200);
-        necessaryFetchRef.current = false;
-        hiddenTimeRef.current = 0;
-        return;
-      }
-      hiddenTimeRef.current = 0;
-    }
-  }, [updateListeners, UpdateQueue]);
+  //     isActive.current = true;
+  //     if (wasAwayForTooLong && necessaryFetchRef.current) {
+  //       await updateListeners();
+  //       await UpdateQueue();
+  //       await delay(200);
+  //       necessaryFetchRef.current = false;
+  //       hiddenTimeRef.current = 0;
+  //       return;
+  //     }
+  //     hiddenTimeRef.current = 0;
+  //   }
+  // }, [updateListeners, UpdateQueue]);
 
   useEffect(() => {
     const currentSocket = socketRef.current;
@@ -332,12 +332,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("play", handlePlay);
     currentSocket.on("seek", seek);
     currentSocket.on("profile", updateListeners);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    // document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      // document.removeEventListener("visibilitychange", handleVisibilityChange);
+      // if (timerRef.current) {
+      //   clearInterval(timerRef.current);
+      // }
       currentSocket.off("connect", onConnect);
       currentSocket.off("error", handleError);
       currentSocket.off("connect_error", handleConnectError);
@@ -368,7 +368,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     seek,
     isAdminOnline,
     updateListeners,
-    handleVisibilityChange,
+    // handleVisibilityChange,
   ]);
 
   return (
@@ -378,7 +378,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         loading,
         handleUpdateQueue,
         setPage,
-        hiddenTimeRef,
+        // hiddenTimeRef,
       }}
     >
       {children}
