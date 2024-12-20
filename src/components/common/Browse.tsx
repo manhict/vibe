@@ -2,9 +2,35 @@
 import { useMediaQuery } from "@react-hook/media-query";
 import { motion } from "framer-motion";
 import { roomsData } from "@/lib/types";
+import { Button } from "../ui/button";
+import React, { useState } from "react";
+import api from "@/lib/api";
+import { toast } from "sonner";
 
 export function Browse({ data = [] }: { data: roomsData[] }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [roomLink, setRoomLink] = useState<string>("");
+  const handleRedirect = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const params = roomLink.startsWith("http")
+      ? new URL(roomLink).searchParams
+      : undefined;
+    const roomName = roomLink.startsWith("http")
+      ? params?.get("room")
+      : roomLink;
+    if (!roomName) return toast.error("Invalid Room Link or id 😼");
+    const res = await api.get(
+      `${process.env.SOCKET_URI}/api/checkroom?r=${roomName}`,
+      {
+        showErrorToast: false,
+      }
+    );
+    if (!res.success) {
+      window.location.href = `/${roomName}`;
+    } else {
+      toast.error("Room not found 😼");
+    }
+  };
   // const { setRoomId } = useUserContext();
   return (
     <motion.div
@@ -70,7 +96,9 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
           transition={{
             duration: 0.5,
-            delay: Number(`${Math.floor(10 / 10) + 1}.${10 % 10}`),
+            delay: Number(
+              `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
+            ),
             // type: "spring",
             // stiffness: 45,
           }}
@@ -109,6 +137,41 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           </p>
         </motion.div>
       </div>
+      <motion.form
+        initial={{
+          y: isDesktop ? "5dvh" : 0,
+          opacity: 0,
+          filter: "blur(10px)",
+        }}
+        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+        transition={{
+          duration: 0.5,
+          delay: Number(
+            `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
+          ),
+          // type: "spring",
+          // stiffness: 45,
+        }}
+        onSubmit={handleRedirect}
+        className="max-w-[340px] flex absolute bottom-10 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
+      >
+        <div className="flex items-center relative">
+          <input
+            autoFocus
+            name="roomLink"
+            value={roomLink}
+            onChange={(e) => setRoomLink(e.currentTarget.value)}
+            placeholder="Enter room Link or id"
+            className="placeholder:animate-pulse pr-2 placeholder:opacity-55 bg-transparent outline-none top-0  text-white text-sm font-medium leading-tight tracking-tight"
+          />
+        </div>
+        <Button
+          type="submit"
+          className=" bg-white rounded-lg flex-col justify-center items-center gap-2"
+        >
+          Join
+        </Button>
+      </motion.form>
     </motion.div>
   );
 }
