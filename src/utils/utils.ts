@@ -207,17 +207,15 @@ export default function getURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${
-        // window.navigator.userAgent.includes("Electron")
-        //   ? "http://localhost:7777/stream"
-        //   :
-
-        process.env.VIDEO_STREAM_URI
-      }/${currentSongUrl}` ||
+    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` ||
       "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }
+
+// window.navigator.userAgent.includes("Electron")
+//   ? "http://localhost:7777/stream"
+//   :
 
 export function getBackgroundURL(currentSong: searchResults) {
   const currentSongUrl =
