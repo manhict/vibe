@@ -1,18 +1,20 @@
 "use client";
 import { useAudio } from "@/store/AudioContext";
 import { formatArtistName } from "@/utils/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Chat from "./Chat";
 import Listeners from "./Listeners";
-import LikeButton from "./LinkeButton";
+
 import parse from "html-react-parser";
 import UpNextSongs from "./UpNextSongs";
 import ProgressBar from "./ProgressBar";
 import Controller from "./Controller";
 import PLayerCover from "./PLayerCover";
+import { useUserContext } from "@/store/userStore";
+import Changelog from "./Changelog";
 function MemoPLayer() {
-  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+  const { isChatOpen, setIsChatOpen } = useUserContext();
 
   const { currentSong } = useAudio();
 
@@ -86,9 +88,10 @@ function MemoPLayer() {
         <Controller />
         <ProgressBar />
 
-        <LikeButton setIsChatOpen={setIsChatOpen} />
         <UpNextSongs />
-
+        <div className=" absolute top-4 right-4">
+          <Changelog />
+        </div>
         <Listeners className=" max-md:flex hidden " />
       </div>
     </div>

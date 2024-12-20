@@ -7,5 +7,5 @@ export const socket = io(process.env.SOCKET_URI || "", {
   forceNew: true,
   reconnectionAttempts: Infinity,
   timeout: 10000,
-  transports: ["websocket"],
+  // transports: ["websocket"],
 });

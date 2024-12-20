@@ -308,7 +308,7 @@ function QueueListComp({
                   <AvatarFallback>SX</AvatarFallback>
                   {currentSong?.id !== song?.id && (
                     <svg
-                      className="absolute group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute cursor-pointer group-hover:z-20  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       width="16"
                       height="16"
                       viewBox="0 0 16 16"

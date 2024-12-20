@@ -2,7 +2,7 @@
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
-import { X } from "lucide-react";
+import { Loader2Icon, X } from "lucide-react";
 import { RiFileGifLine } from "react-icons/ri";
 import React, {
   SetStateAction,
@@ -81,9 +81,13 @@ function Chat({
       currentSocket.off("message", handleMessage);
     };
   }, [socketRef, handleMessage]);
+  const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (isChatOpen) {
       setSeen(true);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
   }, [isChatOpen, setSeen]);
   useEffect(() => {
@@ -91,51 +95,61 @@ function Chat({
   }, [messages]);
   const [uploading, setUploading] = useState<boolean>(false);
   const [gif, showGif] = useState<boolean>(false);
-  const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append(
-      "payload_json",
-      JSON.stringify({
-        upload_source: process.env.UPLOAD_SOURCE,
-        domain: process.env.UPLOAD_DOMAIN,
-        type: 1,
-        name: file.name,
-      })
-    );
-    formData.append("file", file);
-    setUploading(true);
-    const res = await uploadImage(formData);
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      if (uploading) return;
+      const formData = new FormData();
+      formData.append(
+        "payload_json",
+        JSON.stringify({
+          upload_source: process.env.UPLOAD_SOURCE,
+          domain: process.env.UPLOAD_DOMAIN,
+          type: 1,
+          name: file.name,
+        })
+      );
+      formData.append("file", file);
+      setUploading(true);
+      const res = await uploadImage(formData);
 
-    if (res.success && res.data && res.data.data.direct_url) {
-      emitMessage("message", res.data.data.direct_url);
-    }
-    setUploading(false);
-  };
-  const handlePaste = async (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const clipboardData = e.clipboardData;
-    const items = clipboardData.items;
-
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith("image/")) {
-        const file = items[i].getAsFile();
-        if (file) {
-          await handleFileUpload(file);
-        }
-        e.preventDefault();
-        break;
+      if (res.success && res.data && res.data.data.direct_url) {
+        emitMessage("message", res.data.data.direct_url);
       }
-    }
-  };
-  const handleDrop = async (e: React.DragEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+      setUploading(false);
+    },
+    [emitMessage, uploading]
+  );
+  const handlePaste = useCallback(
+    async (e: React.ClipboardEvent<HTMLInputElement>) => {
+      const clipboardData = e.clipboardData;
+      const items = clipboardData.items;
 
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      await handleFileUpload(file);
-    }
-  };
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith("image/")) {
+          const file = items[i].getAsFile();
+          if (file) {
+            await handleFileUpload(file);
+          }
+          e.preventDefault();
+          break;
+        }
+      }
+    },
+    [handleFileUpload]
+  );
+  const handleDrop = useCallback(
+    async (e: React.DragEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        await handleFileUpload(file);
+      }
+    },
+    [handleFileUpload]
+  );
 
   const handleDragOver = (e: React.DragEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -178,7 +192,7 @@ function Chat({
 
   return (
     <>
-      <div className=" flex hide-scrollbar p-5 justify-between items-center">
+      <div className="  flex hide-scrollbar p-5 justify-between items-center">
         <div className=" flex w-9/12 truncate items-center gap-1.5">
           <Avatar className=" rounded-md size-14">
             <AvatarImage
@@ -379,12 +393,13 @@ function Chat({
         </div>
         <form onSubmit={sendMessage} className=" relative">
           {uploading && (
-            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
-              <p>sending file...</p>
+            <div className="text-muted-foreground border-2 border-white/15 absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
+              <Loader2Icon className=" animate-spin" /> <p>sending file...</p>
             </div>
           )}
 
           <Input
+            ref={inputRef}
             onChange={(e) => setMessage(e.target.value)}
             value={message}
             onPaste={handlePaste}

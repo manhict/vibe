@@ -102,5 +102,6 @@ function ChangelogComp() {
     </Dialog>
   );
 }
+
 const Changelog = React.memo(ChangelogComp);
 export default Changelog;
