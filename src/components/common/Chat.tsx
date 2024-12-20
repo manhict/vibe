@@ -440,7 +440,7 @@ function Chat({
             placeholder="Send Message"
           />
           {gif && (
-            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/10 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-lg rounded-xl">
+            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/20 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-xl rounded-xl">
               <Input
                 autoFocus
                 value={gifQuery}

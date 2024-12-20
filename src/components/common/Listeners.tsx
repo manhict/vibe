@@ -44,7 +44,7 @@ function Listeners({ className }: { className?: string }) {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className={` ${i !== 0 && "-ml-2"} size-6`}>
-                      <Avatar className=" size-6 border border-white">
+                      <Avatar className=" size-6 border-2 border-white/80">
                         <AvatarImage
                           loading="lazy"
                           alt={roomUser?.userId?.name}
@@ -66,9 +66,11 @@ function Listeners({ className }: { className?: string }) {
               </TooltipProvider>
             ))}
             {listener && listener?.totalUsers >= 5 && (
-              <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
-                <Avatar className=" size-6 border-white border">
-                  <AvatarFallback>
+              <div
+                className={` -ml-4 px-2 py-1 text-[9px] font-bold  rounded-full`}
+              >
+                <Avatar className=" size-6 border-white/80 border-2">
+                  <AvatarFallback className=" bg-purple">
                     {" "}
                     +
                     {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
@@ -88,17 +90,22 @@ function Listeners({ className }: { className?: string }) {
             <div className="flex flex-col w-full overflow-hidden rounded-2xl">
               <div className="bg-black/5 w-full p-2.5 px-4">
                 <p className=" font-semibold flex w-full justify-between">
-                  <span>Vibing with</span>{" "}
+                  <span className=" opacity-90">Vibing with</span>{" "}
                   {listener && `${listener?.totalUsers}`}
                 </p>
               </div>
-              <div className="bg-black/5 flex-col flex items-center gap-2 justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
+              <div className="bg-black/5 flex-col flex items-center  justify-between p-2.5 pt-0 px-4 max-h-[50dvh] overflow-y-scroll">
                 {listener?.roomUsers?.map((user, j) => (
-                  <div key={j} className=" w-full py-2 flex items-center gap-2">
+                  <div
+                    key={j}
+                    className=" w-full py-1.5 flex items-center gap-2"
+                  >
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
-                      <p>{user?.userId?.name}</p>
-                      <p className=" text-xs">{user?.userId?.username}</p>
+                      <p className=" font-semibold">{user?.userId?.name}</p>
+                      <p className=" text-xs text-muted-foreground">
+                        {user?.userId?.username}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -119,7 +126,7 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-center gap-2">
-        <Avatar className=" size-10">
+        <Avatar className=" size-12 border-2 border-white/15">
           <AvatarImage
             loading="lazy"
             className=" object-cover"
@@ -128,7 +135,7 @@ const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
           <AvatarFallback>SX</AvatarFallback>
         </Avatar>
       </DialogTrigger>
-      <DialogContent className="max-w-md flex-col max-md:w-full  border flex justify-center items-center  bg-transparent border-none">
+      <DialogContent className="max-w-md flex-col max-md:w-full border flex justify-center items-center  bg-transparent border-none">
         <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />
