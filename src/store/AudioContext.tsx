@@ -135,7 +135,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         const currentVideoUrl = getURL(song).replace(
           process.env.VIDEO_STREAM_URI || "",
           window.navigator.userAgent.includes("Electron")
-            ? "http://localhost:7777/stream"
+            ? // ? "http://localhost:7777/stream"
+              // : process.env.STREAM_URL || ""
+              process.env.STREAM_URL || ""
             : process.env.STREAM_URL || ""
         );
 
