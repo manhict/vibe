@@ -8,7 +8,7 @@ function UpvotedBy() {
     <>
       <div
         title="Added by "
-        className="absolute bottom-1 left-1  shadow-md p-1.5 rounded-full whitespace-nowrap  flex items-center justify-center bg-black/60 backdrop-blur-xl"
+        className="absolute bottom-1 left-1  shadow-md p-1.5 rounded-full whitespace-nowrap  flex items-center justify-center bg-accent/80 backdrop-blur-xl"
       >
         <Avatar
           key={currentSong?.addedByUser?._id}
@@ -30,7 +30,7 @@ function UpvotedBy() {
       {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
         <div
           title="Upvoted by "
-          className="absolute bottom-1 right-1  p-1.5 px-2.5 rounded-full  flex items-center justify-start gap-1 bg-black/60 backdrop-blur-xl"
+          className="absolute bottom-1 right-1 p-1.5 px-2 rounded-full  flex items-center justify-between gap-1 bg-accent/80 backdrop-blur-xl"
         >
           <div>
             <svg
@@ -50,33 +50,32 @@ function UpvotedBy() {
 
           <div className=" flex items-center  justify-end">
             {currentSong?.topVoters?.map((voter, i) => (
-              <div
+              <Avatar
                 key={voter._id}
                 title={`${voter?.username} (${voter?.name})`}
+                className={` ${
+                  i !== 0 && "-ml-2.5"
+                } size-6 border-[1.9px] border-white/80`}
               >
-                <div className={` ${i !== 0 && "ml-0.5"} size-3 mb-2.5`}>
-                  <Avatar className=" size-6 border-[1.9px] border-white/80">
-                    <AvatarImage
-                      loading="lazy"
-                      alt={voter?.name}
-                      height={200}
-                      width={200}
-                      className=" rounded-full"
-                      src={voter?.imageUrl}
-                      onError={(e) =>
-                        (e.currentTarget.src =
-                          "https://media1.popsugar-assets.com/files/thumbor/5DnPfnvfFRZuPDpoNLIV0ygDcMU=/fit-in/640x480/top/filters:format_auto():upscale()/2018/09/18/945/n/1922507/87e076fb06b8edb2_IMB_hdR0zT.GIF")
-                      }
-                    />
-                    <AvatarFallback>SX</AvatarFallback>
-                  </Avatar>
-                </div>
-              </div>
+                <AvatarImage
+                  loading="lazy"
+                  alt={voter?.name}
+                  height={200}
+                  width={200}
+                  className=" rounded-full"
+                  src={voter?.imageUrl}
+                  onError={(e) =>
+                    (e.currentTarget.src =
+                      "https://media1.popsugar-assets.com/files/thumbor/5DnPfnvfFRZuPDpoNLIV0ygDcMU=/fit-in/640x480/top/filters:format_auto():upscale()/2018/09/18/945/n/1922507/87e076fb06b8edb2_IMB_hdR0zT.GIF")
+                  }
+                />
+                <AvatarFallback>SX</AvatarFallback>
+              </Avatar>
             ))}
 
             {currentSong && currentSong.voteCount > 2 && (
               <div
-                className={` -ml-1.5 pl-2  text-[9px]  font-bold rounded-full`}
+                className={` -ml-4 pl-2  text-[9px]  font-bold rounded-full`}
               >
                 <Avatar className=" size-6 border-white/80 border-[1.9px]">
                   <AvatarFallback className=" bg-purple">

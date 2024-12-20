@@ -53,7 +53,7 @@ function TopVotes({ song }: { song: searchResults }) {
             stiffness: 70,
             damping: 12,
           }}
-          className="-ml-3.5 pl-1.5 py-1 text-[9px] font-bold rounded-full"
+          className="-ml-3.5 pl-1.5  text-[9px] font-bold rounded-full"
         >
           <Avatar className="size-5 border-white/80 border">
             <AvatarFallback className="bg-purple">

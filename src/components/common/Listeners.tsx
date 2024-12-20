@@ -39,7 +39,7 @@ function Listeners({ className }: { className?: string }) {
             <p>Listening</p> */}
 
           <div className=" flex items-center">
-            {listener?.roomUsers?.slice(0, 5).map((roomUser, i) => (
+            {listener?.roomUsers?.slice(0, 3).map((roomUser, i) => (
               <TooltipProvider key={i}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -65,15 +65,13 @@ function Listeners({ className }: { className?: string }) {
                 </Tooltip>
               </TooltipProvider>
             ))}
-            {listener && listener?.totalUsers >= 5 && (
-              <div
-                className={` -ml-4 px-2 py-1 text-[9px] font-bold  rounded-full`}
-              >
+            {listener && listener?.totalUsers > 3 && (
+              <div className={` -ml-4 px-2 text-[9px] font-bold  rounded-full`}>
                 <Avatar className=" size-6 border-white/80 border-2">
                   <AvatarFallback className=" bg-purple">
                     {" "}
                     +
-                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
+                    {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 3}
                   </AvatarFallback>
                 </Avatar>
               </div>
