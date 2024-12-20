@@ -14,6 +14,7 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { getSpotifyTrackID } from "@/utils/utils";
 import useAddSong from "@/Hooks/useAddSong";
+import DesktopChangeLog from "./DesktopChangeLog";
 export default function Home({
   user,
   roomId,
@@ -86,6 +87,7 @@ export default function Home({
   return (
     <>
       <Popups />
+      <DesktopChangeLog />
       <AnimatePresence>
         {!socketRef.current?.connected && (
           <motion.div
