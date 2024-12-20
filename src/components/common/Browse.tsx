@@ -12,6 +12,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
   const [roomLink, setRoomLink] = useState<string>("");
   const handleRedirect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (roomLink.trim().length === 0) return;
     const params = roomLink.startsWith("http")
       ? new URL(roomLink).searchParams
       : undefined;
