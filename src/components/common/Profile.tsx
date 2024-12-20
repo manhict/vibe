@@ -141,6 +141,12 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
             name: LoggedInUser?.username,
           })
         );
+        const rateLimit = await api.get<any>(
+          `${process.env.SOCKET_URI}/api/ping`
+        );
+        if (rateLimit.error) {
+          return;
+        }
         setUploading(true);
         if (LoggedInUser?.imageDelUrl) {
           await api.get(LoggedInUser.imageDelUrl, { showErrorToast: false });
