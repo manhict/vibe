@@ -48,6 +48,10 @@ export const onBoarding = [
 export const uploadImage = async (
   formData: FormData
 ): Promise<ApiResponse<uploadedImageT>> => {
+  const rateLimit = await api.get<any>(`${process.env.SOCKET_URI}/api/ping`);
+  if (rateLimit.error) {
+    return rateLimit;
+  }
   const res = await api.post<uploadedImageT>(
     process.env.UPLOAD_URL || "",
     formData,
