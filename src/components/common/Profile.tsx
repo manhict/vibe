@@ -36,7 +36,17 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
     );
     setUser(user);
     const socket = socketRef.current;
-    if (!roomId) toast.error("Room ID is required");
+    if (!roomId) {
+      window.location.href = "/browse";
+      return;
+    }
+
+    const isValidRoomId = /^[a-zA-Z0-9]+$/.test(roomId);
+    if (roomId.length <= 3 || !isValidRoomId || roomId.length > 11) {
+      window.location.href = "/browse";
+      return;
+    }
+
     socket.io.opts.query = {
       authorization: user?.token || "",
       room: roomId || "",
