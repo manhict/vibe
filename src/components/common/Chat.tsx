@@ -327,7 +327,7 @@ function Chat({
                           controls
                           autoPlay
                           muted
-                          className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                          className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
                         />
                       </Link>
                     ) : (
@@ -337,7 +337,7 @@ function Chat({
                             <img
                               src={message?.message}
                               alt="User sent image"
-                              className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                              className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
                             />
                           </Link>
                         ) : (
