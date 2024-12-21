@@ -300,7 +300,12 @@ function Chat({
         <X className=" cursor-pointer" onClick={() => setIsChatOpen(false)} />
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between  break-words overflow-x-hidden">
-        <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
+        <div
+          onClick={(e) => {
+            e.stopPropagation(), showGif(false);
+          }}
+          className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll"
+        >
           {messages.map((message) => (
             <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
