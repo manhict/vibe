@@ -7,12 +7,12 @@ function UpvotedBy() {
   return (
     <>
       <div
-        title="Added by "
+        title="Added by"
         className="absolute bottom-1 left-1  shadow-md p-1.5 rounded-full whitespace-nowrap  flex items-center justify-center bg-accent/80 backdrop-blur-xl"
       >
         <Avatar
           key={currentSong?.addedByUser?._id}
-          title={`${currentSong?.addedByUser?.username} (${currentSong?.addedByUser?.name})`}
+          title={`Added by ${currentSong?.addedByUser?.username} (${currentSong?.addedByUser?.name})`}
           className=" size-6 border-[1.9px] border-white/80"
         >
           <AvatarImage
@@ -29,7 +29,7 @@ function UpvotedBy() {
 
       {currentSong?.topVoters && currentSong.topVoters.length > 0 && (
         <div
-          title="Upvoted by "
+          title="Upvoted by"
           className="absolute bottom-1 right-1 p-1.5 px-2 rounded-full  flex items-center justify-between gap-1 bg-accent/80 backdrop-blur-xl"
         >
           <div>
@@ -52,7 +52,7 @@ function UpvotedBy() {
             {currentSong?.topVoters?.map((voter, i) => (
               <Avatar
                 key={voter._id}
-                title={`${voter?.username} (${voter?.name})`}
+                title={`Upvoted by ${voter?.username} (${voter?.name})`}
                 className={` ${
                   i !== 0 && "-ml-2.5"
                 } size-6 border-[1.9px] border-white/80`}
