@@ -267,28 +267,25 @@ function Chat({
       <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/10 w-full justify-between items-center">
         <p>Chat</p>
         <div className=" flex items-center">
-          {listener?.roomUsers
-            ?.filter((r) => r.userId.username !== user?.username)
-            ?.slice(0, 5)
-            ?.map((roomUser, i) => (
-              <div
-                title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
-                key={roomUser?._id}
-              >
-                <div className={` ${i !== 0 && "-ml-2"} size-7`}>
-                  <Avatar className=" size-7 border border-white">
-                    <AvatarImage
-                      loading="lazy"
-                      alt={roomUser?.userId?.name}
-                      height={200}
-                      width={200}
-                      className=" rounded-full object-cover"
-                      src={roomUser?.userId?.imageUrl}
-                    />
-                  </Avatar>
-                </div>
+          {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
+            <div
+              title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
+              key={roomUser?._id}
+            >
+              <div className={` ${i !== 0 && "-ml-2"} size-7`}>
+                <Avatar className=" size-7 border border-white">
+                  <AvatarImage
+                    loading="lazy"
+                    alt={roomUser?.userId?.name}
+                    height={200}
+                    width={200}
+                    className=" rounded-full object-cover"
+                    src={roomUser?.userId?.imageUrl}
+                  />
+                </Avatar>
               </div>
-            ))}
+            </div>
+          ))}
           {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
