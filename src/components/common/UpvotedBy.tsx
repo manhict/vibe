@@ -64,10 +64,6 @@ function UpvotedBy() {
                   width={200}
                   className=" rounded-full"
                   src={voter?.imageUrl}
-                  onError={(e) =>
-                    (e.currentTarget.src =
-                      "https://media1.popsugar-assets.com/files/thumbor/5DnPfnvfFRZuPDpoNLIV0ygDcMU=/fit-in/640x480/top/filters:format_auto():upscale()/2018/09/18/945/n/1922507/87e076fb06b8edb2_IMB_hdR0zT.GIF")
-                  }
                 />
                 <AvatarFallback>SX</AvatarFallback>
               </Avatar>

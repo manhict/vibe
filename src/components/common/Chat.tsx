@@ -24,7 +24,7 @@ import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { messages } from "@/lib/types";
+import { linkPreview, messages } from "@/lib/types";
 import { decrypt } from "tanmayo7lock";
 import { uploadImage } from "@/lib/utils";
 import api from "@/lib/api";
@@ -264,7 +264,7 @@ function Chat({
         </div>
       </div>
 
-      <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/10 w-full justify-between items-center">
+      <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/5 border w-full justify-between items-center">
         <p>Chat</p>
         <div className=" flex items-center">
           {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
@@ -346,17 +346,10 @@ function Chat({
                             />
                           </Link>
                         ) : (
-                          <Linkify as="p" options={linkifyOptions}>
-                            <p
-                              className={`w-fit  break-words bg-white/10 ${
-                                containsOnlyEmojis(message?.message)
-                                  ? "text-5xl"
-                                  : "text-sm"
-                              } px-4 py-1 rounded-md rounded-tl-none`}
-                            >
-                              {message?.message}
-                            </p>
-                          </Linkify>
+                          <MessageComponent
+                            me={false}
+                            message={message.message}
+                          />
                         )}
                       </>
                     )}
@@ -375,7 +368,7 @@ function Chat({
                           controls
                           autoPlay
                           muted
-                          className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
+                          className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
                         />
                       </Link>
                     ) : (
@@ -385,21 +378,11 @@ function Chat({
                             <img
                               src={message?.message}
                               alt="User sent image"
-                              className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
+                              className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
                             />
                           </Link>
                         ) : (
-                          <Linkify as="p" options={linkifyOptions}>
-                            <p
-                              className={` w-fit  text-end  break-words bg-white/10  ${
-                                containsOnlyEmojis(message?.message)
-                                  ? "text-5xl"
-                                  : "text-sm"
-                              } px-4 py-1 rounded-md rounded-tr-none`}
-                            >
-                              {message?.message}
-                            </p>
-                          </Linkify>
+                          <MessageComponent message={message.message} />
                         )}
                       </>
                     )}
@@ -410,7 +393,7 @@ function Chat({
                       alt={message?.user?.name || ""}
                       height={50}
                       width={50}
-                      className=" h-full object-cover  w-full"
+                      className=" h-full object-cover w-full"
                       src={message?.user?.imageUrl || "/bg.webp"}
                     />
                     <AvatarFallback>SX</AvatarFallback>
@@ -487,6 +470,119 @@ function Chat({
     </>
   );
 }
+
+const MessageComponent = ({
+  message,
+  me = true,
+}: {
+  message: string;
+  me?: boolean;
+}) => {
+  const [linkPreviews, setLinkPreviews] = useState<linkPreview[] | null>();
+
+  const extractLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)/g; // Refined regex
+
+    // Replace any URL followed by another URL with a space in between
+    text = text.replace(
+      /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)(https?:\/\/)/g,
+      "$1 $2"
+    );
+
+    return text.match(urlRegex) || [];
+  };
+
+  useEffect(() => {
+    const links = extractLinks(message);
+    const fetchLinkPreviews = async () => {
+      const previews = await Promise.all(
+        links.map(async (link) => {
+          const response = await api.get<linkPreview>(
+            `${process.env.SOCKET_URI}/api/linkpreview?url=${encodeURIComponent(
+              link
+            )}`,
+            {
+              showErrorToast: false,
+            }
+          );
+          if (response.data && response.success) {
+            return { ...response.data, requestUrl: link };
+          }
+          return null;
+        })
+      );
+      setLinkPreviews(
+        Object.values(
+          previews
+            .filter((preview): preview is linkPreview => Boolean(preview))
+            .reduce((uniquePreviews, preview) => {
+              if (!uniquePreviews[preview.requestUrl]) {
+                uniquePreviews[preview.requestUrl] = preview;
+              }
+              return uniquePreviews;
+            }, {} as { [key: string]: linkPreview })
+        )
+      );
+    };
+    if (links.length > 0) {
+      fetchLinkPreviews();
+    }
+  }, [message]);
+
+  const removeLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)/g; // Refined regex for URLs
+
+    return text.replace(urlRegex, "").trim(); // Remove links and trim extra spaces
+  };
+
+  return (
+    <div className=" space-y-1">
+      {linkPreviews?.map((linkPreview, index) => (
+        <div
+          title={linkPreview.requestUrl}
+          key={linkPreview.title + index}
+          className={` border bg-white/5  overflow-hidden rounded-md ${
+            me ? "rounded-tr-none" : "rounded-tl-none"
+          }`}
+        >
+          <Link href={linkPreview.requestUrl} target="_blank">
+            <Avatar className=" rounded-none aspect-video h-auto  w-full">
+              <AvatarImage
+                loading="lazy"
+                alt={linkPreview?.title}
+                height={50}
+                width={50}
+                className=" h-full object-cover rounded-none w-full"
+                src={linkPreview?.image || ""}
+              />
+              <AvatarFallback>SX</AvatarFallback>
+            </Avatar>
+
+            <div className="p-2">
+              <p className=" text-sm">{linkPreview?.title}</p>
+              <p className=" text-xs text-accent-foreground/70">
+                {linkPreview?.description}
+              </p>
+            </div>
+          </Link>
+        </div>
+      ))}
+      {removeLinks(message) !== "" && (
+        <Linkify as="p" options={linkifyOptions}>
+          <p
+            className={` w-fit  break-words bg-white/5 border  ${
+              containsOnlyEmojis(message) ? "text-5xl" : "text-sm"
+            } px-2 py-1 rounded-md ${
+              me ? "rounded-tr-none" : "rounded-tl-none"
+            }`}
+          >
+            {removeLinks(message)}
+          </p>
+        </Linkify>
+      )}
+    </div>
+  );
+};
 
 const GifComponent = ({ gifUrl, index, emitMessage, showGif }: any) => {
   const [isLoading, setIsLoading] = useState(true);

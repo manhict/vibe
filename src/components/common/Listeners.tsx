@@ -101,7 +101,7 @@ function Listeners({ className }: { className?: string }) {
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
                       <p className=" font-semibold">{user?.userId?.name}</p>
-                      <p className=" text-xs text-muted-foreground">
+                      <p className=" text-xs text-accent-foreground/80">
                         {user?.userId?.username}
                       </p>
                     </div>
