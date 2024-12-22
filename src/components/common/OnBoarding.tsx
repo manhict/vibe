@@ -60,7 +60,10 @@ function OnBoarding() {
       setLoader(true);
       const res = await api.patch(
         `${process.env.SOCKET_URI}/api/update`,
-        encryptObjectValues(payload)
+        encryptObjectValues(payload),
+        {
+          credentials: "include",
+        }
       );
       if (res.error) {
         setError(res.error);
@@ -330,7 +333,7 @@ function OnBoarding() {
                             disabled={loader}
                             className={`${
                               currentStep == 4
-                                ? " w-full bg-[#9747FF] py-5 hover:bg-[#9747FF]/80 text-white focus:outline-none outline-[#9747FF]"
+                                ? " w-full bg-[#9747FF] py-5 hover:bg-[#9747FF]/80 text-white focus:outline-none outline-none"
                                 : ""
                             }`}
                           >

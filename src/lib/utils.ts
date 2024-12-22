@@ -1,5 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import api from "./api";
+import { ApiResponse } from "hmm-api";
+import { uploadedImageT } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,3 +44,28 @@ export const onBoarding = [
     src: "/onboarding/3.mp4",
   },
 ];
+
+export const uploadImage = async (
+  formData: FormData
+): Promise<ApiResponse<uploadedImageT>> => {
+  const rateLimit = await api.get<any>(`${process.env.SOCKET_URI}/api/ping`);
+  if (rateLimit.error) {
+    return rateLimit;
+  }
+  const res = await api.post<uploadedImageT>(
+    process.env.UPLOAD_URL || "",
+    formData,
+    {
+      headers: {
+        "X-Window-Location": process.env.UPLOAD_LOCATION || "",
+        "X-Api-Sitekey": process.env.UPLOAD_SITE_KEY || "",
+        Authorization: process.env.UPLOAD_KEY || "",
+      },
+    }
+  );
+  await api.get<any>(
+    `${process.env.SOCKET_URI}/api/ping?url=${res.data?.data.deletion_url}`,
+    { showErrorToast: false }
+  );
+  return res;
+};

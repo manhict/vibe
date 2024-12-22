@@ -45,7 +45,7 @@ function SearchSongPopupComp({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { roomId, user, queue, emitMessage } = useUserContext();
+  const { roomId, user, queue, emitMessage, isElectron } = useUserContext();
   const { currentSong } = useAudio();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -71,7 +71,9 @@ function SearchSongPopupComp({
           return;
         }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/spotify/playlist/${id}`
+          ? `${process.env.SOCKET_URI}/api/${
+              value.includes("youtube.com") ? "youtube" : "spotify"
+            }/playlist/${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -295,7 +297,6 @@ function SearchSongPopupComp({
     //   setIsStarred((prev) => !prev);
     // }
   }, []);
-
   return (
     <Dialog key={"songs"}>
       {youtube ? (
@@ -322,7 +323,8 @@ function SearchSongPopupComp({
                 className=" bg-transparent flex md:hidden font-medium text-white p-2 w-full outline-none"
                 placeholder="Search songs"
               />
-              {!(window && (window.process as any)?.type) && (
+
+              {!isElectron && (
                 <svg
                   onClick={handleStarClick}
                   xmlns="http://www.w3.org/2000/svg"
@@ -373,9 +375,7 @@ function SearchSongPopupComp({
             autoFocus
             onChange={handleSearch}
             placeholder={
-              youtube
-                ? "Paste spotify playlist link (removing soon)"
-                : "What u wanna listen?"
+              youtube ? "Paste spotify playlist link" : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
           />
